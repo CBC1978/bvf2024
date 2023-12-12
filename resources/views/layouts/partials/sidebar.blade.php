@@ -99,10 +99,17 @@
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="app-chats.html"
+                            href="{{ route('getOffersApply') }}"
                             aria-expanded="false"
                         ><i class="mdi mdi-comment-processing-outline"></i
-                            ><span class="hide-menu">Mes offres de transports</span></a
+                            ><span class="hide-menu">
+                                Mes offres de
+                                @if(Session::get('role') == env('ROLE_CARRIER'))
+                                    frets
+                                @elseif(Session::get('role') == env('ROLE_SHIPPER'))
+                                    transports
+                                @endif
+                            </span></a
                         >
                     </li>
                     <li class="sidebar-item">

@@ -141,7 +141,7 @@
                                             <button
                                                 type="button"
                                                 class="
-                                                btn btn-primary btn-circle btn-sm
+                                                btn btn-{{ $offer->offerColor }} btn-circle btn-sm
                                                 d-inline-flex
                                                 align-items-center
                                                 justify-content-center
@@ -276,12 +276,13 @@
 
                 if( data.length == 1){
 
+                    $('#removeData').remove();
                     fetch('/offre/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
 
                             $('#formUpdateOffer').append(`
-                                  <div class="row">
+                                  <div class="row" id="removeData">
                                         <div class="col-6">
                                             <div class="form-floating mb-3">
                                                 <select

@@ -43,7 +43,7 @@ class TransportAnnouncement extends Model
 
     public function vehiculeType()
     {
-        return $this->belongsTo(TypeCar::class, 'id');
+        return $this->belongsTo(TypeCar::class, 'vehicule_type','id');
     }
 
     public function destinationOffer()

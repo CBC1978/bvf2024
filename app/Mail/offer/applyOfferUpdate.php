@@ -7,12 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class publishOfferUpdate extends Mailable
+class applyOfferUpdate extends Mailable
 {
     use Queueable, SerializesModels;
     private $data = array(
-        'origin'=>'',
-        'destination'=>'',
+        'prix'=>'',
         'description'=>'',
         'name'=>'',
     );
@@ -25,8 +24,7 @@ class publishOfferUpdate extends Mailable
     {
         $this->data['name'] = $data['name'];
         $this->data['description'] = $data['description'];
-        $this->data['origin'] = $data['origin'];
-        $this->data['destination'] = $data['destination'];
+        $this->data['prix'] = $data['prix'];
     }
 
     /**
@@ -36,7 +34,7 @@ class publishOfferUpdate extends Mailable
      */
     public function build()
     {
-        return $this->view('pages.email.offer.publishOfferUpdate')
+        return $this->view('pages.email.offer.applyOfferUpdate')
             ->subject('Offre modifiée')
             ->with(['data'=>$this->data]);
     }

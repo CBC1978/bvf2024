@@ -112,7 +112,7 @@
                     </div>
                     <div class="modal-body">
                         <h4 class="card-title mb-3">Faites une offre</h4>
-                        <div method="post" action="{{ route('storePublishOffer') }}" >
+                        <form method="post" action="{{ route('storePublishOffer') }}" >
                             @csrf
                             <div class="row">
                                 <div class="col-6">

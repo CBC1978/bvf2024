@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class publishOfferUpdate extends Mailable
+class publishOfferDelete extends Mailable
 {
     use Queueable, SerializesModels;
     private $data = array(
@@ -36,8 +36,8 @@ class publishOfferUpdate extends Mailable
      */
     public function build()
     {
-        return $this->view('pages.email.offer.publishOfferUpdate')
-            ->subject('Offre modifiée')
+        return $this->view('pages.email.offer.publishOfferDelete')
+            ->subject('Offre suprimée')
             ->with(['data'=>$this->data]);
     }
 }

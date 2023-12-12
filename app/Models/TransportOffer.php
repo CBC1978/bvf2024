@@ -35,7 +35,7 @@ class TransportOffer extends Model
     /**
      * Get the freight announcement associated with the transport offer.
      */
-    public function FreightAnnouncement()
+    public function freightAnnouncement()
     {
         return $this->belongsTo(FreightAnnouncement::class, 'fk_freight_announcement_id');
     }

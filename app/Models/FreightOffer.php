@@ -38,6 +38,11 @@ class FreightOffer extends Model
         return $this->belongsTo(Carrier::class, 'fk_carrier_id');
     }
 
+    public function transportAnnounce()
+    {
+        return $this->belongsTo(TransportAnnouncement::class, 'fk_transport_announcement_id');
+    }
+
     public function Shipper()
     {
         return $this->belongsTo(Shipper::class, 'fk_shipper_id');

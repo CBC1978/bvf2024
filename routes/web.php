@@ -42,3 +42,9 @@ Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
 
 // end offer routes
+
+//Utilisateurs routes
+    Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+
+
+//end Utilisateurs routes

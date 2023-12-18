@@ -614,12 +614,12 @@
                 <!-- ============================================================== -->
                 <!-- Messages -->
                 <!-- ============================================================== -->
-                <li class="nav-item dropdown">
+                <!--li class="nav-item dropdown">
                     <button class="mt-3 btn btn btn-rounded btn-light-info " id="btn-publier-offre" data-bs-toggle="modal" data-bs-target="#publier-offre" >
                         Publier une offre
                     </button>
 
-                </li>
+                </li-->
                 <li class="nav-item dropdown">
                     <a
                         class="nav-link dropdown-toggle waves-effect waves-dark"
@@ -919,8 +919,13 @@
                                 />
                             </div>
                             <div class="ms-2">
-                                <h4 class="mb-0 text-white">Steave Jobs</h4>
-                                <p class="mb-0">varun@gmail.com</p>
+                                <h4 class="mb-0 text-white">
+                                    <p class="mb-0">
+                                        @if(Session::has('username'))
+                                            <p>{{ Session::get('role') }}</p>
+                                        @endif
+                                    </p>
+                                </h4>
                             </div>
                         </div>
                         <a class="dropdown-item" href="#"
@@ -931,11 +936,19 @@
                             My Profile</a
                         >
                         <div class="dropdown-divider"></div>
+                        <!--a class="dropdown-item" href=""
+                        ><i
+                                data-feather="log-out"
+                                class="feather-sm text-danger me-1 ms-1"
+                            ></i>
+                            Se déconnecter</a
+                        -->
+                        
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <a class="dropdown-item" href="{{ route('logout') }}"
                             >
-                            <button type="submit" style="text-decoration: none; border: none; background: none;">
+                            <button id="logoutBtn" type="submit" style="text-decoration: none; border: none; background: none;">
                                 <i
                                 data-feather="log-out"
                                 class="feather-sm text-danger me-1 ms-1"
@@ -943,7 +956,8 @@
                                 Déconnexion
                             </button>
                         </a>
-                        </form>                        
+                        </form>
+                        
                     </div>
                 </li>
                 <!-- ============================================================== -->
@@ -954,4 +968,29 @@
 
         </div>
     </nav>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#logoutBtn').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '{{ route("logout") }}',
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(data) {
+                    // Rediriger vers la page de connexion après déconnexion
+                    window.location.href = '{{ route("login") }}';
+                },
+                error: function(error) {
+                    console.log(error);
+                    // Gérer les erreurs ici
+                }
+            });
+        });
+    });
+</script>
+
 </header>

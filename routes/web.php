@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
+use Illuminate\Routing\AbstractRouteCollection;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +18,13 @@ use \App\Http\Controllers\offer\offerController;
 */
 
 //Auth routes
+Route::post('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
 
 Route::post('/changer-mot-de-passe', [authController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/login', [authController::class, 'login'])->name('login');
+Route::get('/admin_home', [authController::class, 'login'])->name('admin_home');
 //Auth end routes
 
 //Offer routes
@@ -40,6 +44,7 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
+Route::get('/shipper-reply-chat/{offer_id}', [offerController::class, 'reply'])->name('shipper-reply-chat');
 
 // end offer routes
 

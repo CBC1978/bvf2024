@@ -931,8 +931,8 @@
                             My Profile</a
                         >
                         <div class="dropdown-divider"></div>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
+{{--                        <form action="{{ route('logout') }}" method="GET">--}}
+{{--                            @csrf--}}
                             <a class="dropdown-item" href="{{ route('logout') }}"
                             >
                             <button type="submit" style="text-decoration: none; border: none; background: none;">
@@ -943,7 +943,7 @@
                                 Déconnexion
                             </button>
                         </a>
-                        </form>                        
+{{--                        </form>--}}
                     </div>
                 </li>
                 <!-- ============================================================== -->

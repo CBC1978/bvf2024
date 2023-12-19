@@ -18,7 +18,8 @@ use Illuminate\Routing\AbstractRouteCollection;
 */
 
 //Auth routes
-Route::post('/logout', [authController::class, 'logout'])->name('logout');
+Route::get('/chat', [offerController::class, 'chat'])->name('chat');
+Route::get('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
 

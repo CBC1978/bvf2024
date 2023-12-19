@@ -1,3 +1,4 @@
+@if(Session::has('userId'))
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -60,7 +61,7 @@
     <!-- ============================================================== -->
     <!-- Topbar header - style you can find in pages.scss -->
     <!-- ============================================================== -->
-   @include('layouts.partials.nav')
+    @include('layouts.partials.nav')
     <!-- ============================================================== -->
     <!-- End Topbar header -->
     <!-- ============================================================== -->
@@ -78,16 +79,16 @@
         <!-- ============================================================== -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->
-      @yield('breadcumbs')
+        @yield('breadcumbs')
         <!-- ============================================================== -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->
         <!-- ============================================================== -->
         <!-- Container fluid  -->
         <!-- ============================================================== -->
-        <div class="container-fluid">
+{{--        <div class="container-fluid">--}}
             @yield('content')
-        </div>
+{{--        </div>--}}
 
         {{-- Modal for publier offre--}}
         <div
@@ -260,28 +261,28 @@
                                     >
                                 </div>
                             </div>
-                                <div class="d-md-flex align-items-center">
-                                    <div class="mt-3 mt-md-0 ms-auto">
-                                        <button
-                                            type="submit"
-                                            class="
+                            <div class="d-md-flex align-items-center">
+                                <div class="mt-3 mt-md-0 ms-auto">
+                                    <button
+                                        type="submit"
+                                        class="
                                                 btn btn-info
                                                 font-weight-medium
                                                 rounded-pill
                                                 px-4
                                               "
-                                        >
-                                            <div class="d-flex align-items-center">
-                                                <i
-                                                    data-feather="send"
-                                                    class="feather-sm fill-white me-2"
-                                                ></i>
-                                                Publier
-                                            </div>
-                                        </button>
+                                    >
+                                        <div class="d-flex align-items-center">
+                                            <i
+                                                data-feather="send"
+                                                class="feather-sm fill-white me-2"
+                                            ></i>
+                                            Publier
+                                        </div>
+                                    </button>
 
-                                    </div>
                                 </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -319,3 +320,6 @@
 @yield('script')
 </body>
 </html>
+@else
+   {{ Redirect::to('index') }}
+@endif

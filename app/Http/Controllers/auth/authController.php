@@ -8,7 +8,6 @@ use App\Models\Carrier;
 use App\Models\Shipper;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Session;
 
 use App\Providers\RouteServiceProvider;
@@ -16,6 +15,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+
 class authController extends Controller
 {
     public function index()
@@ -85,7 +85,7 @@ class authController extends Controller
     public function getUsersValide()
     {
         return view('pages.user.home_valide');
-        
+
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
@@ -97,13 +97,11 @@ class authController extends Controller
     }
 
     public function logout(Request $request)
-    {     
+    {
         Auth::logout(); // Déconnecte l'utilisateur
+        $request->session()->forget('userId');
         Session::flush(); // Vide la session
-        return redirect()->route('login'); 
-        //return view('auth.login');
-        
-   
-    }  
+        return redirect()->route('index');
+    }
 
 }

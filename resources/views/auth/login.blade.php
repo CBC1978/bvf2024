@@ -11,7 +11,7 @@
     />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta
-        name="description"
+        name="description"  ty
         content="Bourse virtuelle de fret, gestion de fret, CBC, Conseil Burkinabè des Chargeurs"
     />
     <meta name="robots" content="noindex,nofollow" />

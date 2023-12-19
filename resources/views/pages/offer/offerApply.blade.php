@@ -180,7 +180,7 @@
                                         {{-- Vérifiez si status_message est égal à 2 avant d'afficher le bouton Echanger --}}
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
                                                 @if($offer->status == 1 || $offer->status == 3 )
-                                                    <a href="{{ route('carrier-reply-chat', ['offer_id' => $offer->id]) }}" class="btn btn-tag btn-info">Discuter</a>
+                                                    <a href="" class="btn btn-tag btn-info">Discuter</a>
                                                 @endif
                                             @endif
                                         </td>

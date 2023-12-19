@@ -84,14 +84,14 @@ class authController extends Controller
 
     public function getUsersValide()
     {
-        return view('pages.user.home_valide');
+        
         
         if (Session::get('role') == env('ROLE_SHIPPER')){
-
+            return view('pages.user.home_valide');
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
-
+            return view('pages.user.home_valide');
         }elseif (Session::get('role') == env('ROLE_ADMIN')){
-
+            return view('pages.admin.home_valide_admin');
         }
 
     }

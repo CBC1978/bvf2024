@@ -18,7 +18,8 @@ use Illuminate\Routing\AbstractRouteCollection;
 */
 
 //Auth routes
-Route::post('/logout', [authController::class, 'logout'])->name('logout');
+Route::get('/chat', [offerController::class, 'chat'])->name('chat');
+Route::get('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
 
@@ -45,6 +46,12 @@ Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOff
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
 
+//Les routes  ADMIN
+Route::prefix('annonces')->group(function () {
+    Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
+    Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
+    
+});
 // end offer routes
 
 //Utilisateurs routes

@@ -45,8 +45,13 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
-Route::get('/shipper-reply-chat/{offer_id}', [offerController::class, 'reply'])->name('shipper-reply-chat');
 
+//Les routes  ADMIN
+Route::prefix('annonces')->group(function () {
+    Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
+    Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
+    
+});
 // end offer routes
 
 //Utilisateurs routes

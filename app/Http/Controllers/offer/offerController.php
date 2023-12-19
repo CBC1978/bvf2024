@@ -811,4 +811,5 @@ class offerController extends Controller
 
     }
 
+
 }

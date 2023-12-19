@@ -3773,6 +3773,18 @@
         },
         {
             "name": "symfony/http-kernel",
+<<<<<<< HEAD
+            "version": "v5.4.32",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/http-kernel.git",
+                "reference": "442472752e3adc9810a7e425824497dc22f75acf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/442472752e3adc9810a7e425824497dc22f75acf",
+                "reference": "442472752e3adc9810a7e425824497dc22f75acf",
+=======
             "version": "v5.4.33",
             "source": {
                 "type": "git",
@@ -3783,6 +3795,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-kernel/zipball/892636f9279f953dc266dc088f900b03eecb4ffa",
                 "reference": "892636f9279f953dc266dc088f900b03eecb4ffa",
+>>>>>>> 8685a0e3ce7c2ba74a115e49886a8b6a3a26d6d5
                 "shasum": ""
             },
             "require": {
@@ -3865,7 +3878,11 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
+
+                "source": "https://github.com/symfony/http-kernel/tree/v5.4.32"
+
                 "source": "https://github.com/symfony/http-kernel/tree/v5.4.33"
+
             },
             "funding": [
                 {
@@ -3881,7 +3898,11 @@
                     "type": "tidelift"
                 }
             ],
+
+            "time": "2023-11-29T10:12:28+00:00"
+
             "time": "2023-12-01T16:51:11+00:00"
+
         },
         {
             "name": "symfony/mime",
@@ -6744,6 +6765,18 @@
         },
         {
             "name": "phpunit/phpunit",
+
+            "version": "9.6.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "43653e6ad7adc22e7b667dd561bf8fcb74c10cf0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/43653e6ad7adc22e7b667dd561bf8fcb74c10cf0",
+                "reference": "43653e6ad7adc22e7b667dd561bf8fcb74c10cf0",
+
             "version": "9.6.15",
             "source": {
                 "type": "git",
@@ -6827,7 +6860,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.14"
             },
             "funding": [
                 {
@@ -6843,7 +6876,10 @@
                     "type": "tidelift"
                 }
             ],
+            "time": "2023-12-01T06:10:48+00:00"
+
             "time": "2023-12-01T16:55:19+00:00"
+ 
         },
         {
             "name": "sebastian/cli-parser",
@@ -7869,5 +7905,5 @@
         "php": "^7.3"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

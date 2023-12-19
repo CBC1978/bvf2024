@@ -166,8 +166,24 @@
                                         @if(Session::get('role') == env('ROLE_SHIPPER'))
                                             <td>{{ $offer->weight }}</td>
                                         @endif
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                        {{-- Vérifiez la valeur de status_message pour décider d'afficher la notification --}}
+                                            @if($offer->status == 0)
+                                                Aucune notification
+                                            @elseif($offer->status == 1)
+                                                Vous avez un message
+                                            @elseif($offer->status == 3)
+                                                Message lu
+                                            @endif
+                                        </td>
+                                        <td>
+                                        {{-- Vérifiez si status_message est égal à 2 avant d'afficher le bouton Echanger --}}
+                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
+                                                @if($offer->status == 1 || $offer->status == 3 )
+                                                    <a href="{{ route('carrier-reply-chat', ['offer_id' => $offer->id]) }}" class="btn btn-tag btn-info">Discuter</a>
+                                                @endif
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

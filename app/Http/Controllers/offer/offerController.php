@@ -766,4 +766,5 @@ class offerController extends Controller
 
 //        return redirect()->route('home')->with('success', "Offre ajoutée avec succès");
     }
+    
 }

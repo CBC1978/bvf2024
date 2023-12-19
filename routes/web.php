@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
+use \App\Http\Controllers\chat\CarrierChatController;
+use \App\Http\Controllers\chat\ShipperChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +42,12 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
+//Route::get('/chat-box', [offerController::class, 'sendMessage'])->name('chatting');
 
+Route::get('/carrier-chat/{offer_id}', [CarrierChatController::class, 'index'])->name('carrier-chat');
+Route::get('/shipper-chat/{offer_id}', [ShipperChatController::class, 'index'])->name('shipper-chat');
+Route::post('/sendMessage/{offer_id}', [CarrierChatController::class, 'sendMessage'])->name('sendMessage');
+Route::post('/sendMessage/{offer_id}', [ShipperChatController::class, 'sendMessage'])->name('sendMessage');
+Route::get('/carrier-reply-chat/{offer_id}', [CarrierChatController::class, 'reply'])->name('carrier-reply-chat');
+Route::get('/shipper-reply-chat/{offer_id}', [ShipperChatController::class, 'reply'])->name('shipper-reply-chat');
 // end offer routes

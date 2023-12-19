@@ -192,7 +192,7 @@ class offerController extends Controller
             $nbOfferReceived = $this->countTransportOffers();
 
             return view('pages.admin.admin_home', compact('offersT', 'offers', 'nbOfferT', 'nbOffer', 'nbOfferReceivedT', 'nbOfferReceived'));
-            
+
 
         }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -802,7 +802,13 @@ class offerController extends Controller
             }
         }
 
-//        return redirect()->route('home')->with('success', "Offre ajoutée avec succès");
+        return redirect()->route('home')->with('success', "Offre ajoutée avec succès");
+    }
+
+    public function chat()
+    {
+        return view('pages.chat.home');
+
     }
 
 

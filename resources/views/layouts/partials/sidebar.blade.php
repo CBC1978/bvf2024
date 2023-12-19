@@ -127,19 +127,19 @@
                             href="javascript:void(0)"
                             aria-expanded="false"
                         ><i class="mdi mdi-inbox-arrow-down"></i
-                            ><span class="hide-menu">Outils</span></a
+                            ><span class="hide-menu">Utilisateur</span></a
                         >
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
-                                <a href="inbox-email.html" class="sidebar-link"
+                                <a href="{{ route('getUsersValide') }}" class="sidebar-link"
                                 ><i class="mdi mdi-email"></i
-                                    ><span class="hide-menu"> Email </span></a
+                                    ><span class="hide-menu"> Validé </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
                                 <a href="inbox-email-detail.html" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
-                                    ><span class="hide-menu"> Email Detail </span></a
+                                    ><span class="hide-menu"> En attente </span></a
                                 >
                             </li>
                             <li class="sidebar-item">

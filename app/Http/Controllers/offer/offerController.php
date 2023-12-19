@@ -157,8 +157,46 @@ class offerController extends Controller
             $nbOfferReceived = $this->countTransportOffers();
 
             return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived'));
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        }elseif (Session::get('role') == env('ROLE_ADMIN')){
+
+            //Get the ten latest carrier offer
+            $offersT = DB::table('transport_announcement')
+                ->selectRaw("transport_announcement.id, transport_announcement.origin, transport_announcement.destination, transport_announcement.limit_date,
+                        transport_announcement.weight, transport_announcement.vehicule_type, transport_announcement.description,
+                       carrier.company_name")
+                ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
+                ->where('limit_date', '>=', date("Y-m-d"))
+                ->orderBy('transport_announcement.id', 'DESC')
+                ->limit(10)
+                ->get();
+            $nbOfferT = $this->countFreightAnnouncements();
+            $nbOfferReceivedT = $this->countFreightOffer();
+
+            //Get the ten latest shipper offer
+            $offers = DB::table('freight_announcement')
+                ->selectRaw("
+             freight_announcement.id,freight_announcement.origin,freight_announcement.destination,freight_announcement.limit_date,
+             freight_announcement.weight, freight_announcement.volume,freight_announcement.description,
+             shipper.company_name
+             ")
+                ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
+                ->where('limit_date', '>=', date("Y-m-d"))
+                ->orderBy('freight_announcement.id', 'DESC')
+                ->limit(10)
+                ->get();
+
+            $nbContract = $this->ContractTransport();
+            $nbOffer = $this->countTransportAnnouncements();
+            $nbOfferReceived = $this->countTransportOffers();
+
+            return view('pages.admin.admin_home', compact('offersT', 'offers', 'nbOfferT', 'nbOffer', 'nbOfferReceivedT', 'nbOfferReceived'));
+            
 
         }
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     }
 
     public function storeApplyOffer(applyForm $request)
@@ -766,5 +804,6 @@ class offerController extends Controller
 
 //        return redirect()->route('home')->with('success', "Offre ajoutée avec succès");
     }
-    
+
+
 }

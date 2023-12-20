@@ -12,6 +12,7 @@ use App\Mail\offer\publishOfferDelete;
 use App\Mail\offer\publishOfferSend;
 use App\Mail\offer\publishOfferUpdate;
 use App\Models\Carrier;
+use App\Models\Chat;
 use App\Models\ContractTransport;
 use App\Models\FreightAnnouncement;
 use App\Models\FreightOffer;
@@ -21,6 +22,7 @@ use App\Models\TransportOffer;
 use App\Models\TypeCar;
 use App\Models\User;
 use App\Models\Ville;
+use Symfony\Component\HttpFoundation\Request;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -411,7 +413,7 @@ class offerController extends Controller
             // Add detail to offer
             $cptOffer =0;
             $dataOffers->each(function ($offer) {
-                $offer->offerCount = $offer->transportOffer;
+                $offer->offerCount = $offer->freightOffer;
                 $offer->origin = $offer->originOffer;
                 $offer->destination = $offer->destinationOffer;
 
@@ -421,18 +423,28 @@ class offerController extends Controller
                     $offer->offerCount = $cptOffer;
                     $offer->offerColor = "info";
                 }
+
             });
 
             foreach($dataOffers as $offer){
                 if ($offer->offerCount != env('DEFAULT_INT')){
-                    array_push($offers, $offer);
-                }
+                        array_push($offers, $offer);
+                    }
             }
 
             return view('pages.offer.offerReceived', compact('offers'));
         }
     }
 
+    public function getOffersReceivedDetail($id)
+    {
+        if (Session::get('role') == env('ROLE_SHIPPER')){
+            $offers = TransportOffer::where('fk_freight_announcement_id','=', intval($id))->get();
+
+        }elseif(Session::get('role') == env('ROLE_CARRIER')){
+            $offers = FreightOffer::where('fk_transport_announcement_id','=', intval($id))->get();
+        }
+    }
     public function getOffersNotReceived()
     {
         $offers = [];
@@ -805,9 +817,57 @@ class offerController extends Controller
         return redirect()->route('home')->with('success', "Offre ajoutée avec succès");
     }
 
-    public function chat()
+    public function chat(Request $request)
     {
-        return view('pages.chat.home');
+        if (Session::get('role') == env('ROLE_SHIPPER')){
+            $offer = FreightOffer::find(intval($request->offer));
+            $offer->announce = $offer->transportAnnounce;
+            $offer->announce->origin = $offer->announce->originOffer;
+            $offer->announce->destination = $offer->announce->destinationOffer;
+            $offer->announce->company = $offer->announce->carrier;
+
+            $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
+            if (!empty($chats)){
+                $chats->each(function($chat){
+                    $chat->user = $chat->user;
+                    $chat->company = $chat->user->fk_shipper_id;
+                });
+            }
+        } elseif (Session::get('role') == env('ROLE_CARRIER')) {
+            $offer = TransportOffer::find(intval($request->offer));
+            $offer->announce = $offer->freightAnnouncement;
+            $offer->announce->origin = $offer->announce->originOffer;
+            $offer->announce->destination = $offer->announce->destinationOffer;
+            $offer->announce->company = $offer->announce->Shipper;
+
+            $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
+            if (!empty($chats)){
+                $chats->each(function($chat){
+                    $chat->user = $chat->user;
+                    $chat->company = $chat->user->fk_carrier_id;
+                });
+            }
+        }
+        return view('pages.chat.home', compact('offer','chats'));
+    }
+
+    public function sendChat(Request  $request)
+    {
+        if (Session::get('role') == env('ROLE_SHIPPER')){
+            $chat =  new Chat();
+            $chat->message = $request->message;
+            $chat->fk_offer_id = $request->id;
+            $chat->fk_user_id = intval( Session::get('userId') );
+
+            $chat->save();
+
+        } elseif (Session::get('role') == env('ROLE_CARRIER')) {
+
+
+
+        }
+
+        echo json_encode($request->message);
 
     }
 

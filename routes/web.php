@@ -19,6 +19,7 @@ use Illuminate\Routing\AbstractRouteCollection;
 
 //Auth routes
 Route::get('/chat', [offerController::class, 'chat'])->name('chat');
+Route::post('/envoyer-message', [offerController::class, 'sendChat'])->name('sendChat');
 Route::get('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
@@ -34,6 +35,7 @@ Route::get('/type-car', [offerController::class, 'getAllTypeCar'])->name('getAll
 Route::get('/accueil', [offerController::class, 'home'])->name('home');
 Route::get('/offres', [offerController::class, 'getOffers'])->name('getOffers');
 Route::get('/offres-reçues', [offerController::class, 'getOffersReceived'])->name('getOffersReceived');
+Route::get('/offres-reçues/detail/{id}', [offerController::class, 'getOffersReceivedDetail'])->name('getOffersReceivedDetail');
 Route::get('/offre/{id}', [offerController::class, 'getOfferOne'])->name('getOfferOne');
 Route::get('/offre-publie/{id}', [offerController::class, 'getOfferPublishOne'])->name('getOfferPublishOne');
 Route::get('/offre-postulée/{id}', [offerController::class, 'getOfferApplyOne'])->name('getOfferApplyOne');
@@ -50,7 +52,7 @@ Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteA
 Route::prefix('annonces')->group(function () {
     Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
     Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
-    
+
 });
 // end offer routes
 

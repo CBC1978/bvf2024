@@ -86,9 +86,9 @@
         <!-- ============================================================== -->
         <!-- Container fluid  -->
         <!-- ============================================================== -->
-{{--        <div class="container-fluid">--}}
+        <div class="container-fluid">
             @yield('content')
-{{--        </div>--}}
+        </div>
 
         {{-- Modal for publier offre--}}
         <div

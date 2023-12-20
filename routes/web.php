@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
 use Illuminate\Routing\AbstractRouteCollection;
+use \App\Http\Controllers\Admin\AdminController;
+
 
 
 /*
@@ -49,15 +51,16 @@ Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
 
 //Les routes  ADMIN
+
 Route::prefix('annonces')->group(function () {
     Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
     Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
 
 });
+Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
+Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
 // end offer routes
 
 //Utilisateurs routes
-    Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
-
-
+Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
 //end Utilisateurs routes

@@ -182,37 +182,62 @@ $(".app-chat .chat-user ").on("click", function (event) {
   $(".chat-send-message-footer").addClass("chat-active");
 });
 
+
 // Send Messages
 $(".message-type-box").on("keydown", function (event) {
-  if (event.key === "Enter") {
-    // Start getting time
-    var now = new Date();
-    var hh = now.getHours();
-    var min = now.getMinutes();
+    if (event.key === "Enter") {
+        // Start getting time
+        var now = new Date();
+        var hh = now.getHours();
+        var min = now.getMinutes();
 
-    var ampm = hh >= 12 ? "pm" : "am";
-    hh = hh % 12;
-    hh = hh ? hh : 12;
-    hh = hh < 10 ? "0" + hh : hh;
-    min = min < 10 ? "0" + min : min;
+        var ampm = hh >= 12 ? "pm" : "am";
+        hh = hh % 12;
+        hh = hh ? hh : 12;
+        hh = hh < 10 ? "0" + hh : hh;
+        min = min < 10 ? "0" + min : min;
 
-    var time = hh + " : " + min + " " + ampm;
-    // End
-    var chatInput = $(this);
-    var chatMessageValue = chatInput.val();
-    if (chatMessageValue === "") {
-      return;
+        var time = hh + " : " + min + " " + ampm;
+        // End
+        var chatInput = $(this);
+        var chatMessageValue = chatInput.val();
+        if (chatMessageValue === "") {
+            return;
+        }
+        var offer = $('#offer_id').val();
+        var token = $('#_token').val();
+
+        //Store Message
+        fetch('/envoyer-message',{
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": token
+            },
+            credentials: "same-origin",
+            method:"POST",
+            body: JSON.stringify({
+                id:offer,
+                message:chatMessageValue,
+            }),
+        })
+            .then(response => response.json())
+            .then(data =>{
+                console.log(data);
+            });
+        $messageHtml =
+            '<li class="odd mt-4"> <div class="chat-content pl-3 d-inline-block text-end"> <div class="box mb-2 d-inline-block text-dark message font-weight-medium fs-3 bg-light-inverse">' +
+            chatMessageValue +
+            '<br> </div></div><div class="chat-time d-inline-block text-end fs-2 font-weight-medium">' +
+            time +
+            "</div> </li>";
+        var appendMessage = $(this)
+            .parents(".chat-application")
+            .find(".active-chat")
+            .append($messageHtml);
+        var clearChatInput = chatInput.val("");
+
+
     }
-    $messageHtml =
-      '<li class="odd mt-4"> <div class="chat-content pl-3 d-inline-block text-end"> <div class="box mb-2 d-inline-block text-dark message font-weight-medium fs-3 bg-light-inverse">' +
-      chatMessageValue +
-      '<br> </div></div><div class="chat-time d-inline-block text-end fs-2 font-weight-medium">' +
-      time +
-      "</div> </li>";
-    var appendMessage = $(this)
-      .parents(".chat-application")
-      .find(".active-chat")
-      .append($messageHtml);
-    var clearChatInput = chatInput.val("");
-  }
 });

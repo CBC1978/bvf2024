@@ -78,7 +78,7 @@ class authController extends Controller
     public function updatePassword(emailUpdatPasswordForm  $request)
     {
         $validated = $request->validated();
-        dd('test');
+    
 
     }
 
@@ -102,6 +102,8 @@ class authController extends Controller
             $users = User::all();
 
             return view('pages.admin.home_no_valide_admin',compact('users'));
+        }elseif (Session::get('role') == env('ROLE_ADMIN')){ //gestion users compte admin
+            return view('pages.admin.home_valide_admin');
         }
 
     }

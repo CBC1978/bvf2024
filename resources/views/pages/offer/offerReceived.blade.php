@@ -157,17 +157,19 @@
                                             <td>{{ $offer->price }}</td>
                                         @endif
                                         <td>
-                                            <button
-                                                type="button"
-                                                class="
-                                                    btn btn-{{ $offer->offerColor }} btn-circle btn-sm
-                                                    d-inline-flex
-                                                    align-items-center
-                                                    justify-content-center
-                                                  "
-                                            >
-                                                {{ $offer->offerCount }}
-                                            </button>
+                                            <a href="{{ route('getOffersReceivedDetail', $offer->id) }}">
+                                                <button
+                                                    type="button"
+                                                    class="
+                                                        btn btn-{{ $offer->offerColor }} btn-circle btn-sm
+                                                        d-inline-flex
+                                                        align-items-center
+                                                        justify-content-center
+                                                      "
+                                                >
+                                                    {{ $offer->offerCount }}
+                                                </button>
+                                            </a>
                                         </td>
                                         <td>
                                             {{ date("d-m-Y",strtotime($offer->limit_date))  }}

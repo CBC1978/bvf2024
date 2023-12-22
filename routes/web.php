@@ -22,6 +22,7 @@ use App\Http\Controllers\Profile\ProfileController;
 
 //Auth routes
 Route::get('/chat', [offerController::class, 'chat'])->name('chat');
+Route::post('/envoyer-message', [offerController::class, 'sendChat'])->name('sendChat');
 Route::get('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
@@ -37,6 +38,7 @@ Route::get('/type-car', [offerController::class, 'getAllTypeCar'])->name('getAll
 Route::get('/accueil', [offerController::class, 'home'])->name('home');
 Route::get('/offres', [offerController::class, 'getOffers'])->name('getOffers');
 Route::get('/offres-reçues', [offerController::class, 'getOffersReceived'])->name('getOffersReceived');
+Route::get('/offres-reçues/detail/{id}', [offerController::class, 'getOffersReceivedDetail'])->name('getOffersReceivedDetail');
 Route::get('/offre/{id}', [offerController::class, 'getOfferOne'])->name('getOfferOne');
 Route::get('/offre-publie/{id}', [offerController::class, 'getOfferPublishOne'])->name('getOfferPublishOne');
 Route::get('/offre-postulée/{id}', [offerController::class, 'getOfferApplyOne'])->name('getOfferApplyOne');
@@ -50,10 +52,11 @@ Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
 
 //Les routes  ADMIN
+
 Route::prefix('annonces')->group(function () {
     Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
     Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
-    
+
 });
 
 Route::get('/transporteur', [AdminController::class, 'displayEntrepriseTransporteur'])->name('transporteur');
@@ -87,3 +90,10 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 //Utilisateurs routes
     Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
 
+Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
+Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
+// end offer routes
+
+//Utilisateurs routes
+Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+//end Utilisateurs routes

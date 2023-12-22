@@ -12,13 +12,14 @@ use Illuminate\Http\Request;
 use App\Models\Carrier;
 use App\Models\Shipper;
 use App\Models\User;
+
 class AdminController extends Controller
 {
-        public function displayEntrepriseChargeur()
+    public function displayEntrepriseChargeur()
     {
         $users = User::all();
 
-    // $carriers = Carrier::all(); // Récupérer tous les transporteurs
+        // $carriers = Carrier::all(); // Récupérer tous les transporteurs
         $shippers = Shipper::all(); // Récupérer tous les expéditeurs
 
         return view('pages.admin.chargeur', compact('users', 'shippers'));
@@ -30,7 +31,7 @@ class AdminController extends Controller
         $users = User::all();
 
         $carriers = Carrier::all(); // Récupérer tous les transporteurs
-    // $shippers = Shipper::all(); // Récupérer tous les expéditeurs
+        // $shippers = Shipper::all(); // Récupérer tous les expéditeurs
 
         return view('pages.admin.transporteur', compact('users', 'carriers'));
         
@@ -67,11 +68,11 @@ class AdminController extends Controller
     }
 
     public function addCarrier(Request $request)
-{
-    // Récupérer l'ID de l'utilisateur depuis le champ hidden
-$userId = $request->input('user_id');
+    {
+        // Récupérer l'ID de l'utilisateur depuis le champ hidden
+        $userId = $request->input('user_id');
 
-    $validatedData = $request->validate([
+        $validatedData = $request->validate([
         'company_name' => 'required|string',
         'address' => 'required|string',
         'phone' => 'required|string',
@@ -82,39 +83,58 @@ $userId = $request->input('user_id');
 
     ]);
 
-    // Ajouter l'ID de l'utilisateur
-$validatedData['created_by'] = $userId;
-    // Créer un nouveau transporteur associé à l'utilisateur
-    Carrier::create($validatedData);
+        // Ajouter l'ID de l'utilisateur
+        $validatedData['created_by'] = $userId;
+        // Créer un nouveau transporteur associé à l'utilisateur
+        Carrier::create($validatedData);
 
-    return redirect()->back()->with('success', 'Transporteur ajouté avec succès.');
-    // Renvoyer une réponse JSON avec le message de succès
-    return Response::json(['message' => 'Transporteur ajouté avec succès.']);
-}
+        return redirect()->back()->with('success', 'Transporteur ajouté avec succès.');
+        // Renvoyer une réponse JSON avec le message de succès
+        return Response::json(['message' => 'Transporteur ajouté avec succès.']);
+        
+
+
+    //
+    public function displayOfferShipper()
+    {
+        $chargeurAnnonces = FreightAnnouncement::with(['shipper','transportOffer'])->get();
+    
+        return view('pages.admin.admin_displayOfferShipper', compact('chargeurAnnonces'));
+    }
+
+    public function displayOfferTransporter()
+    {
+        $transporteurAnnonces = TransportAnnouncement::with(['carrier','freightOffer'])->get();
+        
+        return view('pages.admin.admin_displayOfferTransporter', compact('transporteurAnnonces'));
+
+    }
+
+    
 
     public function addShipper(Request $request)
     {
-    // Récupérer l'ID de l'utilisateur à partir de la session
+        // Récupérer l'ID de l'utilisateur à partir de la session
 
-    $userId = $request->input('user_id');
+        $userId = $request->input('user_id');
 
-    // Valider les données du formulaire
-    $validatedData = $request->validate([
-        'company_name' => 'required|string',
-        'address' => 'required|string',
-        'phone' => 'required|string',
-        'city' => 'required|string',
-        'email' => 'required|email',
-        'ifu' => 'required|string',
-        'rccm' => 'required|string',
+        // Valider les données du formulaire
+        $validatedData = $request->validate([
+            'company_name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'city' => 'required|string',
+            'email' => 'required|email',
+            'ifu' => 'required|string',
+            'rccm' => 'required|string',
 
     ]);
-      // Ajouter l'ID de l'utilisateur
-$validatedData['created_by'] = $userId;
+        // Ajouter l'ID de l'utilisateur
+        $validatedData['created_by'] = $userId;
 
-    Shipper::create($validatedData);
+        Shipper::create($validatedData);
 
-    return redirect()->back()->with('success', 'Expéditeur ajouté avec succès.');
+        return redirect()->back()->with('success', 'Expéditeur ajouté avec succès.');
 
     }
 
@@ -170,8 +190,8 @@ $validatedData['created_by'] = $userId;
             if ($user) {
                 return view('pages.admin.profile.a_profile', compact('user'));
             } 
-}
-}
+        }
+    }
 
 
 
@@ -207,4 +227,3 @@ $validatedData['created_by'] = $userId;
         } 
     }
 }
-

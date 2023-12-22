@@ -178,11 +178,14 @@
                                         </td>
                                         <td>
                                         {{-- Vérifiez si status_message est égal à 2 avant d'afficher le bouton Echanger --}}
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                @if($offer->status == 1 || $offer->status == 3 )
-                                                    <a href="" class="btn btn-tag btn-info">Discuter</a>
-                                                @endif
-                                            @endif
+{{--                                            @if(Session::get('role') == env('ROLE_SHIPPER'))--}}
+{{--                                                @if($offer->status == 1 || $offer->status == 3 )--}}
+                                            <form action="{{ route('chat') }}" method="get">
+                                                <input type="hidden" value="{{ $offer->id }}" name="offer">
+                                                    <button type="submit" class="btn btn-tag btn-info">Discuter</button>
+                                            </form>
+{{--                                                @endif--}}
+{{--                                            @endif--}}
                                         </td>
                                     </tr>
                                 @endforeach

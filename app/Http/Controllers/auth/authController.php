@@ -88,7 +88,7 @@ class authController extends Controller
             return view('pages.user.home_valide');
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
             return view('pages.user.home_valide');
-        }elseif (Session::get('role') == env('ROLE_ADMIN')){
+        }elseif (Session::get('role') == env('ROLE_ADMIN')){ //gestion users compte admin
             return view('pages.admin.home_valide_admin');
         }
 

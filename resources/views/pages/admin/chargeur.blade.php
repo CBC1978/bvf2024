@@ -81,7 +81,7 @@
                 <button style="padding: 5px 5px;" type="button" id="close-modal-button" class="btn btn-secondary small-button" data-dismiss="modal">X</button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('admin.ajouter-expediteur') }}" method="post">
+            <form action="admin.ajouter-expediteur" method="post">
                 @csrf
                 <label for="company_name">Nom de l'entreprise<span class="required">*</span></label>
                 <input type="text" name="company_name" required>
@@ -118,7 +118,7 @@
     <div class="row mt-10">
         <div class="col-md-6">
             <h2>Assigner des entreprises aux utilisateurs</h2>
-            <form id="assign-user-form" action="{{ route('admin.assigner-entreprise-user') }}" method="post">
+            <form id="assign-user-form" action="admin.assigner-entreprise-user" method="post">
                 @csrf
                 <div class="mb-3">
                     <label for="shipper_id">Assigner une entreprise expéditrice :</label>

@@ -928,7 +928,7 @@
                                 </h4>
                             </div>
                         </div>
-                        <a class="dropdown-item" href="#"
+                        <a class="dropdown-item" href="{{ route('admin.profile.affichage') }}" style="color: black;"
                         ><i
                                 data-feather="user"
                                 class="feather-sm text-info me-1 ms-1"
@@ -948,7 +948,7 @@
                             @csrf
                             <a class="dropdown-item" href="{{ route('logout') }}"
                             >
-                            <button id="logoutBtn" type="submit" style="text-decoration: none; border: none; background: none;">
+                            <button id="logoutBtn" type="submit" style="text-decoration: none; color: black; border: none; background: none;">
                                 <i
                                 data-feather="log-out"
                                 class="feather-sm text-danger me-1 ms-1"

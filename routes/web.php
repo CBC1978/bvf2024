@@ -51,12 +51,17 @@ Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteA
 //Les routes  ADMIN
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
+Route::get('/DisplayregisterAdmin', [AdminController::class, 'DisplayregisterAdmin'])->name('DisplayregisterAdmin');
+Route::post('/registerAdmin', [AdminController::class, 'AdminRegister'])->name('registerForAdmin');
+
+
 
     
 // end offer routes
 
 //Utilisateurs routes
     Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+    Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
 
 
 //end Utilisateurs routes

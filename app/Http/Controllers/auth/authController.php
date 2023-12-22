@@ -89,7 +89,19 @@ class authController extends Controller
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
             return view('pages.user.home_valide');
         }elseif (Session::get('role') == env('ROLE_ADMIN')){
-            return view('pages.admin.home_valide_admin');
+           
+            $users = User::all();
+
+            return view('pages.admin.home_valide_admin',compact('users'));
+        }
+    }
+
+    public function getUsersNoValide()
+    {
+       if (Session::get('role') == env('ROLE_ADMIN')){ 
+            $users = User::all();
+
+            return view('pages.admin.home_no_valide_admin',compact('users'));
         }
 
     }

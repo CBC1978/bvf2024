@@ -119,7 +119,7 @@
                             <tbody>
                                 @foreach($users->sortByDesc('id') as $user)
                                     <tr>
-                                    @if($user->status == 2 || $user->status == 1 )
+                                    @if($user->status == 0 )
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }} {{$user->first_name }}</td>
                                         <td>{{$user->user_phone }}</td>

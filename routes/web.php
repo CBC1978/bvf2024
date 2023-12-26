@@ -96,6 +96,11 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 //Utilisateurs routes
     Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
     Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
+    Route::get('/register', [authController::class, 'index2'])->name('register');
+    Route::post('/register', [authController::class, 'register'])->name('registerUser');
+    Route::get('/otp', [authController::class, 'index3'])->name('otp');
+    Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
+    Route::post('/otp', [authController::class, 'login'])->name('otpLogin');
 
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');

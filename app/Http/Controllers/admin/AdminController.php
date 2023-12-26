@@ -14,7 +14,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Carrier;
 use App\Models\Shipper;
-use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -96,7 +95,7 @@ class AdminController extends Controller
         return Response::json(['message' => 'Transporteur ajouté avec succès.']);
         
 
-
+}
     //
     public function displayOfferShipper()
     {

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Mail\RegisterEmail;
+use App\Mail\RegisterEmails;
+use App\Http\Controllers\auth\Helper;
 use App\Http\Requests\auth\emailUpdatPasswordForm;
 use App\Http\Requests\auth\loginForm;
 use App\Models\Carrier;
@@ -9,6 +12,9 @@ use App\Models\Shipper;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+
+use Illuminate\Support\Facades\Mail;
+
 
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -116,4 +122,46 @@ class authController extends Controller
         return redirect()->route('index');
     }
 
+// pool of register and otp functions
+
+public function index2()
+{
+    return view('auth.register');
+}
+
+
+public function register( Request $request)
+{
+    $request->validate(
+        [
+            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'user_phone' => ['required', 'string', 'max:20'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'string', 'in:chargeur,transporteur'],
+        ]
+    );
+    $user = new User();
+    $user->name = $request->name;
+    $user->first_name = $request->first_name;
+    $user->user_phone = $request->user_phone;
+    $user->username = $request->username;
+    $user->email = $request->email;
+    $user->code = Helper::random_int(4, 9999);
+    $user->email = $request->email;
+    $user->password =Hash::make( $request->password);
+    $user->role = $request->role;
+    $user->status = 0;
+    try {
+
+        Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
+        $user->save();
+        return view('auth.otp');
+    }catch (\Exception $e){
+        return view('auth.register');
+    }
+
+}
 }

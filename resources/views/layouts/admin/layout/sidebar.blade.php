@@ -66,7 +66,7 @@
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="inbox-email-detail.html" class="sidebar-link"
+                                <a href="{{route('getUsersNoValide')}}" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
                                     ><span class="hide-menu"> En attente </span></a
                                 >
@@ -119,6 +119,14 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a href="{{route('DisplayregisterAdmin')}}" class="sidebar-link"
+                        ><i class="mdi mdi-email-alert"></i
+                            ><span class="hide-menu"> Ajout Admin </span></a
+                        >
+                    </li>
+                    
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

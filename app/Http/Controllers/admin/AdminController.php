@@ -6,12 +6,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\FreightAnnouncement;
 use App\Models\TransportAnnouncement;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Carrier;
 use App\Models\Shipper;
-use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -23,7 +25,6 @@ class AdminController extends Controller
         $shippers = Shipper::all(); // Récupérer tous les expéditeurs
 
         return view('pages.admin.chargeur', compact('users', 'shippers'));
-
     }
 
     public function displayEntrepriseTransporteur()
@@ -34,8 +35,6 @@ class AdminController extends Controller
         // $shippers = Shipper::all(); // Récupérer tous les expéditeurs
 
         return view('pages.admin.transporteur', compact('users', 'carriers'));
-        
-
     }
 
     public function assignEntrepriseToUser(Request $request)
@@ -73,15 +72,14 @@ class AdminController extends Controller
         $userId = $request->input('user_id');
 
         $validatedData = $request->validate([
-        'company_name' => 'required|string',
-        'address' => 'required|string',
-        'phone' => 'required|string',
-        'city' => 'required|string',
-        'email' => 'required|email',
-        'ifu' => 'required|string',
-        'rccm' => 'required|string',
-
-    ]);
+            'company_name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'city' => 'required|string',
+            'email' => 'required|email',
+            'ifu' => 'required|string',
+            'rccm' => 'required|string',
+        ]);
 
         // Ajouter l'ID de l'utilisateur
         $validatedData['created_by'] = $userId;
@@ -109,8 +107,36 @@ class AdminController extends Controller
         return view('pages.admin.admin_displayOfferTransporter', compact('transporteurAnnonces'));
 
     }
+    public function DisplayregisterAdmin(){
 
-    
+        return view('pages.admin.registerForAdmin');
+    }
+
+    public function AdminRegister(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'user_phone' => ['required', 'string', 'max:20'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'string', 'in:admin,chargeur,transporteur'],
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->first_name = $request->first_name;
+        $user->user_phone = $request->user_phone;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role = $request->role; 
+        $user->status = 1;
+        $user->save();
+
+        return redirect()->route('DisplayregisterAdmin')->with('success_message', 'Un nouveau admin ajouté.');
+    }
 
     public function addShipper(Request $request)
     {
@@ -127,8 +153,7 @@ class AdminController extends Controller
             'email' => 'required|email',
             'ifu' => 'required|string',
             'rccm' => 'required|string',
-
-    ]);
+        ]);
         // Ajouter l'ID de l'utilisateur
         $validatedData['created_by'] = $userId;
 
@@ -140,7 +165,8 @@ class AdminController extends Controller
 
 
 //-------------------------profil
-    public function displayProfile(){
+    public function displayProfile()
+    {
         if (session()->has('username')) {
             $username = session('username');
             $user = User::where('username', $username)->first(); // Recherchez l'utilisateur par son nom d'utilisateur
@@ -148,7 +174,7 @@ class AdminController extends Controller
             if ($user) {
                 return view('pages.admin.profile.a_profile', compact('user'));
             }
-    }
+        }
     }
     
     public function updateUserProfile(Request $request)
@@ -182,7 +208,8 @@ class AdminController extends Controller
     }
 
 
-    public function affichage(){
+    public function affichage()
+    {
         if (session()->has('username')) {
             $username = session('username');
             $user = User::where('username', $username)->first(); // Je recherche l'utilisateur par son nom d'utilisateur

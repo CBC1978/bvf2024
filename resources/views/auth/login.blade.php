@@ -190,7 +190,7 @@
                                 <p>
                                     Vous n'avez pas de compte?
                                     <a
-                                        href="authentication-register1.html"
+                                        href="{{ route('register') }}"
                                         class="text-info font-weight-medium ms-1"
                                     >Inscrivez-vous</a
                                     >

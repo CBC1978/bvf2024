@@ -93,7 +93,7 @@ class AdminController extends Controller
         return Response::json(['message' => 'Transporteur ajouté avec succès.']);
         
 
-
+    }
     //
     public function displayOfferShipper()
     {

@@ -31,6 +31,7 @@ class publishForm extends FormRequest
             'volume'=>['numeric'],
             'description'=>['required'],
             'limit_date'=>['required','date'],
+            'vehicule_type' => ['required'],
         ];
     }
 

@@ -30,10 +30,15 @@
     background-color: #fff;
     margin: 20px auto;
     padding: 20px;
-    width: 80%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 700px;
     border-radius: 5px;
+    text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+label{
+    width: 600px;
 }
 
 .card {
@@ -80,32 +85,32 @@
                 </h5>
                 <button style="padding: 5px 5px;" type="button" id="close-modal-button" class="btn btn-secondary small-button" data-dismiss="modal">X</button>
             </div>
-            <div class="modal-body">
+        <div class="modal-body">
             <form action="admin.ajouter-expediteur" method="post">
                 @csrf
-                <label for="company_name">Nom de l'entreprise<span class="required">*</span></label>
-                <input type="text" name="company_name" required>
+                <label for="company_name">Nom de l'entreprise<span class="required">*</span></label><br>
+                <input type="text" name="company_name" required> <br><br>
                     
-                <label for="address">Adresse<span class="required">*</span></label>
-                <input type="text" name="address" required>
+                <label for="address">Adresse<span class="required">*</span></label><br>
+                <input type="text" name="address" required> <br><br>
                     
-                <label for="phone">Téléphone<span class="required">*</span></label>
-                <input type="text" name="phone" required>
+                <label for="phone">Téléphone<span class="required">*</span></label><br>
+                <input type="text" name="phone" required> <br><br>
 
-                <label for="city">Ville<span class="required">*</span></label>
-                <input type="text" name="city" required>
+                <label for="city">Ville<span class="required">*</span></label><br>
+                <input type="text" name="city" required> <br><br>
                    
-                <label for="email">Email<span class="required">*</span></label>
-                <input type="email" name="email" required>
+                <label for="email">Email<span class="required">*</span></label><br>
+                <input type="email" name="email" required> <br><br>
                     
-                <label for="ifu">Numéro IFU<span class="required">*</span></label>
-                <input type="text" name="ifu" required>
+                <label for="ifu">Numéro IFU<span class="required">*</span></label><br>
+                <input type="text" name="ifu" required> <br><br>
                     
-                <label for="rccm">RCCM<span class="required">*</span></label>
-                <input type="text" name="rccm" required>
+                <label for="rccm">RCCM<span class="required">*</span></label><br>
+                <input type="text" name="rccm" required> <br><br>
                     
                 <!-- Champ caché pour stocker l'ID de l'utilisateur -->
-                <input type="hidden" name="user_id" value="{{ Session::get('userId') }}">
+                <input type="hidden" name="user_id" value="{{ Session::get('userId') }}"><br>
                  
                 <button type="submit" class="btn btn-primary" >Ajouter Expéditeur</button>
             </form>

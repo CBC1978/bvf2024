@@ -7,20 +7,17 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RegisterEmails extends Mailable
+class ValidatedRegisterEmails extends Mailable
 {
     use Queueable, SerializesModels;
-    public $subject ;
+
     public $name ;
-    public $code ;
     /**
      * Create a new message instance.
      */
-    public function __construct($name,$subject, $code)
+    public function __construct($name)
     {
         $this->name = $name;
-        $this->subject = $subject;
-        $this->code = $code;
     }
 
     /**
@@ -30,8 +27,8 @@ class RegisterEmails extends Mailable
      */
     public function build()
     {
-        return $this->view('pages.email.registerEmail')
-            ->subject($this->subject)
-            ->with(['code'=>$this->code]);
+        return $this->view('pages.email.validatedRegisterEmail')
+            ->subject('Email Vérifié')
+            ->with(['name'=>$this->name]);
     }
 }

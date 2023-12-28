@@ -119,27 +119,24 @@
                             class="form-horizontal mt-3 form-material"
                             id="loginform"
                             method="post"
-                            action="{{ route('login') }}"
+                            action="{{ route('otpVerify') }}"
                         >
                             @csrf
-                            <div class="form-group mb-3">
-                                <div class="">
-                                    <input
-                                        class="form-control @error('otp') is-invalid @enderror"
-                                        type="text" name="otp" id="otp"
-                                        required
-                                        placeholder="Entrez le code reçu par email"
-                                    />
-                                </div>
-                                @error('otp')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            <div class="form-group">
+                                            <label class="form-label" for="otp">CODE</label>
+                                            <input class="form-control @error('otp') is-invalid @enderror" id="otp" type="text" required="" name="otp" placeholder="Entrez le code de confirmation">
+                                            @error('name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        
                             <div class="form-group">
                                 <div class="d-flex">
                                     <div class="ms-auto">
                                         <a
-                                            href="javascript:void(0)"
+                                            href=""
                                             id="to-recover"
                                             class="link font-weight-medium"
                                         ><i class="fa fa-lock me-1"></i> Renvoyer le code</a
@@ -170,63 +167,33 @@
                             </div>
                             <div class="form-group mb-0 mt-4">
                                 <div class="col-sm-12 justify-content-center d-flex">
-                                    <p>
-                                        Vous n'avez pas de compte?
-                                        <a
-                                            href="authentication-register1.html"
-                                            class="text-info font-weight-medium ms-1"
-                                        >Inscrivez-vous</a
-                                        >
-                                    </p>
+                                    <h3 class="box-title mb-3">
+                                        Dernière phase d'inscription!!!
+                                    </h3>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div id="recoverform">
-                <div class="logo">
-                    <div class="mb-3">
-                        <a
-                            href="javascript:void(0)"
-                            id="to-login"
-                            class="link font-weight-medium"
-                        ><i class="fa fa-arrow-left me-1"></i></a>
-
-                    </div>
-                    <h3 class="font-weight-medium mb-3">Confirmez votre email</h3>
-                    <span class="text-muted"
-                    >Entrez votre email et suivez les instructions pour confirmez votre email!</span>
-
+            @if(session('error_message'))
+                <div class="alert alert-danger mt-3">
+                    {{ session('error_message') }}
                 </div>
-                <div class="row mt-3 form-material">
-                    <!-- Form -->
-                    <form class="col-12" method="post" action="">
-                        <!-- email -->
-                        <div class="form-group row">
-                            <div class="col-12">
-                                <input
-                                    class="form-control"
-                                    type="email"
-                                    placeholder="email"
-                                />
-                            </div>
-                        </div>
-                        <!-- pwd -->
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <button
-                                    class="btn d-block w-100 btn-primary text-uppercase"
-                                    type="submit"
-                                    name="action"
-                                >
-                                    Renvoyer
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                <script>
+                    // JavaScript pour faire disparaître le message d'erreur après un délai
+                    window.addEventListener('DOMContentLoaded', function () {
+                        var errorMessage = document.getElementById('error-message');
+
+                    // Vérifiez si le message d'erreur est présent
+                    if (errorMessage) {
+                        setTimeout(function() {
+                            errorMessage.style.display = 'none';
+                        }, 6000); // Disparaître après 6 secondes (6000 millisecondes)
+                        }
+                    });
+                </script>
+            @endif
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->

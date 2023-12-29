@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\RegisterEmails;
 use App\Models\FreightAnnouncement;
 use App\Models\TransportAnnouncement;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
+use App\Http\Controllers\auth\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Carrier;
@@ -88,7 +89,7 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Transporteur ajouté avec succès.');
         // Renvoyer une réponse JSON avec le message de succès
-        return Response::json(['message' => 'Transporteur ajouté avec succès.']);
+       // return Response::json(['message' => 'Transporteur ajouté avec succès.']);
         
 
     }
@@ -114,28 +115,41 @@ class AdminController extends Controller
 
     public function AdminRegister(Request $request)
     {
-        $request->validate([
+        dd($request);
+
+        
+    $request->validate(
+        [
             'name' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
             'user_phone' => ['required', 'string', 'max:20'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:admin,chargeur,transporteur'],
-        ]);
+            'role' => ['required', 'string', 'in:admin'],
+        ]
+    );
+    $user = new User();
+    $user->name = $request->name;
+    $user->first_name = $request->first_name;
+    $user->user_phone = $request->user_phone;
+    $user->username = $request->username;
+    $user->email = $request->email;
+    $user->code = Helper::random_int(4, 9999);
+    $user->email = $request->email;
+    $user->password =Hash::make( $request->password);
+    $user->role = $request->role;
+    $user->status = 3;
+    try {
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->first_name = $request->first_name;
-        $user->user_phone = $request->user_phone;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->role = $request->role; 
-        $user->status = 1;
+        Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
         $user->save();
-
-        return redirect()->route('DisplayregisterAdmin')->with('success_message', 'Un nouveau admin ajouté.');
+        return view('auth.verifyEmail');
+        
+    }catch (\Exception $e){
+        //return view('pages.admin.registerForAdmin');
+    }
+        
     }
 
     public function addShipper(Request $request)

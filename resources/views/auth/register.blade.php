@@ -93,18 +93,22 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Login box.scss -->
     <!-- -------------------------------------------------------------- -->
-    <div>
-    <div class="box-content">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="section-box">
-                <div class="container">
-                    <div class="box-padding">
-                      <div class="login-register">
-                        <div class="row login-register-cover">
-                          <div class="col-lg-6 col-md-4 col-sm-12 mx-auto">
-                            <div class="form-login-cover">
-                              <div class="text-center">
+    <div
+        class="
+          auth-wrapper
+          d-flex
+          no-block
+          justify-content-center
+          align-items-center
+        "
+        style="
+            background: url({{asset('src/assets/images/background/login-register.jpg')}})
+            no-repeat center center;
+            background-size: cover;
+            "
+    >
+    <div class="auth-box p-4 bg-white rounded">
+    <div class="text-center">
                                 <p class="font-sm text-brand-2">Inscription </p>
                                 <p class="font-sm text-muted mb-30">Créer un compte facilement et rapidement</p>
                                     <form class="login-register text-start mt-20" method="post" action="{{ route('registerUser') }}">
@@ -168,7 +172,8 @@
                                             <input class="form-control" id="password_confirmation" type="password" required="" name="password_confirmation" placeholder="************">
                                         </div>
                                         <div class="form-group">
-                                            <select class="form-select @error('role') is-invalid @enderror" aria-label="Default select example" name="role" required>
+                                        <label class="">Rôle<span class="text-danger">*</span></label>
+                                            <select class="form-select @error('role') is-invalid @enderror" aria-label="Default select example" name="role" required >
                                                 <option selected value="choisir votre rôle" disabled>Choisir votre rôle</option>
                                                 <option value="chargeur" {{ old('role') == 'chargeur' ? 'selected' : '' }}>Chargeur</option>
                                                 <option value="transporteur" {{ old('role') == 'transporteur' ? 'selected' : '' }}>Transporteur</option>
@@ -182,19 +187,11 @@
                                         <div class="form-group">
                                             <button class="btn btn-brand-1 hover-up w-100" type="submit" name="login"> S'inscrire</button>
                                         </div>
-                                        <div class="text-muted text-center">Avez-vous déjà un compte? <a href="{{ route('login') }}">Connexion</a></div>
                                     </form>
+                                    <div class="text-muted text-center">Avez-vous déjà un compte? <a href="">Connexion</a></div>
+
                             </div>
-                        </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
 </div>
 <!-- -------------------------------------------------------------- -->
 <!-- Login box.scss -->

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\auth;
 
-use App\Mail\RegisterEmail;
 use App\Mail\RegisterEmails;
 use App\Http\Controllers\auth\Helper;
 use App\Http\Requests\auth\emailUpdatPasswordForm;
@@ -18,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Mail\ValidatedRegisterEmails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -154,14 +154,57 @@ public function register( Request $request)
     $user->password =Hash::make( $request->password);
     $user->role = $request->role;
     $user->status = 0;
+    
     try {
 
         Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
         $user->save();
-        return view('auth.otp');
+        return view('auth.verifyEmail');
+        
     }catch (\Exception $e){
         return view('auth.register');
     }
 
 }
+
+    public function otpVerify(Request $request)
+    {
+        
+        $request->validate([
+            'otp' => ['required', 'string', 'min:4', 'max:255'],
+        ]);
+
+        $user = User::where('code', $request->otp)->first();
+
+
+        $user = User::whereCode($request->otp)->first();
+
+        if ($user && $user->code === $request->otp) {
+            // Si le code OTP est vérifié, mettez le statut à 1
+            $user->status = 1;
+            $user->save();
+            
+            // Envoyez un e-mail pour informer de la vérification
+            Mail::to($user->email)->send(new ValidatedRegisterEmails($user->first_name));
+
+            return view('auth.VerifiedAccount');
+
+        } else {
+            // Si le code OTP ne correspond pas alors le compte n'est pas vérifié, rediriger vers la page d'envoi de code OTP avec un message d'erreur
+            
+            return redirect()->route('confirmation-email')->with('error_message', 'Le code OTP est incorrect.');
+        }
+    }
+
+    public function codeRequest(Request $request)
+    {
+        // Si le compte n'est pas vérifié, générer et envoyer un nouveau code OTP
+        $user = User::whereEmail($request->email)->first();
+        Mail::to($user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));;
+
+        return redirect()->route('confirmation-email')->with('success_message', 'Un nouveau code OTP a été envoyé.');
+
+    }
+
+
 }

@@ -30,6 +30,7 @@ class TransportOffer extends Model
         'description',
         'status',
         'created_by',
+        'vehicule_type',
     ];
 
     /**

@@ -5,8 +5,9 @@ use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
 use Illuminate\Routing\AbstractRouteCollection;
 use \App\Http\Controllers\Admin\AdminController;
-
-
+use App\Http\Controllers\Carrier\profile\CarrierProfileController;
+use App\Http\Controllers\Shipper\profile\ShipperProfile1Controller;
+use App\Http\Controllers\Profile\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,12 +73,55 @@ Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'delet
 //end Contrat route
 
 //Les routes  ADMIN
+Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
+Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
+Route::get('/DisplayregisterAdmin', [AdminController::class, 'DisplayregisterAdmin'])->name('DisplayregisterAdmin');
+Route::post('/registerAdmin', [AdminController::class, 'AdminRegister'])->name('registerForAdmin');
+
+
 
 Route::prefix('annonces')->group(function () {
     Route::get('/', [AdminController::class, 'displayAnnouncement'])->name('annonces.a_annonce');
     Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
 
 });
+
+Route::get('/transporteur', [AdminController::class, 'displayEntrepriseTransporteur'])->name('transporteur');
+Route::get('/chargeur', [AdminController::class, 'displayEntrepriseChargeur'])->name('chargeur');
+Route::post('/assigner-entreprise-user', [AdminController::class, 'assignEntrepriseToUser'])->name('admin.assigner-entreprise-user');
+Route::post('/ajouter-transporteur', [AdminController::class, 'addCarrier'])->name('admin.ajouter-transporteur');
+Route::post('/ajouter-expediteur', [AdminController::class, 'addShipper'])->name('admin.ajouter-expediteur');
+
+// Profil admin
+Route::get('admin/profile', [AdminController::class,'displayProfile'])->name('admin.profile.affichage');
+Route::get('admin/profile/update', [AdminController::class,'updateUserProfile'])->name('admin.profile.update');
+Route::get('admin/profile/update', [AdminController::class,'update'])->name('admin.profile.update');
+Route::post('admin/profile/update', [AdminController::class,'update'])->name('admin.profile.update');
+Route::get('admin/profile', [AdminController::class,'affichage'])->name('admin.profile.affichage');
+
+//profil transporteur
+Route::get('/profile', [CarrierProfileController::class,'affichage'])->name('carrier.profile.affichage');
+Route::get('profile/update', [CarrierProfileController::class,'update'])->name('carrier.profile.update');
+Route::post('profile/update', [CarrierProfileController::class,'update'])->name('carrier.profile.update');
+
+//Profil
+
+
+// Route pour afficher le profil
+Route::get('/profile', [ProfileController::class, 'affichage'])->name('profile.affichage');
+// Route pour mettre à jour le profil
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+// end offer routes
+
+//Utilisateurs routes
+    Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+    Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
+    Route::get('/register', [authController::class, 'index2'])->name('register');
+    Route::post('/register', [authController::class, 'register'])->name('registerUser');
+    Route::get('/codeRequest', [authController::class, 'codeRequest'])->name('codeRequest');
+    Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
+
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
 // end offer routes

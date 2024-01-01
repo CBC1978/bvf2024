@@ -66,7 +66,7 @@
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="inbox-email-detail.html" class="sidebar-link"
+                                <a href="{{route('getUsersNoValide')}}" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
                                     ><span class="hide-menu"> En attente </span></a
                                 >
@@ -83,13 +83,13 @@
                         >
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
-                                <a href="" class="sidebar-link"
+                                <a href="{{ route('chargeur') }}" class="sidebar-link"
                                 ><i class="mdi mdi-email"></i
                                     ><span class="hide-menu"> Chargeur </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="" class="sidebar-link"
+                                <a href="{{ route('transporteur') }}" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
                                     ><span class="hide-menu"> Transporteur </span></a
                                 >
@@ -119,6 +119,14 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a href="{{route('DisplayregisterAdmin')}}" class="sidebar-link"
+                        ><i class="mdi mdi-email-alert"></i
+                            ><span class="hide-menu"> Ajout Admin </span></a
+                        >
+                    </li>
+                    
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

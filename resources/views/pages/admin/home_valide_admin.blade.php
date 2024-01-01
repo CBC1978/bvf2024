@@ -23,28 +23,6 @@
                 <li class="breadcrumb-item active">Utilsateurs validés</li>
             </ol>
         </div>
-        <div class="col-md-7 col-12 align-self-center d-none d-md-block">
-            <div class="d-flex mt-2 justify-content-end">
-                <div class="d-flex me-3 ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>THIS MONTH</small></h6>
-                        <h4 class="mt-0 text-info">$58,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="monthchart"></div>
-                    </div>
-                </div>
-                <div class="d-flex ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>LAST MONTH</small></h6>
-                        <h4 class="mt-0 text-primary">$48,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="lastmonthchart"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -117,27 +95,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Jean Claude</td>
-                                    <td>63968793</td>
-                                    <td>arduino1024@gmail.com</td>
-                                    <td>Edo</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jean Claude</td>
-                                    <td>63968793</td>
-                                    <td>arduino1024@gmail.com</td>
-                                    <td>Edo</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Jean Claude</td>
-                                    <td>63968793</td>
-                                    <td>arduino1024@gmail.com</td>
-                                    <td>Edo</td>
-                                </tr>
+                                @foreach($users->sortByDesc('id') as $user)
+                                    <tr>
+                                    @if($user->status == 2 || $user->status == 1 )
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }} {{$user->first_name }}</td>
+                                        <td>{{$user->user_phone }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->username}}</td>
+                                    @endif
+                                        
+                                    </tr>
+                                @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>

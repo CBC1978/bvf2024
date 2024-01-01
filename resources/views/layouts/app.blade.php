@@ -285,7 +285,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
+                <div class="modal-footer">
 
                     </div>
                 </div>

@@ -19,4 +19,13 @@ class ContractDetails extends Model
         'cars_id',
         'created_by',
     ];
+
+    public function car()
+    {
+        return $this->belongsTo(Car::class, 'cars_id', 'id');
+    }
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
 }

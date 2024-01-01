@@ -140,7 +140,7 @@
                                 <ul class="chat-list chat" data-user-id="1">
                                     @if( count($chats) > 0)
                                         @foreach($chats as $chat)
-                                            @if( $chat->company == $offer->announce->company->id )
+                                            @if( $chat->company != $offer->company )
                                                 <!--chat Row -->
                                                 <li class="mt-4">
                                                     <div class="chat-img d-inline-block align-top">

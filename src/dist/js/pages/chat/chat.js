@@ -210,12 +210,8 @@ $(".message-type-box").on("keydown", function (event) {
         //Store Message
         fetch('/envoyer-message',{
             headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
                 "X-CSRF-Token": token
             },
-            credentials: "same-origin",
             method:"POST",
             body: JSON.stringify({
                 id:offer,

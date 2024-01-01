@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\offer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\car\form;
 use App\Http\Requests\offer\applyForm;
 use App\Http\Requests\offer\publishForm;
 use App\Mail\offer\applyOfferDelete;
@@ -11,9 +12,12 @@ use App\Mail\offer\offerSend;
 use App\Mail\offer\publishOfferDelete;
 use App\Mail\offer\publishOfferSend;
 use App\Mail\offer\publishOfferUpdate;
+use App\Models\BrandCar;
+use App\Models\Car;
 use App\Models\Carrier;
 use App\Models\Chat;
 use App\Models\ContractTransport;
+use App\Models\Driver;
 use App\Models\FreightAnnouncement;
 use App\Models\FreightOffer;
 use App\Models\Shipper;
@@ -41,9 +45,27 @@ class offerController extends Controller
         return Ville::all();
     }
 
+    public function getCarByCarrier()
+    {
+        $cars = Car::where('fk_carrier_id','=',Session::get('fk_carrier_id'))->get();
+        if(!empty($cars)){
+            $cars->each(function ($car){
+                $car->type = $car->type;
+                $car->brand = $car->brand;
+            });
+        }
+
+        return $cars;
+    }
+
     public function getAllTypeCar()
     {
         return TypeCar::all();
+    }
+
+    public function getAllBrandCar()
+    {
+        return BrandCar::all();
     }
 
     //Count all offer
@@ -439,12 +461,74 @@ class offerController extends Controller
     public function getOffersReceivedDetail($id)
     {
         if (Session::get('role') == env('ROLE_SHIPPER')){
-            $offers = TransportOffer::where('fk_freight_announcement_id','=', intval($id))->get();
+
+            $offer = FreightAnnouncement::find(intval($id));
+            $offer->offers = $offer->transportOffer;
+
+            $offer->offers->each(function($offer){
+                $offer->company = $offer->Carrier;
+                if ($offer->status == env('DEFAULT_INT'))
+                    $offer->color = 'info';
+                elseif ($offer->status == env('STATUS_VALID'))
+                    $offer->color = 'success';
+                elseif ($offer->status == env('DEFAULT_VALID'))
+                    $offer->color = 'danger';
+            });
+            $offer->origin = $offer->originOffer;
+            $offer->destination = $offer->destinationOffer;
+            $offer->company = $offer->Shipper;
 
         }elseif(Session::get('role') == env('ROLE_CARRIER')){
-            $offers = FreightOffer::where('fk_transport_announcement_id','=', intval($id))->get();
+
+            $offer = TransportAnnouncement::find(intval($id));
+            $offer->offers = $offer->freightOffer;
+
+            $offer->offers->each(function($offer){
+                $offer->company = $offer->Carrier;
+                if ($offer->status == env('DEFAULT_INT'))
+                    $offer->color = 'info';
+                elseif ($offer->status == env('STATUS_VALID'))
+                    $offer->color = 'success';
+                elseif ($offer->status == env('DEFAULT_VALID'))
+                    $offer->color = 'danger';
+            });
+            $offer->origin = $offer->originOffer;
+            $offer->destination = $offer->destinationOffer;
+            $offer->company = $offer->carrier;
+            $offer->vehicule_type = $offer->vehiculeType;
         }
+        return view('pages.offer.offerReceivedDetail', compact('offer'));
     }
+
+
+    public function updateStatutOffer($id,$action)
+    {
+        if (Session::get('role') == env('ROLE_CARRIER')){
+            $offer = FreightOffer::find(intval($id));
+
+            if (intval($action) == env('STATUS_VALID')){
+                $offer->status = env('STATUS_VALID');
+            }
+            if (intval($action) == env('DEFAULT_VALID')){
+                $offer->status = env('DEFAULT_VALID');
+            }
+
+            $offer->save();
+
+        }elseif (Session::get('role') == env('ROLE_SHIPPER')){
+            $offer = TransportOffer::find(intval($id));
+
+            if (intval($action) == env('STATUS_VALID')){
+                $offer->status = env('STATUS_VALID');
+            }
+            if (intval($action) == env('DEFAULT_VALID')){
+                $offer->status = env('DEFAULT_VALID');
+            }
+            $offer->save();
+        }
+
+    }
+
     public function getOffersNotReceived()
     {
         $offers = [];
@@ -821,6 +905,7 @@ class offerController extends Controller
     {
         if (Session::get('role') == env('ROLE_SHIPPER')){
             $offer = FreightOffer::find(intval($request->offer));
+            $offer->company = $offer->fk_shipper_id;
             $offer->announce = $offer->transportAnnounce;
             $offer->announce->origin = $offer->announce->originOffer;
             $offer->announce->destination = $offer->announce->destinationOffer;
@@ -828,12 +913,36 @@ class offerController extends Controller
 
             $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
             if (!empty($chats)){
-                $chats->each(function($chat){
+                foreach ($chats as $chat){
                     $chat->user = $chat->user;
-                    $chat->company = $chat->user->fk_shipper_id;
-                });
+                    $chat->company =  $chat->user->fk_shipper_id;
+                }
             }
+
         } elseif (Session::get('role') == env('ROLE_CARRIER')) {
+            $offer = TransportOffer::find(intval($request->offer));
+            $offer->company = $offer->fk_carrier_id;
+            $offer->announce = $offer->freightAnnouncement;
+            $offer->announce->origin = $offer->announce->originOffer;
+            $offer->announce->destination = $offer->announce->destinationOffer;
+            $offer->announce->company = $offer->announce->Shipper;
+
+            $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
+            if (!empty($chats)){
+                foreach ($chats as $chat){
+                    $chat->user = $chat->user;
+                    $chat->company = $chat->user->fk_carrier_id;
+                }
+            }
+
+        }
+        return view('pages.chat.home', compact('offer','chats'));
+    }
+
+    public function chatInverse(Request $request)
+    {
+        if (Session::get('role') == env('ROLE_SHIPPER')){
+
             $offer = TransportOffer::find(intval($request->offer));
             $offer->announce = $offer->freightAnnouncement;
             $offer->announce->origin = $offer->announce->originOffer;
@@ -842,12 +951,28 @@ class offerController extends Controller
 
             $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
             if (!empty($chats)){
-                $chats->each(function($chat){
+                foreach ($chats as $chat){
+                    $chat->user = $chat->user;
+                    $chat->company = $chat->user->fk_shipper_id;
+                }
+            }
+
+        } elseif (Session::get('role') == env('ROLE_CARRIER')) {
+            $offer = FreightOffer::find(intval($request->offer));
+            $offer->announce = $offer->transportAnnounce;
+            $offer->announce->origin = $offer->announce->originOffer;
+            $offer->announce->destination = $offer->announce->destinationOffer;
+            $offer->announce->company = $offer->announce->carrier;
+
+            $chats = Chat::where('fk_offer_id','=', intval($request->offer))->orderBy('id','asc')->get();
+            if (!empty($chats)){
+                foreach ($chats as $chat){
                     $chat->user = $chat->user;
                     $chat->company = $chat->user->fk_carrier_id;
-                });
+                }
             }
         }
+
         return view('pages.chat.home', compact('offer','chats'));
     }
 
@@ -862,13 +987,152 @@ class offerController extends Controller
             $chat->save();
 
         } elseif (Session::get('role') == env('ROLE_CARRIER')) {
+            $chat =  new Chat();
+            $chat->message = $request->message;
+            $chat->fk_offer_id = $request->id;
+            $chat->fk_user_id = intval( Session::get('userId') );
 
-
-
+            $chat->save();
         }
+    }
 
-        echo json_encode($request->message);
+    public function getContrat()
+    {
 
+        return view('pages.contrat.home');
+
+    }
+
+    public function updateContrat($id)
+    {
+        $cars = Car::where('fk_carrier_id','=',Session::get('fk_carrier_id'))->get();
+        if(!empty($cars)){
+            $cars->each(function ($car){
+                $car->type = $car->type;
+                $car->brand = $car->brand;
+            });
+        }
+        $drivers = Driver::where('fk_carrier_id','=',Session::get('fk_carrier_id'))->get();
+
+        $typeCars = TypeCar::all();
+        $brandCars = BrandCar::all();
+        $contrat = ContractTransport::find(intval($id));
+        $contrat->detail = $contrat->contratDetail;
+        if(!empty( $contrat->detail)){
+            $contrat->detail->each(function($contrat){
+                $contrat->car = $contrat->car;
+                if(!empty($contrat->car)){
+                    $contrat->car->each(function($car){
+                        $car->type = $car->type;
+                        $car->brand = $car->brand;
+                    });
+                }
+                $contrat->driver = $contrat->driver;
+            });
+        }
+//        dd($contrat);
+        return view('pages.contrat.update', compact('contrat','cars', 'drivers','typeCars','brandCars'));
+    }
+
+    public function updateStoreContrat($contrat)
+    {
+        return response()->json($contrat);
+    }
+
+    public function storeCar(form $request)
+    {
+        $request->validated();
+
+        $car = new Car();
+        $car->registration = $request->registration;
+        $car->fk_type_car = $request->type_car;
+        $car->fk_brand_car = $request->brand_car;
+        $car->model = $request->model;
+        $car->payload = $request->payload;
+        $car->fk_carrier_id = Session::get('fk_carrier_id');
+        $car->save();
+
+        return response()->json('0');
+    }
+
+    public function updateCar(Request $request)
+    {
+        $car = Car::find(intval($request->id_car_up));
+
+        $car->registration = $request->registration_up;
+        $car->model = $request->model_up;
+        $car->fk_brand_car = $request->brand_car_up;
+        $car->fk_type_car = $request->type_car_up;
+        $car->payload = $request->payload_up;
+
+        $car->save();
+
+        return response()->json('0');
+
+    }
+
+    public function deleteCar($id)
+    {
+        $car = Car::find(intval($id));
+        $car->delete();
+
+        return response()->json('0');
+    }
+
+    public function getCarOne($id)
+    {
+        $car = Car::find(intval($id));
+        $car->type = $car->type;
+        $car->brand = $car->brand;
+
+        return $car;
+    }
+
+    public function storeDriver(Request $request)
+    {
+        $driver = new Driver();
+
+        $driver->first_name = $request->first;
+        $driver->last_name = $request->last;
+        $driver->licence = $request->permis;
+        $driver->date_issue = $request->date_permis;
+        $driver->place_issue = $request->lieu_permis;
+        $driver->fk_carrier_id = Session::get('fk_carrier_id');
+        $driver->created_by = Session::get('userId');
+
+        $driver->save();
+
+        return response()->json('0');
+    }
+
+    public function getDriverOne($id)
+    {
+        return Driver::find(intval($id));
+    }
+
+    public function updateDriver(Request  $request)
+    {
+        $driver = Driver::find(intval($request->driver_id_up));
+
+        $driver->first_name = $request->first_up;
+        $driver->last_name = $request->last_up;
+        $driver->licence = $request->permis_up;
+        $driver->date_issue = $request->date_permis_up;
+        $driver->place_issue = $request->lieu_permis_up;
+        $driver->updated_at = date("Y-m-d");
+        $driver->created_by = Session::get("userID");
+
+        $driver->save();
+
+        return response()->json('0');
+    }
+
+    public function deleteDriver($id)
+    {
+        $driver = Driver::find(intval($id));
+        $driver->delete();
+
+        return response()->json('0');
     }
 
 

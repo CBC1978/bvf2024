@@ -31,7 +31,10 @@ class ContractTransport extends Model
         'created_by',
         'fk_freight_offert_id',
         'fk_transport_offer_id',
-
-
     ];
+
+    public function contratDetail()
+    {
+        return $this->hasMany(ContractDetails::class, 'contract_id');
+    }
 }

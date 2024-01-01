@@ -15,12 +15,12 @@
 @section('breadcumbs')
     <div class="row page-titles">
         <div class="col-md-5 col-12 align-self-center">
-            <h3 class="text-themecolor mb-0">Offres</h3>
+            <h3 class="text-themecolor mb-0">Contrat</h3>
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item">
-                    <a href="javascript:void(0)">Offres</a>
+                    <a href="javascript:void(0)">Contrat</a>
                 </li>
-                <li class="breadcrumb-item active">Offres reçues</li>
+                <li class="breadcrumb-item active">Mes contrats de transport</li>
             </ol>
         </div>
         <div class="col-md-7 col-12 align-self-center d-none d-md-block">
@@ -131,68 +131,20 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Itinéraire</th>
+                                <th>Nom</th>
                                 <th>Description</th>
-                                @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                    <th>Prix</th>
-                                @endif
-                                <th>Nombre d'offres</th>
-                                <th>Date d'expiration</th>
-                                <th>Poids (T)</th>
+                                <th>Iténaire</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($offers as $offer)
-                                @if( date("Y-m-d",strtotime($offer->limit_date)) < date('Y-m-d'))
-                                    <tr class="bg-danger">
-                                @else
-                                    <tr>
-                                        @endif
-                                        <td>
-                                            <input type="checkbox" name="offer-detail" id="offer-detail" value="{{ $offer->id }}">
-                                        </td>
-                                        <td>{{ $offer->origin->libelle.'-'.$offer->destination->libelle }}</td>
-                                        <td>{{ $offer->description }}</td>
-                                        @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                            <td>{{ $offer->price }}</td>
-                                        @endif
-                                        <td>
-                                            <a href="{{ route('getOffersReceivedDetail', $offer->id) }}">
-                                                <button
-                                                    type="button"
-                                                    class="
-                                                        btn btn-{{ $offer->offerColor }} btn-circle btn-sm
-                                                        d-inline-flex
-                                                        align-items-center
-                                                        justify-content-center
-                                                      "
-                                                >
-                                                    {{ $offer->offerCount }}
-                                                </button>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{ date("d-m-Y",strtotime($offer->limit_date))  }}
-                                        </td>
-                                        <td>
-                                            {{ $offer->weight }}
-                                        </td>
-                                    </tr>
-                                    @endforeach
+
 
                             </tbody>
                             <tfoot>
-                            <tr>
                                 <th>#</th>
-                                <th>Itinéraire</th>
+                                <th>Nom</th>
                                 <th>Description</th>
-                                @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                    <th>Prix</th>
-                                @endif
-                                <th>Nombre d'offres</th>
-                                <th>Date d'expiration</th>
-                                <th>Poids (T)</th>
-                            </tr>
+                                <th>Iténaire</th>
                             </tfoot>
                         </table>
 
@@ -282,9 +234,9 @@
                                     </div>
                                     <div class="modal-body">
                                         <h4 class="card-title mb-3">Détail de l'offre</h4>
-                                            <div class="row" id="formDetailOffer">
+                                        <div class="row" id="formDetailOffer">
 
-                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
 
@@ -385,13 +337,13 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        readOnly
-                                                        type="text"
-                                                        name="volume"
-                                                        id="volume"
-                                                        value="${ response.volume }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    readOnly
+                                    type="text"
+                                    name="volume"
+                                    id="volume"
+                                    value="${ response.volume }"
                                                         class="form-control"
                                                         placeholder="Volume"
                                                     />
@@ -403,15 +355,15 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
+                            </div>
 
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    name="destination"
-                                                    id="destination"
-                                                    value="${ response.destination.libelle }"
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input
+                                        readOnly
+                                        name="destination"
+                                        id="destination"
+                                        value="${ response.destination.libelle }"
                                                     class="form-control"
                                                     required
                                                     style="width: 100%; height: 36px"
@@ -443,13 +395,13 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        readOnly
-                                                        type="number"
-                                                        step="0.01"
-                                                        name="price"
-                                                        value="${ response.price }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    readOnly
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    value="${ response.price }"
                                                         id="price"
                                                         required
                                                         class="form-control"
@@ -463,14 +415,14 @@
                                                     >
                                                 </div>
                                             @endif
-                                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        readOnly
-                                                        name="vehicule_type"
-                                                        id="vehicule_type"
-                                                        class="form-control"
-                                                        value="${ response.vehicule_type.libelle }"
+                            @if(Session::get('role') == env('ROLE_CARRIER'))
+                            <div class="form-floating mb-3">
+                                <input
+                                    readOnly
+                                    name="vehicule_type"
+                                    id="vehicule_type"
+                                    class="form-control"
+                                    value="${ response.vehicule_type.libelle }"
                                                         required
                                                         style="width: 100%; height: 36px"
                                                     />
@@ -482,14 +434,14 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                readOnly
-                                                type="textarea"
-                                                name="description"
-                                                id="description"
-                                                value="${response.description }"
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input
+                                    readOnly
+                                    type="textarea"
+                                    name="description"
+                                    id="description"
+                                    value="${response.description }"
                                                 required
                                                 class="form-control"
                                                 placeholder="Description"
@@ -586,12 +538,12 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="text"
-                                                        name="volume"
-                                                        id="volume"
-                                                        value="${ response.volume }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="text"
+                                    name="volume"
+                                    id="volume"
+                                    value="${ response.volume }"
                                                         class="form-control"
                                                         placeholder="Volume"
                                                     />
@@ -603,18 +555,18 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
+                            </div>
 
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <select
-                                                    name="destination"
-                                                    id="destination"
-                                                    class="form-control"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                >
-                                                    <option value="${ response.destination.id }" selected>${ response.destination.libelle }</option>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <select
+                                        name="destination"
+                                        id="destination"
+                                        class="form-control"
+                                        required
+                                        style="width: 100%; height: 36px"
+                                    >
+                                        <option value="${ response.destination.id }" selected>${ response.destination.libelle }</option>
                                                             </select>
                                                             <label
                                                             ><i
@@ -642,12 +594,12 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        name="price"
-                                                        value="${ response.price }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    value="${ response.price }"
                                                         id="price"
                                                         required
                                                         class="form-control"
@@ -661,16 +613,16 @@
                                                     >
                                                 </div>
                                             @endif
-                                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                                                <div class="form-floating mb-3">
-                                                    <select
-                                                        name="vehicule_type"
-                                                        id="vehicule_type"
-                                                        class="form-control"
-                                                        required
-                                                        style="width: 100%; height: 36px"
-                                                    >
-                                                        <option value="${ response.vehicule_type.id }" selected>${ response.vehicule_type.libelle }</option>
+                            @if(Session::get('role') == env('ROLE_CARRIER'))
+                            <div class="form-floating mb-3">
+                                <select
+                                    name="vehicule_type"
+                                    id="vehicule_type"
+                                    class="form-control"
+                                    required
+                                    style="width: 100%; height: 36px"
+                                >
+                                    <option value="${ response.vehicule_type.id }" selected>${ response.vehicule_type.libelle }</option>
 
                                                     </select>
                                                     <label
@@ -681,13 +633,13 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                type="textarea"
-                                                name="description"
-                                                id="description"
-                                                value="${response.description }"
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="textarea"
+                                    name="description"
+                                    id="description"
+                                    value="${response.description }"
                                                             required
                                                             class="form-control"
                                                             placeholder="Description"

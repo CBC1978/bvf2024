@@ -10,6 +10,8 @@
     name="description"
     content="MaterialPro is powerful and clean admin dashboard template, inpired from Google's Material Design"
 />
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="robots" content="noindex,nofollow" />
 <title>Bourse Virtuelle de Fret</title>
 <link

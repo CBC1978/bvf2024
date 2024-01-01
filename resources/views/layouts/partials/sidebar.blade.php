@@ -115,7 +115,7 @@
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="app-contacts.html"
+                            href="{{ route('getContrat') }}"
                             aria-expanded="false"
                         ><i class="mdi mdi-account-box"></i
                             ><span class="hide-menu">Contrat</span></a

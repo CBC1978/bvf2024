@@ -127,6 +127,12 @@ $("#lang_file").DataTable({
   },
 });
 
+$("#lang_files").DataTable({
+  language: {
+    url: "../../dist/js/pages/datatable/German.json",
+  },
+});
+
 //=============================================//
 //    Complex headers with column visibility   //
 //=============================================//

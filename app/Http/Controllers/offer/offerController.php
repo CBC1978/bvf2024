@@ -78,7 +78,77 @@ class offerController extends Controller
     //Count all contract of transport
     public function ContractTransport()
     {
-        return ContractTransport::count();
+        $year = date('Y');
+        $debut = '01-01-'.$year;
+        $fin = '31-12-'.$year;
+        if (Session::get('role') == env('ROLE_CARRIER')) {
+            $contratc = DB::table('contract_transport')
+                ->selectRaw("
+                    contract_transport.id,
+                    transport_announcement.origin,
+                    transport_announcement.destination,
+                    transport_announcement.description,
+                    transport_announcement.weight
+                    ")
+                ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
+                ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')
+                ->where('freight_offer.status', env('status_valid'))
+                ->whereBetween('contract_transport.created_at', [$debut, $fin])
+                ->where('transport_announcement.fk_carrier_id', Session::get('fk_carrier_id'))
+                ->orderBy('contract_transport.id','desc')
+                ->get();
+
+            $contrats = DB::table('contract_transport')
+                ->selectRaw("
+                    contract_transport.id,
+                    freight_announcement.origin,
+                    freight_announcement.destination,
+                    freight_announcement.description,
+                    freight_announcement.weight
+                    ")
+                ->join('transport_offer', 'contract_transport.fk_transport_offer_id', '=', 'transport_offer.id')
+                ->join('freight_announcement', 'transport_offer.fk_freight_announcement_id', '=', 'freight_announcement.id')
+                ->where('transport_offer.status',  env('status_valid'))
+                ->whereBetween('contract_transport.created_at', [$debut, $fin])
+                ->where('transport_offer.fk_carrier_id', Session::get('fk_carrier_id'))
+                ->orderBy('contract_transport.id','desc')
+                ->get();
+
+        }elseif(Session::get('role') == env('ROLE_SHIPPER')){
+            $contrats = DB::table('contract_transport')
+                ->selectRaw("
+                        contract_transport.id,
+                        freight_announcement.origin,
+                        freight_announcement.destination,
+                        freight_announcement.description,
+                        freight_announcement.weight
+                        ")
+                ->join('transport_offer', 'contract_transport.fk_transport_offer_id', '=', 'transport_offer.id')
+                ->join('freight_announcement', 'transport_offer.fk_freight_announcement_id', '=', 'freight_announcement.id')
+                ->where('transport_offer.status', env('STATUS_VALID'))
+                ->whereBetween('contract_transport.created_at', [$debut, $fin])
+                ->where('freight_announcement.fk_shipper_id', Session::get('fk_shipper_id'))
+                ->orderBy('contract_transport.id', 'desc')
+                ->get();
+
+            $contratc = DB::table('contract_transport')
+                ->selectRaw("
+                        contract_transport.id,
+                        transport_announcement.origin,
+                        transport_announcement.destination,
+                        transport_announcement.description,
+                        transport_announcement.weight
+                        ")
+                ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
+                ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')
+                ->where('freight_offer.status', env('STATUS_VALID'))
+                ->whereBetween('contract_transport.created_at', [$debut, $fin])
+                ->where('freight_offer.fk_shipper_id', Session::get('fk_shipper_id'))
+                ->where('contract_transport', Session::get('fk_shipper_id'))
+                ->orderBy('contract_transport.id', 'desc')
+                ->get();
+        }
+        return (count($contrats) + count($contratc));
     }
 
     //Count all transport offers
@@ -164,7 +234,10 @@ class offerController extends Controller
             $nbOffer = $this->countFreightAnnouncements();
             $nbOfferReceived = $this->countFreightOffer();
 
-            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived'));
+            $nbContract = 0;
+//                $this->ContractTransport();
+
+            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract'));
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
 
@@ -184,14 +257,12 @@ class offerController extends Controller
                 $offer->origin = Ville::find(intval($offer->origin));
                 $offer->destination = Ville::find(intval($offer->destination));
             });
-
-            $nbContract = $this->ContractTransport();
+            $nbContract = 0;
+//                $this->ContractTransport();
             $nbOffer = $this->countTransportAnnouncements();
             $nbOfferReceived = $this->countTransportOffers();
 
-            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived'));
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract'));
         }elseif (Session::get('role') == env('ROLE_ADMIN')){
 
             //Get the ten latest carrier offer
@@ -223,13 +294,8 @@ class offerController extends Controller
             $nbContract = $this->ContractTransport();
             $nbOffer = $this->countTransportAnnouncements();
             $nbOfferReceived = $this->countTransportOffers();
-
             return view('pages.admin.admin_home', compact('offersT', 'offers', 'nbOfferT', 'nbOffer', 'nbOfferReceivedT', 'nbOfferReceived'));
-
-
         }
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     }
 
     public function storeApplyOffer(applyForm $request)
@@ -313,60 +379,74 @@ class offerController extends Controller
 
     public function storePublishOffer(publishForm $request)
     {
-        dd($request);
-        $data = $request->validated();
+       $request->validated();
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
-            $shipperObject = Shipper::find(Session::get('fk_shipper_id'));
+            $obj = new FreightAnnouncement();
+            $obj->origin = intval($request->origin);
+            $obj->destination = intval($request->destination);
+            $obj->limit_date = $request->limit_date;
+            $obj->weight = $request->weight;
+            $obj->volume = $request->volume;
+            $obj->price = $request->price;
+            $obj->description = $request->description;
+            $obj->created_by = Session::get('userId');
+            $obj->status = env('DEFAULT_INT');
+            $obj->fk_shipper_id = Session::get('fk_shipper_id');
 
-            $data['fk_shipper_id'] = Session::get('fk_shipper_id');
-            $data['created_by'] = Session::get('userId');
-
-            FreightAnnouncement::create($data);
+            $obj->save();
 
             //Get data to send email
-            $origin = Ville::find(intval($data['origin']));
-            $destination = Ville::find(intval($data['destination']));
+            $origin = Ville::find(intval($request->origin));
+            $destination = Ville::find(intval($request->destination));
+            $shipperObject = Shipper::find(Session::get('fk_shipper_id'));
             $itemEmail = array(
                 'origin'=>$origin->libelle,
                 'destination'=>$destination->libelle,
                 'name'=>$shipperObject->company_name,
-                'description'=>$data['description'],
+                'description'=>$request->description,
             );
-            dd('test');
             //Get all Carrier User
             $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
-//            foreach ($carriersUser as $carrier){
-//                Mail::to($carrier->email)->send(new publishOfferSend($itemEmail));
-//            }
+            foreach ($carriersUser as $carrier){
+                Mail::to($carrier->email)->send(new publishOfferSend($itemEmail));
+            }
 
-//            return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
+            return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
+
         }elseif (Session::get('role') == env('role_carrier')){
-            $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
 
-            $data['fk_carrier_id'] = Session::get('fk_carrier_id');
-            $data['created_by'] = Session::get('userId');
+            $obj = new TransportAnnouncement();
+            $obj->origin = intval($request->origin);
+            $obj->destination = intval($request->destination);
+            $obj->limit_date = $request->limit_date;
+            $obj->weight = $request->weight;
+            $obj->vehicule_type = $request->vehicule_type;
+            $obj->created_by = Session::get('userId');
+            $obj->description = $request->description;
+            $obj->status = env('DEFAULT_INT');
+            $obj->fk_carrier_id = Session::get('fk_carrier_id');
 
-            TransportAnnouncement::create($data);
+            $obj->save();
 
             //Get data to send email
-            $origin = Ville::find(intval($data['origin']));
-            $destination = Ville::find(intval($data['destination']));
+            $origin = Ville::find(intval($request->origin));
+            $destination = Ville::find(intval($request->destination));
+            $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
             $itemEmail = array(
                 'origin'=>$origin->libelle,
                 'destination'=>$destination->libelle,
                 'name'=>$carrierObject->company_name,
-                'description'=>$data['description'],
+                'description'=>$request->description
             );
             //Get all Shipper User
             $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
             foreach ($shippersUser as $shipper){
                 Mail::to($shipper->email)->send(new publishOfferSend($itemEmail));
             }
-
-//            return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
+            return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
         }
     }
 

@@ -103,7 +103,7 @@
                             ></i>
                         </div>
                         <div class="ms-2 align-self-center">
-                            <h3 class="mb-0">0</h3>
+                            <h3 class="mb-0">{{$nbContract}}</h3>
                             <h6 class="text-muted mb-0">Nombre de contrats</h6>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                             ></i>
                         </div>
                         <div class="ms-2 align-self-center">
-                            <h3 class="mb-0">0</h3>
+                            <h3 class="mb-0">{{$nbContract}}</h3>
                             <h6 class="text-muted mb-0">Nombre de contrat ce mois</h6>
                         </div>
                     </div>

@@ -25,28 +25,6 @@
                 </li>
             </ol>
         </div>
-        <div class="col-md-7 col-12 align-self-center d-none d-md-block">
-            <div class="d-flex mt-2 justify-content-end">
-                <div class="d-flex me-3 ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>THIS MONTH</small></h6>
-                        <h4 class="mt-0 text-info">$58,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="monthchart"></div>
-                    </div>
-                </div>
-                <div class="d-flex ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>LAST MONTH</small></h6>
-                        <h4 class="mt-0 text-primary">$48,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="lastmonthchart"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 @section('content')
@@ -70,8 +48,8 @@
                     <p class="card-text text-center">
                         {{ $offer->description }}
                     </p>
-                    <div class="row mb-3">
-                        <div class="text-center  mr-6">
+                    <div class="row">
+                        <div class="text-center  mr-6 mb-3">
                             <button
                                 type="button"
                                 class="btn btn-light-secondary text-secondary font-weight-medium">
@@ -147,7 +125,7 @@
                             <div class="col-md-4 col-sm-12" id="card_annonce">
                                 <div class="card card-hover">
                                     <div class="card-header bg-{{$offer->color}}">
-                                        <h4 class="mb-0 text-white">{{ $offer->company->company_name }}</h4>
+                                        <h4 class="mb-0 text-white">{{ $offer->company }}</h4>
                                     </div>
                                     <div class="card-body">
                                         <p class="card-text">
@@ -175,18 +153,10 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <input type="hidden" id="offer_id" value="{{$offer->id}}">
                                         <div class="row">
-                                            <button id="btn-accepter" class="btn btn btn-rounded btn-outline-success">
-                                                Accepter
-                                            </button>
-                                            <button id="btn-refuser" class="btn btn btn-rounded btn-outline-danger mb-2 mt-2" >
-                                                Refuser
-                                            </button>
-                                            <button id="btn-discuter" class="btn btn btn-rounded btn-outline-warning"  >
-                                                Discuter
-                                                <span class="badge ms-auto bg-primary">1</span>
-                                            </button>
+                                            <input type="button" class=" btn btn-rounded accepter btn-outline-success" id="{{$offer->id}}" value="Accepter">
+                                            <input type="button" class=" btn btn-rounded refuser btn-outline-danger mb-2 mt-2" id="{{$offer->id}}" value="Refuser">
+                                            <input type="button" class=" btn btn-rounded discuter btn-outline-warning" id="{{$offer->id}}" value="Discuter">
                                         </div>
 
                                     </div>
@@ -202,6 +172,7 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             setTimeout(function () {
@@ -224,34 +195,43 @@
             });
 
 
-            $('#btn-discuter').click(function(){
-                var offerId = $('#offer_id').val();
+            $('.discuter').click(function(btn){
+                var offerId = btn.target.attributes.id.value;
                 window.location.href=  '/discussions?offer='+offerId;
             });
 
-            $('#btn-accepter').click(function(){
+            $('.accepter').click(function(btn){
 
-                var offerId = $('#offer_id').val();
+                var offerId = btn.target.attributes.id.value;
                 fetch('/offre/statut/modifier/'+offerId+'/1')
                     .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        location.reload();
+                    .then(data=>{
+                        Swal.fire({
+                            title: 'Succès',
+                            text: 'Offre acceptée avec succès',
+                            icon: 'success',
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); //3s
                     });
-                location.reload();
             });
 
+            $('.refuser').click(function(btn){
 
-            $('#btn-refuser').click(function(){
-
-                var offerId = $('#offer_id').val();
+                var offerId = btn.target.attributes.id.value;
                 fetch('/offre/statut/modifier/'+offerId+'/2')
                     .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-                        location.reload();
+                    .then(data=>{
+                        Swal.fire({
+                            title: 'Succès',
+                            text: 'Offre réfusée avec succès',
+                            icon: 'success',
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); //3s
                     });
-                location.reload();
             });
         });
 

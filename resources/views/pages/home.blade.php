@@ -103,7 +103,7 @@
                             ></i>
                         </div>
                         <div class="ms-2 align-self-center">
-                            <h3 class="mb-0">$1795</h3>
+                            <h3 class="mb-0">0</h3>
                             <h6 class="text-muted mb-0">Nombre de contrats</h6>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                             ></i>
                         </div>
                         <div class="ms-2 align-self-center">
-                            <h3 class="mb-0">$687</h3>
+                            <h3 class="mb-0">0</h3>
                             <h6 class="text-muted mb-0">Nombre de contrat ce mois</h6>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                                             <h4 class="mb-0 text-white">{{ $offer->company_name }}</h4>
                                         </div>
                                         <div class="card-body">
-                                            <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin) }}- {{ ucfirst($offer->destination) }}</h3>
+                                            <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin->libelle) }}- {{ ucfirst($offer->destination->libelle) }}</h3>
                                             <h3 class="card-title">Date expiration: {{ date("d/m/Y",strtotime($offer->limit_date)) }}</h3>
                                             <p class="card-text">
                                                 {{ $offer->description }}
@@ -230,7 +230,7 @@
                                                 <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                     Postuler
                                                 </button>
-                                            @endif                                     
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

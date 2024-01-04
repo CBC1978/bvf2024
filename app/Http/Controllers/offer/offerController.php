@@ -113,7 +113,7 @@ class offerController extends Controller
                 ->where('transport_offer.fk_carrier_id', Session::get('fk_carrier_id'))
                 ->orderBy('contract_transport.id','desc')
                 ->get();
-
+            return (count($contrats) + count($contratc));
         }elseif(Session::get('role') == env('ROLE_SHIPPER')){
             $contrats = DB::table('contract_transport')
                 ->selectRaw("
@@ -147,8 +147,9 @@ class offerController extends Controller
                 ->where('contract_transport', Session::get('fk_shipper_id'))
                 ->orderBy('contract_transport.id', 'desc')
                 ->get();
+            return (count($contrats) + count($contratc));
         }
-        return (count($contrats) + count($contratc));
+
     }
 
     //Count all transport offers
@@ -456,13 +457,24 @@ class offerController extends Controller
 
             //Get the ten latest carrier offer
             $offers = DB::table('transport_announcement')
-                ->selectRaw("transport_announcement.id, transport_announcement.origin, transport_announcement.destination, transport_announcement.limit_date,
-                        transport_announcement.weight, transport_announcement.vehicule_type, transport_announcement.description,
-                       carrier.company_name")
+                ->selectRaw("
+                    transport_announcement.id,
+                    transport_announcement.origin,
+                    transport_announcement.destination,
+                    transport_announcement.limit_date,
+                    transport_announcement.weight,
+                    transport_announcement.vehicule_type,
+                    transport_announcement.description,
+                   carrier.company_name")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
                 ->orderBy('transport_announcement.id', 'DESC')
                 ->get();
+            $offers->each(function ($obj){
+                $obj->origin = Ville::find(intval($obj->origin));
+                $obj->destination = Ville::find(intval($obj->destination));
+
+            });
 
             return view('pages.offer.home', compact('offers'));
 
@@ -471,17 +483,25 @@ class offerController extends Controller
             //Get the ten latest shipper offer
             $offers = DB::table('freight_announcement')
                 ->selectRaw("
-             freight_announcement.id,freight_announcement.origin,freight_announcement.destination,freight_announcement.limit_date,
-             freight_announcement.weight, freight_announcement.volume,freight_announcement.description,
-             shipper.company_name
-             ")
+                    freight_announcement.id,
+                    freight_announcement.origin,
+                    freight_announcement.destination,
+                    freight_announcement.limit_date,
+                    freight_announcement.weight,
+                    freight_announcement.volume,
+                    freight_announcement.description,
+                    shipper.company_name
+                    ")
                 ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
                 ->orderBy('freight_announcement.id', 'DESC')
                 ->get();
+            $offers->each(function ($obj){
+                $obj->origin = Ville::find(intval($obj->origin));
+                $obj->destination = Ville::find(intval($obj->destination));
+            });
 
             return view('pages.offer.home', compact('offers'));
-
         }
     }
 

@@ -377,15 +377,15 @@
                                                         name="volume"
                                                         id="volume"
                                                         value="${ response.volume }"
-                                                                            class="form-control"
-                                                                            placeholder="Volume"
-                                                                        />
-                                                                        <label
-                                                                        ><i
-                                                                                class="feather-sm text-dark fill-white me-2"
-                                                                            ></i
-                                                                            >Volume (m3)</label
-                                                                        >
+                                                        class="form-control"
+                                                        placeholder="Volume"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Volume (m3)</label
+                                                    >
                                                 </div>
                                             @endif
                                         </div>

@@ -137,15 +137,9 @@
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="inbox-email-detail.html" class="sidebar-link"
+                                <a href="{{ route('getUsersNoValide') }}" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
                                     ><span class="hide-menu"> En attente </span></a
-                                >
-                            </li>
-                            <li class="sidebar-item">
-                                <a href="inbox-email-compose.html" class="sidebar-link"
-                                ><i class="mdi mdi-email-secure"></i
-                                    ><span class="hide-menu"> Email Compose </span></a
                                 >
                             </li>
                         </ul>
@@ -164,7 +158,7 @@
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="app-calendar.html"
+                            href=""
                             aria-expanded="false"
                         ><i class="mdi mdi-calendar"></i
                             ><span class="hide-menu">Offre de transport</span></a
@@ -180,19 +174,19 @@
                         >
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
-                                <a href="inbox-email.html" class="sidebar-link"
+                                <a href="" class="sidebar-link"
                                 ><i class="mdi mdi-email"></i
                                     ><span class="hide-menu"> Email </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="inbox-email-detail.html" class="sidebar-link"
+                                <a href="" class="sidebar-link"
                                 ><i class="mdi mdi-email-alert"></i
                                     ><span class="hide-menu"> Email Detail </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
-                                <a href="inbox-email-compose.html" class="sidebar-link"
+                                <a href="" class="sidebar-link"
                                 ><i class="mdi mdi-email-secure"></i
                                     ><span class="hide-menu"> Email Compose </span></a
                                 >
@@ -202,7 +196,7 @@
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="app-chats.html"
+                            href=""
                             aria-expanded="false"
                         ><i class="mdi mdi-comment-processing-outline"></i
                             ><span class="hide-menu">Mes offres de transports</span></a
@@ -211,7 +205,7 @@
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="app-contacts.html"
+                            href=""
                             aria-expanded="false"
                         ><i class="mdi mdi-account-box"></i
                             ><span class="hide-menu">Contrat</span></a

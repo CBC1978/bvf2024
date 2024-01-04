@@ -31,6 +31,9 @@ Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name(
 Route::post('/changer-mot-de-passe', [authController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/login', [authController::class, 'login'])->name('login');
 Route::get('/admin_home', [authController::class, 'login'])->name('admin_home');
+Route::get('/affecter-utilisateur-entreprise', [authController::class, 'getUserEntreprise'])->name('getUserEntreprise');
+Route::get('/affecter-utilisateur/{id}', [authController::class, 'affectUserEntreprise'])->name('affectUserEntreprise');
+Route::get('/affecter-utilisateur/{id}', [authController::class, 'affectUserEntreprise'])->name('affectUserEntreprise');
 //Auth end routes
 
 //Offer routes
@@ -54,7 +57,6 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
-Route::get('/email/test', [offerController::class, 'sendEmail'])->name('sendEmail');
 //end Offer route
 
 

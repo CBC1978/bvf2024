@@ -1,5 +1,8 @@
 @extends('layouts.app')
-
+@section('head')
+    <link rel="stylesheet" href="{{ asset('src/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+@endsection
 @section('breadcumbs')
     <div class="row page-titles">
         <div class="col-md-5 col-12 align-self-center">
@@ -353,14 +356,180 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal choisir entreprise--}}
+    <div
+        class="modal fade"
+        id="choisir-entreprise"
+        tabindex="-1"
+        aria-labelledby="choisir-entreprise"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ">
+                <div class="modal-header d-flex align-items-center modal-colored-header bg-light text-white">
+                    <div class="row">
+                        <div class="col-4 top">
+                            <button
+                                type="button"
+                                id="btn-select-obj"
+                                class="
+                                      justify-content-center
+                                      w-300
+                                      btn btn-rounded btn-outline-success
+                                      d-flex
+                                      align-items-center
+                                    "
+                            >
+                                <i
+                                    data-feather="plus-circle"
+                                    class="feather-sm fill-white me-2"
+                                ></i>
+                                Sélectionner
+                            </button>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn-close bg-dark"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table
+                            id="lang_file"
+                            class="table table-striped table-bordered display"
+                            style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom</th>
+                                <th>Adresse</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if(count($entreprise)>0)
+                                @foreach($entreprise as $obj)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="obj_id" id="obj_id" value="{{ $obj->id }}">
+                                        </td>
+                                        <td>
+                                            {{$obj->company_name}}
+                                        </td>
+                                        <td>
+                                            {{$obj->address}}
+                                        </td>
+                                        <td>
+                                          {{$obj->phone}}
+                                        </td>
+                                        <td>
+                                            {{$obj->email}}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom</th>
+                                <th>Adresse</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- end Modal--}}
 @endsection
 
 @section('script')
+    <script src="{{ asset('src/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('src/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
+    <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             setTimeout(function () {
                 $("div.alert").remove();
             }, 5000); //5s
+
+            setTimeout(function () {
+                fetch('/affecter-utilisateur-entreprise')
+                    .then(response=>response.json())
+                    .then(response =>{
+                        if(response == 0){
+                            $('#choisir-entreprise').modal('show');
+                        }
+                    });
+            }, 2000); //2s
+
+            $('#lang_file tr').click(function (event) {
+                if (event.target.type !== 'checkbox') {
+                    $(':checkbox', this).trigger('click');
+                }
+            });
+
+            $('#btn-select-obj').click(function (){
+
+                var checkOffers = document.querySelectorAll('#obj_id');
+                var data = [];
+
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                });
+
+                if(data.length == 0){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Aucune ligne sélectionnée',
+                        icon: 'error',
+                    });
+                }
+
+                if( data.length == 1){
+
+                    fetch('/affecter-utilisateur/'+data[0].value)
+                        .then(response => response.json())
+                        .then(response => {
+                            Swal.fire({
+                                title: 'Succès',
+                                text: 'Votre demande a été traité avec succès',
+                                icon: 'success',
+                            });
+                            setTimeout(function () {
+                                $('#choisir-entreprise').modal('hide');
+                            }, 3000); //3s
+                        });
+                }
+
+                if( data.length >= 2){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Sélectionnez une seule ligne',
+                        icon: 'error',
+                    });
+                }
+                data = [];
+            });
+
+
+
 
             var searchInput = document.querySelector('input[id^="recherche"]');
             $(searchInput).keyup(function () {

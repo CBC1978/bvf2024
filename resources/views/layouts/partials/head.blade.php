@@ -23,7 +23,7 @@
     rel="icon"
     type="image/png"
     sizes="16x16"
-    href="{{ asset('src/assets/images/favicon.png') }}"
+    href="{{ asset('src/assets/images/favicon.ico') }}"
 />
 <meta
     name="keywords"
@@ -35,7 +35,6 @@
 />
 <!-- Custom CSS -->
 <link href="{{ asset('src/dist/css/style.min.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ asset('src/dist/libs/select2/dist/css/select2.min.css') }}">
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>

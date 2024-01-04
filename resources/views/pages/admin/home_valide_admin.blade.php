@@ -64,7 +64,7 @@
                                     class="
                                       justify-content-center
                                       w-100
-                                      btn btn-rounded btn-outline-success
+                                      btn btn-rounded btn-outline-info
                                       d-flex
                                       align-items-center
                                     "
@@ -73,7 +73,7 @@
                                         data-feather="plus-circle"
                                         class="feather-sm fill-white me-2"
                                     ></i>
-                                    Statut (activer/desactiver)
+                                    Désactiver
                                 </button>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->username}}</td>
                                     @endif
-                                        
+
                                     </tr>
                                 @endforeach
                             </tbody>

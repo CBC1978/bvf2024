@@ -73,7 +73,7 @@
                                         data-feather="plus-circle"
                                         class="feather-sm fill-white me-2"
                                     ></i>
-                                    Statut (activer/desactiver)
+                                    Statut
                                 </button>
                             </div>
                         </div>
@@ -87,22 +87,35 @@
                             style="width: 100%">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Nom complet</th>
                                     <th>Contact</th>
                                     <th>Email</th>
                                     <th>Nom d'utilisateur</th>
+                                    <th>Statut</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users->sortByDesc('id') as $user)
                                     <tr>
                                     @if($user->status == 2 || $user->status == 1 )
+                                        <td>
+                                            <input type="checkbox" class="user-checkbox" name="selected_users[]" value="{{ $user->id }}">
+                                            <input type="hidden"  id="user_ids[]" value="{{ $user->id }}">
+                                        </td>
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }} {{$user->first_name }}</td>
                                         <td>{{$user->user_phone }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->username}}</td>
+                                        <td>
+                                            @if($user->status == 2)
+                                                    <p>Activé</p>
+                                                @elseif($user->status == 1)
+                                                    <p>Désactivé</p>
+                                            @endif
+                                        </td>
                                     @endif
                                         
                                     </tr>
@@ -110,11 +123,13 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Nom complet</th>
                                     <th>Contact</th>
                                     <th>Email</th>
                                     <th>Nom d'utilisateur</th>
+                                    <th>Statut</th>
                                 </tr>
                             </tfoot>
                         </table>

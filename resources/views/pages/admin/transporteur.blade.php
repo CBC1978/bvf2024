@@ -32,7 +32,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
-        .card {
+        .cardd {
             background-color: white;
             text-align: center;
             padding: 10px;
@@ -54,11 +54,11 @@
     <button type="submit" onclick="returnToPreviousPage()">Retour</button><br> <br> <br>
 
 
-    <div class="row" >
+    {{--<div class="row" >
         <div class="card">
             <button id="open-modal-button" class="btn btn-primary">Ajouter une entreprise de transporteur</button>
         </div>
-    </div>
+    </div>--}}
     <div id="modal" class="modal">
         <div class="modal-content">
             @if(session('success'))
@@ -109,41 +109,198 @@
     </div>
 
 
-        <form id="assign-user-form" action="{{ route('admin.assigner-entreprise-user') }}" method="post">
+        <form class="mb-3" id="assign-user-form" action="{{ route('admin.assigner-entreprise-user') }}" method="post">
             @csrf
             <div class="box-content">
                 <div class="row mt-10">
                     <div class="col-md-6">
                         <h2>Assigner des entreprises aux utilisateurs</h2>
-                            <div class="mb-3">
-                                <label for="carrier_id">Assigner une entreprise transporteur :</label>
-                                <select class="form-control" id="carrier_id" name="carrier_id">
-                                    <option value="">Sélectionner une entreprise transporteur</option>
-                                    @foreach ($carriers as $carrier)
-                                        <option value="{{ $carrier->id }}">{{ $carrier->company_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit mt-1" class="btn btn-primary">Assigner une Entreprises aux Utilisateurs Sélectionnés</button>
+                        <div class="mb-3">
+                            <label for="carrier_id">Assigner une entreprise transporteur :</label>
+                            <select class="form-control" id="carrier_id" name="carrier_id">
+                                <option value="">Sélectionner une entreprise transporteur</option>
+                                @foreach ($carriers as $carrier)
+                                    <option value="{{ $carrier->id }}">{{ $carrier->company_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit mb-1" class="btn btn-primary">Assigner une Entreprises aux Utilisateurs Sélectionnés</button>
                     </div>
                 </div>
             </div>
+        </form>
+        
 
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="border-bottom title-part-padding">
+                        <h4 class="card-title mb-0">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-12 top">
+                                    <button
+                                    type="button"
+                                    id="btn-detail-offer"
+                                    class="
+                                        justify-content-center
+                                        w-100
+                                        btn btn-rounded btn-outline-success
+                                        d-flex
+                                        align-items-center
+                                    "
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal"
+                                
+                                    >
+                                        <i
+                                            data-feather="plus-circle"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        voir plus
+                                    </button>
+                                </div>
+                                <div class="col-md-2 col-sm-12 top">
+                                    <button
+                                        type="button"
+                                        id="btn-detail-offer"
+                                        class="
+                                        justify-content-center
+                                        w-100
+                                        btn btn-rounded btn-outline-success
+                                        d-flex
+                                        align-items-center
+                                        "
+                                    >
+                                        <i
+                                            data-feather="edit"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                    Modifier
+                                    </button>
+                                </div>
+                                <div class="col-md-2 col-sm-12 top">
+                                    <button
+                                        id="btn-delete-camion"
+                                        type="button"
+                                        class="
+                                                justify-content-center
+                                                w-100
+                                                btn btn-rounded btn-outline-danger
+                                                d-flex
+                                                align-items-center
+                                                "
+                                    >
+                                        <i
+                                            data-feather="trash-2"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Supprimer
+                                    </button>
+                                </div>
+                                <div class="col-md-3 col-sm-12 top">
+                                    <button
+                                        type="button"
+                                            id="open-modal-button"
+                                            class="
+                                            justify-content-center
+                                            w-100
+                                            btn btn-rounded btn-outline-info
+                                            d-flex
+                                            align-items-center
+                                            "
+                                    >
+                                        <i
+                                            data-feather="plus-circle"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                    Ajout d'entreprise
+                                    </button>
+                                </div>
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="user-table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th></th>
+                                        <th>Id</th>
+                                        <th>Entreprise</th>
+                                        <th>Adresse</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Ville</th>
+                                    </tr>
+                                    </thead>
+                                <tbody>
+                                    @foreach($carriers as $carrier)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="user-checkbox" name="selected_carrier[]" value="{{ $carrier->id }}">
+                                            </td>
+                                            <td>{{ $carrier->id }}</td>
+                                            <td>{{ $carrier->company_name }}</td>
+                                            <td>{{ $carrier->address }}</td>
+                                            <td>{{ $carrier->email }}</td>
+                                            <td>{{ $carrier->phone }}</td>
+                                            <td>{{ $carrier->city }}</td>
+                                        </tr>
+                                    @endforeach
+                                  {{--  @foreach($users->sortByDesc('id') as $user)
+                                        <tr>
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>
+                                                @if ($user->fk_carrier_id)
+                                                    {{ $carriers->find($user->fk_carrier_id)->company_name }}
+                                                @else
+                                                    Aucune entreprise associée
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="user-checkbox" name="selected_users[]" value="{{ $user->id }}">
+                                                <input type="hidden" name="user_ids[]" value="{{ $user->id }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach 
+                                    --}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+   {{--     <div class="card ">
             <div class="row mt-10">
                 <div class="col-md-12">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="user-table">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nom</th>
-                                    <th>Email</th>
+                                    <th>Id</th>
                                     <th>Entreprise</th>
-                                    <th>Actions</th>
+                                    <th>Adresse</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>Ville</th>
                                 </tr>
                                 </thead>
                             <tbody>
-                                @foreach($users->sortByDesc('id') as $user)
+                                @foreach($carriers as $carrier)
+                                    <tr>
+                                        <td>{{ $carrier->id }}</td>
+                                        <td>{{ $carrier->company_name }}</td>
+                                        <td>{{ $carrier->address }}</td>
+                                        <td>{{ $carrier->email }}</td>
+                                        <td>{{ $carrier->phone }}</td>
+                                        <td>{{ $carrier->city }}</td>
+                                    </tr>
+                                @endforeach
+                              {{--  @foreach($users->sortByDesc('id') as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }}</td>
@@ -160,15 +317,17 @@
                                             <input type="hidden" name="user_ids[]" value="{{ $user->id }}">
                                         </td>
                                     </tr>
-                                @endforeach
+                                @endforeach 
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </form>
+        </div> --}}
+        
 
-
+        
     <style>
         .required {
             color: red;         /* couleur étoile */

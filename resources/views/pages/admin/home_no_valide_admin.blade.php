@@ -92,19 +92,22 @@
                                     <th>Contact</th>
                                     <th>Email</th>
                                     <th>Nom d'utilisateur</th>
+                                    <th>Statut</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users->sortByDesc('id') as $user)
                                     <tr>
-                                    @if($user->status == 0 )
-                                        <td>{{ $user->id }}</td>
-                                        <td>{{ $user->name }} {{$user->first_name }}</td>
-                                        <td>{{$user->user_phone }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>{{ $user->username}}</td>
-                                    @endif
-                                        
+                                        @if($user->status == 0 )
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->name }} {{$user->first_name }}</td>
+                                            <td>{{$user->user_phone }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->username}}</td>
+                                            <td>
+                                                <p>En attente</p>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -115,6 +118,7 @@
                                     <th>Contact</th>
                                     <th>Email</th>
                                     <th>Nom d'utilisateur</th>
+                                    <th>Statut</th>
                                 </tr>
                             </tfoot>
                         </table>

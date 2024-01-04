@@ -64,6 +64,7 @@ class authController extends Controller
                                 $request->session()->put('company_name', $shipper->company_name);
                             }
                         }
+                        $request->session()->put('email', $user->email);
                         return redirect()->route('home');
                     }else {
                         return back()->with('fail', "Les mots de passe ne correspondent pas");

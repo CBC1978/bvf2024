@@ -143,10 +143,10 @@ label{
                     <table class="table table-bordered table-hover" id="user-table">
                         <thead class="thead-dark">
                             <tr>
-                                <th>ID</th>
-                                <th>Nom</th>
-                                <th>Email</th>
+                                <th>Id</th>
                                 <th>Entreprise</th>
+                                <th>Email</th>
+                                <th>Adresse</th> 
                                 <th>Actions</th>
                             </tr>
                         </thead>

@@ -90,11 +90,19 @@ Route::prefix('annonces')->group(function () {
     Route::get('/transport-offer', [AdminController::class, 'displayAnnounceTransport'])->name('annonces.a_annonceTransporter');
 
 });
-
 Route::get('/transporteur', [AdminController::class, 'displayEntrepriseTransporteur'])->name('transporteur');
+Route::get('/transporteur/{id}', [AdminController::class, 'getCarrierUsers'])->name('getCarrierUsers');
+Route::get('/affecter-user-transporteur/{id}', [AdminController::class, 'assignCarrierUsers'])->name('assignCarrierUsers');
 Route::get('/chargeur', [AdminController::class, 'displayEntrepriseChargeur'])->name('chargeur');
+Route::get('/modifier-chargeur/{id}', [AdminController::class, 'getShipperOne'])->name('getShipperOne');
+Route::get('/chargeur/{id}', [AdminController::class, 'getShipperUsers'])->name('getShipperUsers');
+Route::post('/modifier-chargeur', [AdminController::class, 'updateShipper'])->name('updateShipper');
 Route::post('/assigner-entreprise-user', [AdminController::class, 'assignEntrepriseToUser'])->name('admin.assigner-entreprise-user');
 Route::post('/ajouter-transporteur', [AdminController::class, 'addCarrier'])->name('admin.ajouter-transporteur');
+Route::post('/ajouter-chargeur', [AdminController::class, 'addShipper'])->name('admin.ajouter-chargeur');
+Route::post('/modifier-transporteur', [AdminController::class, 'updateCarrier'])->name('updateCarrier');
+
+Route::get('/modifier-transporteur/{id}', [AdminController::class, 'getCarrierOne'])->name('getCarrierOne');
 Route::post('/ajouter-expediteur', [AdminController::class, 'addShipper'])->name('admin.ajouter-expediteur');
 
 //route page pour bouton voir plus

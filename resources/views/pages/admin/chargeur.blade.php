@@ -1,263 +1,642 @@
 @extends('layouts.admin.app')
 
+@section('head')
+    <link rel="stylesheet" href="{{ asset('src/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+@endsection
+@section('breadcumbs')
+    <div class="row page-titles">
+        <div class="col-md-5 col-12 align-self-center">
+            <h3 class="text-themecolor mb-0">Admin</h3>
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0)">Entreprise Chargeur
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+@endsection
 @section('content')
-<style>
-    button[type="submit"] {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    a {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-    #modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-    background-color: #fff;
-    margin: 20px auto;
-    padding: 20px;
-    width: 100%;
-    max-width: 700px;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-label{
-    width: 600px;
-}
-
-.card {
-    background-color: white;
-    text-align: center;
-    padding: 10px;
-    width: 400px;
-    border: 1px solid black;
-    border-radius: 10px;
-    margin: 0 auto;
-}
-
-
-#open-modal-button {
-    display: block;
-    margin: 0 auto;
-}
-
-</style>
-<script>
-  function returnToPreviousPage() {
-  window.history.back(); // Revenir à la page précédente
-}
-</script>
-<button type="submit" onclick="returnToPreviousPage()">Retour</button><br> <br> <br>
-<div class="row" style="margin-bottom: -100px;">
-    <div class="card">
-        <button id="open-modal-button" class="btn btn-primary">Ajouter une entreprise expéditrice</button>
-    </div>
-</div>
-<div id="modal" class="modal">
-    <div class="modal-content">    
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">  
-                <h5>
-                    {{ session('success') }}
-                </h5>
-                <span aria-hidden="true">&times;</span> 
-            </div>
-            @endif
-            <div class="modal-header">
-                <h5>
-                    Ajouter une entreprise expéditrice
-                </h5>
-                <button style="padding: 5px 5px;" type="button" id="close-modal-button" class="btn btn-secondary small-button" data-dismiss="modal">X</button>
-            </div>
-        <div class="modal-body">
-            <form action="admin.ajouter-expediteur" method="post">
-                @csrf
-                <label for="company_name">Nom de l'entreprise<span class="required">*</span></label><br>
-                <input type="text" name="company_name" required> <br><br>
-                    
-                <label for="address">Adresse<span class="required">*</span></label><br>
-                <input type="text" name="address" required> <br><br>
-                    
-                <label for="phone">Téléphone<span class="required">*</span></label><br>
-                <input type="text" name="phone" required> <br><br>
-
-                <label for="city">Ville<span class="required">*</span></label><br>
-                <input type="text" name="city" required> <br><br>
-                   
-                <label for="email">Email<span class="required">*</span></label><br>
-                <input type="email" name="email" required> <br><br>
-                    
-                <label for="ifu">Numéro IFU<span class="required">*</span></label><br>
-                <input type="text" name="ifu" required> <br><br>
-                    
-                <label for="rccm">RCCM<span class="required">*</span></label><br>
-                <input type="text" name="rccm" required> <br><br>
-                    
-                <!-- Champ caché pour stocker l'ID de l'utilisateur -->
-                <input type="hidden" name="user_id" value="{{ Session::get('userId') }}"><br>
-                 
-                <button type="submit" class="btn btn-primary" >Ajouter Expéditeur</button>
-            </form>
+    @if(Session::has('success'))
+        <div class="alert alert-success">
+            {{Session::get('success')}}
         </div>
-    </div>
-</div>
+    @endif
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="border-bottom title-part-padding">
+                    <h4 class="card-title mb-0">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-12 top">
+                                <button
+                                    type="button"
+                                    id="btn-add-shipper"
+                                    class="
+                                    justify-content-center
+                                    w-100
+                                    btn btn-rounded btn-outline-success
+                                    d-flex
+                                    align-items-center
+                                    mb-3 mt-3
+                                "
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#form-add-shipper"
+                                >
+                                    <i
+                                        data-feather="plus-circle"
+                                        class="feather-sm fill-white me-2"
+                                    ></i>
+                                    Ajouter
+                                </button>
+                            </div>
+                            <div class="col-md-3 col-sm-12 top">
+                                <button
+                                    type="button"
+                                    id="btn-detail-shipper"
+                                    class="
+                                    justify-content-center
+                                    w-100
+                                    btn btn-rounded btn-outline-warning
+                                    d-flex
+                                    align-items-center
+                                    mb-3 mt-3
+                                    "
+                                >
+                                    <i
+                                        data-feather="eye"
+                                        class="feather-sm fill-white me-2"
+                                    ></i>
+                                    Détail
+                                </button>
+                            </div>
+                            <div class="col-md-2 col-sm-12 top">
+                                <button
+                                    type="button"
+                                    id="btn-update-shipper"
+                                    class="
+                                    justify-content-center
+                                    w-100
+                                    btn btn-rounded btn-outline-info
+                                    d-flex
+                                    align-items-center
+                                    mb-3 mt-3
+                                    "
+                                >
+                                    <i
+                                        data-feather="edit"
+                                        class="feather-sm fill-white me-2"
+                                    ></i>
+                                    Modifier
+                                </button>
+                            </div>
+                            {{--                        <div class="col-md-2 col-sm-12 top">--}}
+                            {{--                            <button--}}
+                            {{--                                id="btn-delete-camion"--}}
+                            {{--                                type="button"--}}
+                            {{--                                class="--}}
+                            {{--                                        justify-content-center--}}
+                            {{--                                        w-100--}}
+                            {{--                                        btn btn-rounded btn-outline-danger--}}
+                            {{--                                        d-flex--}}
+                            {{--                                        align-items-center--}}
+                            {{--                                        mb-3 mt-3--}}
+                            {{--                                        "--}}
+                            {{--                            >--}}
+                            {{--                                <i--}}
+                            {{--                                    data-feather="trash-2"--}}
+                            {{--                                    class="feather-sm fill-white me-2"--}}
+                            {{--                                ></i>--}}
+                            {{--                                Supprimer--}}
+                            {{--                            </button>--}}
+                            {{--                        </div>--}}
 
-
-<div class="box-content" style="margin-top: 100px;">
-    <div class="row mt-10">
-        <div class="col-md-6">
-            <h2>Assigner des entreprises aux utilisateurs</h2>
-            <form id="assign-user-form" action="admin.assigner-entreprise-user" method="post">
-                @csrf
-                <div class="mb-3">
-                    <label for="shipper_id">Assigner une entreprise expéditrice :</label>
-                    <select class="form-control" id="shipper_id" name="shipper_id">
-                        <option value="">Sélectionner une entreprise expéditrice</option>
-                        @foreach ($shippers as $shipper)
-                            <option value="{{ $shipper->id }}">{{ $shipper->company_name }}</option>
-                        @endforeach
-                    </select>
+                        </div>
+                    </h4>
                 </div>
-                <button type="submit mt-1" class="btn btn-primary">Assigner une Entreprises aux Utilisateurs Sélectionnés</button>
-            </form>
-        </div>
-        <div class="row mt-10">
-            <div class="col-md-12">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover" id="user-table">
-                        <thead class="thead-dark">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table
+                            id="lang_file"
+                            class="table table-striped table-bordered display"
+                            style="width: 100%">
+                            <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>#</th>
                                 <th>Entreprise</th>
+                                <th>Adresse</th>
                                 <th>Email</th>
-                                <th>Adresse</th> 
-                                <th>Actions</th>
+                                <th>Téléphone</th>
+                                <th>Ville</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($users->sortByDesc('id') as $user)
-                                <tr>
-                                    <td>{{ $user->id }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>
-                                        @if ($user->fk_shipper_id)
-                                            {{ $shippers->find($user->fk_shipper_id)->company_name }}
-                                        @else
-                                            Aucune entreprise associée
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" class="user-checkbox" name="selected_users[]" value="{{ $user->id }}">
-                                        <input type="hidden"  id="user_ids[]" value="{{ $user->id }}">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            @if(count($shippers)  > env('default_int'))
+                                @foreach($shippers as $shipper)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="user-checkbox" name="shipper_id" id="shipper_id" value="{{ $shipper->id }}">
+                                        </td>
+                                        <td>{{ $shipper->company_name }}</td>
+                                        <td>{{ $shipper->address }}</td>
+                                        <td>{{ $shipper->email }}</td>
+                                        <td>{{ $shipper->phone }}</td>
+                                        <td>{{ $shipper->city->libelle }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Entreprise</th>
+                                <th>Adresse</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Ville</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<style>
-    .required {
-        color: red;         /* couleur étoile */
-        margin-left: 4px; /* Espacement entre le texte et l'étoile */
-    }
-</style>
 
-<script>
-    $(document).ready(function() {
+    {{-- Modal add--}}
+    <div
+        class="modal fade"
+        id="form-add-shipper"
+        tabindex="-1"
+        aria-labelledby="form-add-shipper"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ">
+                <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                    <h4 class="modal-title" id="detailTitle">
+                        Ajouter un chargeur
+                    </h4>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ route('admin.ajouter-chargeur') }}" >
+                        @csrf
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="company_name"
+                                        id="company_name"
+                                        class="form-control"
+                                        required
+                                        style="width: 100%; height: 36px"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Raison sociale <span class="text-danger">*</span> </label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        id="address"
+                                        required
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Adresse <span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="phone"
+                                        id="phone"
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Contact</label
+                                    >
+                                </div>
+                            </div>
 
-        $('.alert').delay(2000).fadeOut(400, function() {
-            $(this).alert('close');
-        });
-    });
-</script>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <select
+                                        name="city"
+                                        id="city"
+                                        class="form-control"
+                                        required
+                                        style="width: 100%; height: 36px"
+                                    >
+                                        <option disabled selected>Choisir une ville</option>
+                                        @foreach($villes as $ville)
+                                            <option value="{{$ville->id }}">{{$ville->libelle }}</option>
+                                        @endforeach
+                                    </select>
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Ville<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        required
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Email<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="ifu"
+                                        id="ifu"
+                                        required
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Numéro Ifu<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        name="rccm"
+                                        id="rccm"
+                                        class="form-control"
+                                        required
+                                        style="width: 100%; height: 36px"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Numéro RCCM<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-md-flex align-items-center">
+                            <div class="mt-3 mt-md-0 ms-auto">
+                                <button
+                                    type="submit"
+                                    class="
+                                btn btn-info
+                                font-weight-medium
+                                rounded-pill
+                                px-4
+                              "
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <i
+                                            data-feather="plus-circle"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Ajouter
+                                    </div>
+                                </button>
 
-<script>
-    // Script pour gérer la soumission du formulaire d'assignation
-    $(document).on('submit', '#assign-user-form', function(e) {
-        e.preventDefault();
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- end Modal--}}
 
-        var form = $(this);
-        var url = form.attr('action');
-        var formData = form.serialize();
+    {{-- Modal update--}}
+    <div
+        class="modal fade"
+        id="form-update-shipper"
+        tabindex="-1"
+        aria-labelledby="form-update-carrier"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content ">
+                <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                    <h4 class="modal-title" id="detailTitle">
+                        Modifier le chargeur
+                    </h4>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{{ route('updateShipper') }}" >
+                        @csrf
+                        <div class="row" id="formUpdateShipper">
+                            <div id="removeData">
 
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: formData,
-            success: function(response) {
-                // Afficher un pop-up de succès avec SweetAlert2
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Succès',
-                    text: "Utilisateur affecté avec succès",
-                    showConfirmButton: false,
-                    timer: 1500 // Temps d'affichage du popup en ms
-                }).then(() => {
-                     // Réinitialiser les cases à cocher
-                     $('.user-checkbox').prop('checked', false);
-                    // Actualiser la page après la fermeture du popup
-                    location.reload();
-                });
-            },
-            error: function(xhr) {
-                // Afficher un pop-up d'erreur en cas d'échec
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: 'Une erreur s\'est produite. Veuillez réessayer.'
-                });
-            }
-        });
-    });
+                            </div>
+                        </div>
+                        <div class="d-md-flex align-items-center">
+                            <div class="mt-3 mt-md-0 ms-auto">
+                                <button
+                                    type="submit"
+                                    class="
+                                btn btn-info
+                                font-weight-medium
+                                rounded-pill
+                                px-4
+                              "
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <i
+                                            data-feather="send"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Modifier
+                                    </div>
+                                </button>
 
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- end Modal--}}
+@endsection
 
-    document.getElementById('open-modal-button').addEventListener('click', function() {
-        document.getElementById('modal').style.display = 'block';
-    });
+@section('script')
+    <script src="{{ asset('src/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('src/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
+    <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
 
-    document.getElementById('modal').addEventListener('click', function(event) {
-        if (event.target === this) {
-            this.style.display = 'none';
-        }
-    });
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $("div.alert").remove();
+            }, 5000); //5s
 
-    document.getElementById('close-modal-button').addEventListener('click', function() {
-        document.getElementById('modal').style.display = 'none';
-    });
-
-    document.getElementById('modal').addEventListener('click', function(event) {
-        if (event.target === this) {
-            this.style.display = 'none';
-        }
-    });
-
-    $(document).ready(function () {
-                $("#close-modal-button").click(function () {
-                    $("#edit-profile-modal").modal('hide');
-                });
+            $('#lang_file tr').click(function (event) {
+                if (event.target.type !== 'checkbox') {
+                    $(':checkbox', this).trigger('click');
+                }
             });
-</script>
 
+            //Update Offer
+            $('#btn-update-shipper').click(function (){
+
+                var checkOffers = document.querySelectorAll('#shipper_id');
+                var data = [];
+
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                })
+
+                if(data.length == 0){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Aucune ligne sélectionnée',
+                        icon: 'error',
+                    });
+                }
+
+                if( data.length == 1){
+
+                    $('#removeData').remove();
+                    fetch('/modifier-chargeur/'+data[0].value)
+                        .then(response => response.json())
+                        .then(response => {
+                            $('#formUpdateShipper').append(`
+                                  <div class="row" id="removeData">
+                                   <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="company_name"
+                                                id="company_name"
+                                                class="form-control"
+                                                value="${response.company_name}"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            />
+                                            <input
+                                                type="hidden"
+                                                name="id_shipper"
+                                                id="id_shipper"
+                                                class="form-control"
+                                                value="${response.id}"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Raison sociale <span class="text-danger">*</span> </label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                id="address"
+                                                value="${response.address}"
+                                                required
+                                                class="form-control"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Adresse <span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                id="phone"
+                                                value="${response.phone}"
+                                                class="form-control"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Contact</label
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="city_up"
+                                                id="city_up"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option  selected   value="${response.city.id}">${response.city.libelle}</option>
+                                        </select>
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Ville<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            value="${response.email}"
+                                            required
+                                            class="form-control"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Email<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="text"
+                                            name="ifu"
+                                            id="ifu"
+                                            value="${response.ifu}"
+                                            required
+                                            class="form-control"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Numéro Ifu<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            name="rccm"
+                                            id="rccm"
+                                            value="${response.rccm}"
+                                            class="form-control"
+                                            required
+                                            style="width: 100%; height: 36px"
+                                        />
+                                        <label
+                                        ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Numéro RCCM<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                </div>
+                              </div>
+                            `);
+
+                            //Get all villes
+                            fetch('/villes')
+                                .then(response => response.json())
+                                .then(data => {
+                                    data.forEach(item => {
+                                        $('#city_up').append(`
+                                        <option value="${ item.id }" >${ item.libelle }</option>
+                                    `);
+                                    });
+                                });
+                        });
+                    $('#form-update-shipper').modal('show');
+                }
+
+                if( data.length >= 2){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Sélectionnez une seule ligne',
+                        icon: 'error',
+                    });
+                }
+                data = [];
+            });
+
+            //Update Offer
+            $('#btn-detail-shipper').click(function (){
+
+                var checkOffers = document.querySelectorAll('#shipper_id');
+                var data = [];
+
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                })
+
+                if(data.length == 0){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Aucune ligne sélectionnée',
+                        icon: 'error',
+                    });
+                }
+
+                if( data.length == 1){
+                    window.location.href = '/chargeur/'+data[0].value;
+                }
+
+                if( data.length >= 2){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Sélectionnez une seule ligne',
+                        icon: 'error',
+                    });
+                }
+                data = [];
+            });
+
+        });
+    </script>
 
 @endsection

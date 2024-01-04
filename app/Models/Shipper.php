@@ -37,11 +37,14 @@ class Shipper extends Model
         'ifu',
         'rccm',
         'created_by',
-
     ];
 
     public function users()
     {
         return $this->hasMany(User::class, 'fk_shipper_id');
+    }
+    public function ville()
+    {
+        return $this->belongsTo(Ville::class, 'city');
     }
 }

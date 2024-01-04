@@ -42,4 +42,9 @@ class Carrier extends Model
     {
         return $this->hasMany(User::class, 'fk_carrier_id');
     }
+
+    public function ville()
+    {
+        return $this->belongsTo(Ville::class, 'city');
+    }
 }

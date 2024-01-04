@@ -494,8 +494,6 @@
                     });
                 }
                 data = [];
-                console.log(data);
-
             });
 
             //Update Offer

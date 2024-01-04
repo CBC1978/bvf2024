@@ -28,4 +28,15 @@ class Car extends Model
         'model',
         'payload',
     ];
+
+
+    public function type()
+    {
+        return $this->belongsTo(TypeCar::class, 'fk_type_car', 'id');
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(BrandCar::class, 'fk_brand_car', 'id');
+    }
 }

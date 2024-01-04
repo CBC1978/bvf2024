@@ -27,11 +27,8 @@ class publishForm extends FormRequest
             'origin'=>['required'],
             'destination'=>['required'],
             'weight'=>['required','numeric'],
-            'price'=>['numeric'],
-            'volume'=>['numeric'],
             'description'=>['required'],
             'limit_date'=>['required','date'],
-            'vehicule_type' => ['required'],
         ];
     }
 

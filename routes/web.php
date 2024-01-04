@@ -21,7 +21,8 @@ use App\Http\Controllers\Profile\ProfileController;
 */
 
 //Auth routes
-Route::get('/chat', [offerController::class, 'chat'])->name('chat');
+Route::get('/discussion', [offerController::class, 'chat'])->name('chat');
+Route::get('/discussions', [offerController::class, 'chatInverse'])->name('chatInverse');
 Route::post('/envoyer-message', [offerController::class, 'sendChat'])->name('sendChat');
 Route::get('/logout', [authController::class, 'logout'])->name('logout');
 Route::get('/', [authController::class, 'index'])->name('index');
@@ -35,11 +36,14 @@ Route::get('/admin_home', [authController::class, 'login'])->name('admin_home');
 //Offer routes
 Route::get('/villes', [offerController::class, 'getAllVille'])->name('getVille');
 Route::get('/type-car', [offerController::class, 'getAllTypeCar'])->name('getAllTypeCar');
+Route::get('/brand-car', [offerController::class, 'getAllBrandCar'])->name('getAllBrandCar');
+Route::get('/cars', [offerController::class, 'getCarByCarrier'])->name('getCarByCarrier');
 Route::get('/accueil', [offerController::class, 'home'])->name('home');
 Route::get('/offres', [offerController::class, 'getOffers'])->name('getOffers');
 Route::get('/offres-reçues', [offerController::class, 'getOffersReceived'])->name('getOffersReceived');
 Route::get('/offres-reçues/detail/{id}', [offerController::class, 'getOffersReceivedDetail'])->name('getOffersReceivedDetail');
 Route::get('/offre/{id}', [offerController::class, 'getOfferOne'])->name('getOfferOne');
+Route::get('/offre/statut/modifier/{id}/{action}', [offerController::class, 'updateStatutOffer'])->name('updateStatutOffer');
 Route::get('/offre-publie/{id}', [offerController::class, 'getOfferPublishOne'])->name('getOfferPublishOne');
 Route::get('/offre-postulée/{id}', [offerController::class, 'getOfferApplyOne'])->name('getOfferApplyOne');
 Route::get('/offres-non-reçues', [offerController::class, 'getOffersNotReceived'])->name('getOffersNotReceived');
@@ -50,6 +54,26 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
+Route::get('/email/test', [offerController::class, 'sendEmail'])->name('sendEmail');
+//end Offer route
+
+
+//Contrat, Car, Driver
+Route::get('/contrat', [offerController::class, 'getContrat'])->name('getContrat');
+Route::get('/contrat/{id}', [offerController::class, 'getContratDetail'])->name('getContratDetail');
+Route::get('/contrat/modifier/{id}', [offerController::class, 'updateContrat'])->name('updateContrat');
+Route::post('/contrat/modifier/contrat', [offerController::class, 'updateStoreContrat'])->name('updateStoreContrat');
+Route::post('/contrat/camion/ajouter', [offerController::class, 'storeCar'])->name('storeCar');
+Route::get('/contrat/camion/{id}', [offerController::class, 'getCarOne'])->name('getCarOne');
+Route::post('/contrat/camion/modifier', [offerController::class, 'updateCar'])->name('updateCar');
+Route::get('/contrat/camion/supprimer/{id}', [offerController::class, 'deleteCar'])->name('deleteCar');
+Route::post('/contrat/conducteur/ajouter', [offerController::class, 'storeDriver'])->name('storeDriver');
+Route::get('/contrat/conducteur/{id}', [offerController::class, 'getDriverOne'])->name('getDriverOne');
+Route::post('/contrat/conducteur/modifier', [offerController::class, 'updateDriver'])->name('updateDriver');
+Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'deleteDriver'])->name('deleteDriver');
+Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->name('printContrat');
+
+//end Contrat route
 
 //Les routes  ADMIN
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');

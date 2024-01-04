@@ -763,7 +763,7 @@
                         });
                         setTimeout(function () {
                             location.reload();
-                        }, 3000); //5s
+                        }, 3000); //3s
                         //refresh page
                     }
                 });

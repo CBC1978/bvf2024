@@ -73,6 +73,136 @@
                                                     <div class="col-9">
                                                         <button type="button" class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
                                                             {{ $offer->vehicule_type }}
+                                            @endif
+                                        </div>
+                                        <div class="row mb-3">
+                                            @if(isset($offer->price) && !empty($offer->price))
+                                                <div class="col-md-4 mb-3">
+                                                    <button
+                                                        type="button"
+                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                        Prix: {{ $offer->price }}
+                                                    </button>
+                                                </div>
+                                            @endif
+                                            @if( isset($offer->volume) && !empty($offer->volume))
+                                                <div class="col-md-9">
+                                                    <button
+                                                        type="button"
+                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                        {{ $offer->volume }}
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        @if(Session::get('fk_shipper_id') != env('DEFAULT_INT'))
+                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                Postuler
+                                            </button>
+                                            @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT'))
+                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                Postuler
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Modal--}}
+                            <div
+                                class="modal fade"
+                                id="postuler-offre-{{$offer->id}}"
+                                tabindex="-1"
+                                aria-labelledby="postuler-offre-{{$offer->id}}"
+                                aria-hidden="true"
+                            >
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content ">
+                                        <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                                            <h4 class="modal-title" id="myLargeModalLabel">
+                                                Postuler à l'offre
+                                            </h4>
+                                            <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                            ></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 class="card-title">Faites une proposition</h4>
+                                            <h5 class="card-subtitle mb-3 pb-3 border-bottom">
+                                                Entrer des informations claires et valides
+                                            </h5>
+                                            <form method="post"  action="{{ route('storeApplyOffer') }}">
+                                                @csrf
+                                                <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        class="form-control"
+                                                        placeholder="Prix"
+                                                        name="price"
+                                                        id="price"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Prix <span class="text-danger">*</span></label
+                                                    >
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        class="form-control"
+                                                        placeholder="Poids"
+                                                        name="weight"
+                                                        id="weight"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Poids(T)<span class="text-danger">*</span></label
+                                                    >
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="textarea"
+                                                        class="form-control"
+                                                        placeholder="Description"
+                                                        name="description"
+                                                        id="description"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Description <span class="text-danger">*</span></label
+                                                    >
+                                                </div>
+                                                <div class="d-md-flex align-items-center">
+
+                                                    <div class="mt-3 mt-md-0 ms-auto">
+                                                        <button
+                                                            type="submit"
+                                                            class="
+                                                        btn btn-info
+                                                        font-weight-medium
+                                                        rounded-pill
+                                                        px-4
+                                                      "
+                                                        >
+                                                            <div class="d-flex align-items-center">
+                                                                <i
+                                                                    data-feather="send"
+                                                                    class="feather-sm fill-white me-2"
+                                                                ></i>
+                                                                Postuler
+                                                            </div>
                                                         </button>
                                                     </div>
                                                 @endif
@@ -115,7 +245,6 @@
         </div>
     </div>
 @endsection
-
 
 @section('script')
     <script>

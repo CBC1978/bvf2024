@@ -18,9 +18,6 @@
 <!--Custom JavaScript -->
 <script src="{{ asset('src/dist/js/feather.min.js') }}"></script>
 <script src="{{ asset('src/dist/js/custom.min.js') }}"></script>
-<!--This page JavaScript -->
-<script src="{{ asset('src/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-<!-- Chart JS -->
 <script src="{{ asset('src/dist/js/pages/dashboards/dashboard1.js') }}"></script>
 <script src="{{ asset('src/dist/libs/select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('src/dist/libs/select2/dist/js/select2.min.js') }}"></script>

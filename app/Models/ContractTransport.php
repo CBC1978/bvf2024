@@ -37,4 +37,7 @@ class ContractTransport extends Model
     {
         return $this->hasMany(ContractDetails::class, 'contract_id');
     }
+
+
+
 }

@@ -653,27 +653,28 @@ $(document).ready(function () {
         e.preventDefault(); $(this).parent('div').remove();
     });
 
-    $('#formContrat').submit(function (e){
-        e.preventDefault();
-        var car_id = document.querySelectorAll('#id_car_contrat');
-        var driver_id = document.querySelectorAll('#id_driver_contrat');
-        var contrat_id = document.querySelector('#id_contrat');
-        var token = document.querySelector('#_token_contrat');
-
-        if (car_id.length != driver_id.length){
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'le nombre de camions est différent du nombre de conducteurs',
-            });
-        }else if(car_id.length == 0 || driver_id.length == 0){
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Aucun camion ajouté ou aucun conducteur ajouté',
-            });
-        }else if (car_id.length == driver_id.length){
-            // var formData = new FormData(this);
+    // $('#formContrat').submit(function (e){
+    //     e.preventDefault();
+    //     var car_id = document.querySelectorAll('#id_car_contrat');
+    //     var driver_id = document.querySelectorAll('#id_driver_contrat');
+    //     var contrat_id = document.querySelector('#id_contrat');
+    //     var token = document.querySelector('#_token_contrat');
+    //
+    //     if (car_id.length != driver_id.length){
+    //         Swal.fire({
+    //             icon: 'warning',
+    //             title: 'Oops...',
+    //             text: 'le nombre de camions est différent du nombre de conducteurs',
+    //         });
+    //     }else if(car_id.length == 0 || driver_id.length == 0){
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Oops...',
+    //             text: 'Aucun camion ajouté ou aucun conducteur ajouté',
+    //         });
+    //     }else if (car_id.length == driver_id.length){
+    //         var formData = new FormData(this);
+    //         console.log('test');
             // car_id.forEach(item=>{
             //     formData.append( "car[]", JSON.stringify( item ) );
             // });
@@ -682,25 +683,22 @@ $(document).ready(function () {
             // });
             // formData.append( "car", JSON.stringify( car_id ) );
             // formData.append( "driver", JSON.stringify( driver_id ) );
-            let contrat = {id:contrat_id, car:car_id, driver:driver_id};
-            fetch('/contrat/modifier/'+contrat
-                // , {
-            //     // method: 'GET',
-            //     // body:JSON.stringify({
-            //     //     id:contrat_id,
-            //     //     car:car_id,
-            //     //     driver:driver_id,
-            //     // }),
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json',
-            //         "X-CSRF-Token": token
-            //     }
-            // }
-        )
-                .then(response =>response.json())
-                .then(data =>{
-                        console.log(data);
+            // let contrat = {id:contrat_id, car:car_id, driver:driver_id};
+            // fetch('/contrat/modifier/contrat'
+            //     , {
+            //         headers: {
+            //             // 'Accept': 'application/json',
+            //             // 'Content-Type': 'application/json',
+            //             "X-CSRF-Token": token
+            //         },
+            //         method: 'POST',
+            //         }
+            //     )
+            //     .then(response =>
+            //         response.json()
+            //     )
+                // .then(data =>{
+                //         console.log(data);
                 //         if(data == 0){
                 //             Swal.fire({
                 //                     icon: 'success',
@@ -709,18 +707,18 @@ $(document).ready(function () {
                 //                 }
                 //             );
                 //         }
-                    });
-        }
+                //     });
+        // }
 
-
-        car_id.forEach(item =>{
-            console.log(item.value);
-        }) ;
-        driver_id.forEach(item =>{
-            console.log(item.value);
-        });
-        console.log(contrat_id.value)
-        console.log(token.value)
-    });
+    //
+    //     car_id.forEach(item =>{
+    //         console.log(item.value);
+    //     }) ;
+    //     driver_id.forEach(item =>{
+    //         console.log(item.value);
+    //     });
+    //     console.log(contrat_id.value)
+    //     console.log(token.value)
+    // });
 
 });

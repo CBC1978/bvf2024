@@ -101,13 +101,13 @@
                                             @endif
                                         </div>
                                         @if(Session::get('fk_shipper_id') != env('DEFAULT_INT'))
-                                                <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                    Postuler
-                                                </button>
-                                                @elseif(Session::get('fk_carrier_id') != 0)
-                                                <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                    Postuler
-                                                </button>
+                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                Postuler
+                                            </button>
+                                            @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT'))
+                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                Postuler
+                                            </button>
                                         @endif
                                     </div>
                                 </div>
@@ -141,7 +141,6 @@
                                             </h5>
                                             <form method="post"  action="{{ route('storeApplyOffer') }}">
                                                 @csrf
-
                                                 <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
                                                 <div class="form-floating mb-3">
                                                     <input

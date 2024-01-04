@@ -23,28 +23,6 @@
                 <li class="breadcrumb-item active">Mes contrats de transport</li>
             </ol>
         </div>
-        <div class="col-md-7 col-12 align-self-center d-none d-md-block">
-            <div class="d-flex mt-2 justify-content-end">
-                <div class="d-flex me-3 ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>THIS MONTH</small></h6>
-                        <h4 class="mt-0 text-info">$58,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="monthchart"></div>
-                    </div>
-                </div>
-                <div class="d-flex ms-2">
-                    <div class="chart-text me-2">
-                        <h6 class="mb-0"><small>LAST MONTH</small></h6>
-                        <h4 class="mt-0 text-primary">$48,356</h4>
-                    </div>
-                    <div class="spark-chart">
-                        <div id="lastmonthchart"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
@@ -63,7 +41,7 @@
                             <div class="col-md-2 col-sm-12 top">
                                 <button
                                     type="button"
-                                    id="btn-detail-offer"
+                                    id="btn-detail-contrat"
                                     class="
                                       justify-content-center
                                       w-100
@@ -80,42 +58,44 @@
                                 </button>
                             </div>
                             <div class="col-md-2 col-sm-12 top">
-                                <button
-                                    type="button"
-                                    id="btn-update-offer"
-                                    class="
-                                      justify-content-center
-                                      w-100
-                                      btn btn-rounded btn-outline-info
-                                      d-flex
-                                      align-items-center
-                                    "
-                                >
-                                    <i
-                                        data-feather="edit"
-                                        class="feather-sm fill-white me-2"
-                                    ></i>
-                                    Modifier
-                                </button>
+                                @if(Session::get('fk_carrier_id') != env('default_int'))
+                                    <button
+                                        type="button"
+                                        id="btn-update-contrat"
+                                        class="
+                                          justify-content-center
+                                          w-100
+                                          btn btn-rounded btn-outline-info
+                                          d-flex
+                                          align-items-center
+                                        "
+                                    >
+                                        <i
+                                            data-feather="edit"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Modifier
+                                    </button>
+                                @endif
                             </div>
                             <div class="col-md-2 col-sm-12 top">
-                                <button
-                                    id="btn-delete-offer"
-                                    type="button"
-                                    class="
-                                      justify-content-center
-                                      w-100
-                                      btn btn-rounded btn-outline-danger
-                                      d-flex
-                                      align-items-center
-                                    "
-                                >
-                                    <i
-                                        data-feather="trash-2"
-                                        class="feather-sm fill-white me-2"
-                                    ></i>
-                                    Supprimer
-                                </button>
+{{--                                <button--}}
+{{--                                    id="btn-delete-offer"--}}
+{{--                                    type="button"--}}
+{{--                                    class="--}}
+{{--                                      justify-content-center--}}
+{{--                                      w-100--}}
+{{--                                      btn btn-rounded btn-outline-danger--}}
+{{--                                      d-flex--}}
+{{--                                      align-items-center--}}
+{{--                                    "--}}
+{{--                                >--}}
+{{--                                    <i--}}
+{{--                                        data-feather="trash-2"--}}
+{{--                                        class="feather-sm fill-white me-2"--}}
+{{--                                    ></i>--}}
+{{--                                    Supprimer--}}
+{{--                                </button>--}}
                             </div>
                             <div class="col-6"></div>
                         </div>
@@ -131,20 +111,42 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nom</th>
                                 <th>Description</th>
                                 <th>Iténaire</th>
+                                <th>Poids (T)</th>
                             </tr>
                             </thead>
                             <tbody>
-
-
+                            @if(!empty($contrats))
+                                @foreach($contrats as $obj)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="contrat_id" id="contrat_id" value="{{ $obj->id }}">
+                                        </td>
+                                        <td>{{ $obj->description }}</td>
+                                        <td>{{ $obj->origin->libelle .'-'.$obj->destination->libelle }}</td>
+                                        <td>{{ $obj->weight }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            @if(!empty($contratc))
+                                @foreach($contratc as $obj)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="contrat_id" id="contrat_id" value="{{ $obj->id }}">
+                                        </td>
+                                        <td>{{ $obj->description }}</td>
+                                        <td>{{ $obj->origin->libelle .'-'.$obj->destination->libelle }}</td>
+                                        <td>{{ $obj->weight }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                             <tfoot>
                                 <th>#</th>
-                                <th>Nom</th>
                                 <th>Description</th>
                                 <th>Iténaire</th>
+                                <th>Poids(T)</th>
                             </tfoot>
                         </table>
 
@@ -271,9 +273,9 @@
             });
 
             //Detail Offer
-            $('#btn-detail-offer').click(function (){
+            $('#btn-detail-contrat').click(function (){
 
-                var checkOffers = document.querySelectorAll('#offer-detail');
+                var checkOffers = document.querySelectorAll('#contrat_id');
                 var data = [];
 
                 // Verify if checkboxes are checked
@@ -293,170 +295,7 @@
 
                 if( data.length == 1){
 
-                    $('#removeData').remove();
-                    fetch('/offre/'+data[0].value)
-                        .then(response => response.json())
-                        .then(response => {
-
-                            $('#formDetailOffer').append(`
-                                  <div class="row" id="removeData">
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    name="origin"
-                                                    id="origin"
-                                                    class="form-control"
-                                                    value="${ response.origin.libelle }"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de départ <span class="text-danger">*</span> </label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    type="date"
-                                                    name="limit_date"
-                                                    id="limit_date"
-                                                    value="${ response.limit_date}"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Date"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Date d'expiration <span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        readOnly
-                                        name="destination"
-                                        id="destination"
-                                        value="${ response.destination.libelle }"
-                                                    class="form-control"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de destination<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    type="number"
-                                                    step="0.01"
-                                                    name="weight"
-                                                    id="weight"
-                                                    value="${ response.weight }"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Poids"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Poids(T)<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="number"
-                                    step="0.01"
-                                    name="price"
-                                    value="${ response.price }"
-                                                        id="price"
-                                                        required
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    name="vehicule_type"
-                                    id="vehicule_type"
-                                    class="form-control"
-                                    value="${ response.vehicule_type.libelle }"
-                                                        required
-                                                        style="width: 100%; height: 36px"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Type d'engin<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value="${response.description }"
-                                                required
-                                                class="form-control"
-                                                placeholder="Description"
-                                            />
-                                            <label
-                                            ><i
-                                                    class="feather-sm text-dark fill-white me-2"
-                                                ></i
-                                                >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
-                                            >
-                                        </div>
-                                  </div>
-                            `);
-                        });
-                    $('#detail-offer').modal('show');
+                 window.location.href= "/contrat/"+data[0].value;
 
                 }
 
@@ -467,15 +306,14 @@
                         icon: 'error',
                     });
                 }
-                data = [];
-                console.log(data);
+
 
             });
 
             //Update Offer
-            $('#btn-update-offer').click(function (){
+            $('#btn-update-contrat').click(function (){
 
-                var checkOffers = document.querySelectorAll('#offer-detail');
+                var checkOffers = document.querySelectorAll('#contrat_id');
                 var data = [];
 
                 // Verify if checkboxes are checked
@@ -494,195 +332,7 @@
                 }
 
                 if( data.length == 1){
-
-                    $('#removeData').remove();
-                    fetch('/offre/'+data[0].value)
-                        .then(response => response.json())
-                        .then(response => {
-
-                            $('#formUpdateOffer').append(`
-                                  <div class="row" id="removeData">
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <select
-                                                    name="origin"
-                                                    id="origin"
-                                                    class="form-control"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                >
-                                                    <option value="${ response.origin.id }" >${ response.origin.libelle }</option>
-                                                </select>
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de départ <span class="text-danger">*</span> </label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    type="date"
-                                                    name="limit_date"
-                                                    id="limit_date"
-                                                    value="${ response.limit_date}"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Date"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Date d'expiration <span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <select
-                                        name="destination"
-                                        id="destination"
-                                        class="form-control"
-                                        required
-                                        style="width: 100%; height: 36px"
-                                    >
-                                        <option value="${ response.destination.id }" selected>${ response.destination.libelle }</option>
-                                                            </select>
-                                                            <label
-                                                            ><i
-                                                                    class="feather-sm text-dark fill-white me-2"
-                                                                ></i
-                                                                >Lieu de destination<span class="text-danger">*</span></label
-                                                            >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    name="weight"
-                                                    id="weight"
-                                                    value="${ response.weight }"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Poids"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Poids(T)<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    name="price"
-                                    value="${ response.price }"
-                                                        id="price"
-                                                        required
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                            <div class="form-floating mb-3">
-                                <select
-                                    name="vehicule_type"
-                                    id="vehicule_type"
-                                    class="form-control"
-                                    required
-                                    style="width: 100%; height: 36px"
-                                >
-                                    <option value="${ response.vehicule_type.id }" selected>${ response.vehicule_type.libelle }</option>
-
-                                                    </select>
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Type d'engin<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value="${response.description }"
-                                                            required
-                                                            class="form-control"
-                                                            placeholder="Description"
-                                                        />
-                                                        <label
-                                                        ><i
-                                                                class="feather-sm text-dark fill-white me-2"
-                                                            ></i
-                                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
-                                                        >
-                                                        <input type="hidden" value="${ response.id }" name="idOffer"  id="idOffer"/>
-                                        </div>
-                                  </div>
-                            `);
-
-                            //Get all villes
-                            fetch('/villes')
-                                .then(response => response.json())
-                                .then(data => {
-
-                                    data.forEach(item => {
-                                        $('#origin').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
-                                    `);
-                                        $('#destination').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
-                                    `);
-                                    });
-
-                                });
-
-                            //Get all type of car
-                            fetch('/type-car')
-                                .then(response => response.json())
-                                .then(data => {
-                                    data.forEach(item => {
-                                        $('#vehicule_type').append(`
-                                           <option value="${ item.id }"> ${ item.libelle }</option>
-                                        `)
-                                    })
-                                });
-                        });
-                    $('#update-offer').modal('show');
+                    window.location.href= "/contrat/modifier/"+data[0].value;
                 }
 
                 if( data.length >= 2){

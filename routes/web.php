@@ -54,13 +54,15 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
+Route::get('/email/test', [offerController::class, 'sendEmail'])->name('sendEmail');
 //end Offer route
 
 
 //Contrat, Car, Driver
 Route::get('/contrat', [offerController::class, 'getContrat'])->name('getContrat');
+Route::get('/contrat/{id}', [offerController::class, 'getContratDetail'])->name('getContratDetail');
 Route::get('/contrat/modifier/{id}', [offerController::class, 'updateContrat'])->name('updateContrat');
-Route::get('/contrat/modifier/{contrat}', [offerController::class, 'updateStoreContrat'])->name('updateStoreContrat');
+Route::post('/contrat/modifier/contrat', [offerController::class, 'updateStoreContrat'])->name('updateStoreContrat');
 Route::post('/contrat/camion/ajouter', [offerController::class, 'storeCar'])->name('storeCar');
 Route::get('/contrat/camion/{id}', [offerController::class, 'getCarOne'])->name('getCarOne');
 Route::post('/contrat/camion/modifier', [offerController::class, 'updateCar'])->name('updateCar');
@@ -69,6 +71,7 @@ Route::post('/contrat/conducteur/ajouter', [offerController::class, 'storeDriver
 Route::get('/contrat/conducteur/{id}', [offerController::class, 'getDriverOne'])->name('getDriverOne');
 Route::post('/contrat/conducteur/modifier', [offerController::class, 'updateDriver'])->name('updateDriver');
 Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'deleteDriver'])->name('deleteDriver');
+Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->name('printContrat');
 
 //end Contrat route
 

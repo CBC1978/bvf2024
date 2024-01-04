@@ -37,4 +37,9 @@ class Carrier extends Model
         'created_by',
 
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'fk_carrier_id');
+    }
 }

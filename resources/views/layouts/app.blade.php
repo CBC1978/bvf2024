@@ -153,7 +153,7 @@
                                     @if(Session::get('role') == env('ROLE_SHIPPER'))
                                         <div class="form-floating mb-3">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 name="volume"
                                                 id="volume"
                                                 class="form-control"

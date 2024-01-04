@@ -54,7 +54,6 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
-Route::get('/email/test', [offerController::class, 'sendEmail'])->name('sendEmail');
 //end Offer route
 
 

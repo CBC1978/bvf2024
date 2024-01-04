@@ -85,18 +85,27 @@ class authController extends Controller
     public function updatePassword(emailUpdatPasswordForm  $request)
     {
         $validated = $request->validated();
-    
 
     }
 
     public function getUsersValide()
     {
         if (Session::get('role') == env('ROLE_SHIPPER')){
-            return view('pages.user.home_valide');
+
+            $users = User::where('status','=',env('DEFAULT_VALID'))
+                ->where('fk_shipper_id','=',Session::get('fk_shipper_id'))
+                ->get();
+            return view('pages.user.home_valide', compact('users'));
+
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
-            return view('pages.user.home_valide');
+
+            $users = User::where('status','=',env('DEFAULT_VALID'))
+                ->where('fk_carrier_id','=',Session::get('fk_carrier_id'))
+                ->get();
+            return view('pages.user.home_valide', compact('users'));
+
         }elseif (Session::get('role') == env('ROLE_ADMIN')){
-           
+
             $users = User::all();
 
             return view('pages.admin.home_valide_admin',compact('users'));
@@ -105,11 +114,22 @@ class authController extends Controller
 
     public function getUsersNoValide()
     {
-       if (Session::get('role') == env('ROLE_ADMIN')){ 
-            $users = User::all();
+        if (Session::get('role') == env('ROLE_SHIPPER')){
 
-            return view('pages.admin.home_no_valide_admin',compact('users'));
-        }elseif (Session::get('role') == env('ROLE_ADMIN')){ //gestion users compte admin
+            $users = User::where('status','=',env('STATUS_VALID'))
+                ->where('fk_shipper_id','=',Session::get('fk_shipper_id'))
+                ->get();
+            return view('pages.user.home_non_valide', compact('users'));
+
+        }elseif (Session::get('role') == env('ROLE_CARRIER')){
+
+            $users = User::where('status','=',env('STATUS_VALID'))
+                ->where('fk_carrier_id','=',Session::get('fk_carrier_id'))
+                ->get();
+            return view('pages.user.home_non_valide', compact('users'));
+
+        }
+       elseif (Session::get('role') == env('ROLE_ADMIN')){ //gestion users compte admin
             return view('pages.admin.home_valide_admin');
         }
 
@@ -155,13 +175,13 @@ public function register( Request $request)
     $user->password =Hash::make( $request->password);
     $user->role = $request->role;
     $user->status = 0;
-    
+
     try {
 
         Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
         $user->save();
         return view('auth.verifyEmail');
-        
+
     }catch (\Exception $e){
         return view('auth.register');
     }
@@ -170,7 +190,7 @@ public function register( Request $request)
 
     public function otpVerify(Request $request)
     {
-        
+
         $request->validate([
             'otp' => ['required', 'string', 'min:4', 'max:255'],
         ]);
@@ -184,7 +204,7 @@ public function register( Request $request)
             // Si le code OTP est vérifié, mettez le statut à 1
             $user->status = 1;
             $user->save();
-            
+
             // Envoyez un e-mail pour informer de la vérification
             Mail::to($user->email)->send(new ValidatedRegisterEmails($user->first_name));
 
@@ -192,7 +212,7 @@ public function register( Request $request)
 
         } else {
             // Si le code OTP ne correspond pas alors le compte n'est pas vérifié, rediriger vers la page d'envoi de code OTP avec un message d'erreur
-            
+
             return redirect()->route('confirmation-email')->with('error_message', 'Le code OTP est incorrect.');
         }
     }
@@ -207,5 +227,36 @@ public function register( Request $request)
 
     }
 
+    public function getUserEntreprise()
+    {
+        if(Session::get('role') == env('ROLE_SHIPPER')){
+            $user = User::find(intval(Session::get('userId')));
+
+            if($user->status == env('STATUS_VALID') && $user->fk_shipper_id == env('DEFAULT_INT')){
+                return response()->json('0');
+            }
+        }elseif(Session::get('role') == env('ROLE_CARRIER') ){
+            $user = User::find(intval(Session::get('userId')));
+
+            if($user->status == env('STATUS_VALID')&& $user->fk_carrier_id == env('DEFAULT_INT')){
+                return response()->json('0');
+            }
+        }
+        return response()->json('1');
+    }
+
+    public function affectUserEntreprise($id)
+    {
+        if(Session::get('role') == env('ROLE_SHIPPER')){
+            $user = User::find(intval(Session::get('userId')));
+            $user->fk_shipper_id = intval($id);
+            $user->save();
+        }elseif(Session::get('role') == env('ROLE_CARRIER')){
+            $user = User::find(intval(Session::get('userId')));
+            $user->fk_carrier_id = intval($id);
+            $user->save();
+        }
+        return response()->json('0');
+    }
 
 }

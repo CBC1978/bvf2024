@@ -237,8 +237,9 @@ class offerController extends Controller
 
             $nbContract = 0;
 //                $this->ContractTransport();
+            $entreprise = Shipper::all();
 
-            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract'));
+            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract','entreprise'));
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
 
@@ -262,8 +263,9 @@ class offerController extends Controller
 //                $this->ContractTransport();
             $nbOffer = $this->countTransportAnnouncements();
             $nbOfferReceived = $this->countTransportOffers();
+            $entreprise = Carrier::all();
 
-            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract'));
+            return view('pages.home', compact('offers', 'nbOffer', 'nbOfferReceived','nbContract','entreprise'));
         }elseif (Session::get('role') == env('ROLE_ADMIN')){
 
             //Get the ten latest carrier offer

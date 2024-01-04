@@ -64,7 +64,7 @@
                                     class="
                                       justify-content-center
                                       w-100
-                                      btn btn-rounded btn-outline-success
+                                      btn btn-rounded btn-outline-info
                                       d-flex
                                       align-items-center
                                     "
@@ -74,6 +74,7 @@
                                         class="feather-sm fill-white me-2"
                                     ></i>
                                     Statut
+                                    Désactiver
                                 </button>
                             </div>
                         </div>
@@ -117,7 +118,7 @@
                                             @endif
                                         </td>
                                     @endif
-                                        
+
                                     </tr>
                                 @endforeach
                             </tbody>

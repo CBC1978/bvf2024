@@ -919,8 +919,16 @@
                                 />
                             </div>
                             <div class="ms-2">
-                                <h4 class="mb-0 text-white">Steave Jobs</h4>
-                                <p class="mb-0">varun@gmail.com</p>
+                                <h4 class="mb-0 text-white">
+                                    <p class="mb-0">
+                                        @if(Session::has('username'))
+                                            <p>{{ Session::get('username') }}</p>
+                                            @if(Session::has('email'))
+                                                <p>{{ Session::get('email') }}</p>
+                                            @endif
+                                        @endif
+                                    </p>
+                                </h4>
                             </div>
                         </div>
                         <a class="dropdown-item" href="{{route('profile.affichage')}}" style="color: black;"
@@ -928,7 +936,7 @@
                                 data-feather="user"
                                 class="feather-sm text-info me-1 ms-1"
                             ></i>
-                            My Profile</a
+                            Profile</a
                         >
                         <div class="dropdown-divider"></div>
 {{--                        <form action="{{ route('logout') }}" method="GET">--}}

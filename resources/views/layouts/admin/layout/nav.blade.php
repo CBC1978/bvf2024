@@ -923,6 +923,9 @@
                                     <p class="mb-0">
                                         @if(Session::has('username'))
                                             <p>{{ Session::get('role') }}</p>
+                                            @if(Session::has('email'))
+                                                <p>{{ Session::get('email') }}</p>
+                                            @endif
                                         @endif
                                     </p>
                                 </h4>
@@ -933,22 +936,15 @@
                                 data-feather="user"
                                 class="feather-sm text-info me-1 ms-1"
                             ></i>
-                            My Profile</a
+                              Profile</a
                         >
                         <div class="dropdown-divider"></div>
-                        <!--a class="dropdown-item" href=""
-                        ><i
-                                data-feather="log-out"
-                                class="feather-sm text-danger me-1 ms-1"
-                            ></i>
-                            Se déconnecter</a
-                        -->
-                        
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
+                        <div class="dropdown-divider"></div>
+{{--                        <form action="{{ route('logout') }}" method="GET">--}}
+{{--                            @csrf--}}
                             <a class="dropdown-item" href="{{ route('logout') }}"
                             >
-                            <button id="logoutBtn" type="submit" style="text-decoration: none; color: black; border: none; background: none;">
+                            <button type="submit" style="text-decoration: none; color: black; border: none; background: none;">
                                 <i
                                 data-feather="log-out"
                                 class="feather-sm text-danger me-1 ms-1"
@@ -956,7 +952,7 @@
                                 Déconnexion
                             </button>
                         </a>
-                        </form>
+{{--                        </form>--}}
                         
                     </div>
                 </li>

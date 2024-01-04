@@ -203,7 +203,7 @@ class AdminController extends Controller
         ]);
     
     
-        // retrouver le user en question
+        // retrouver l'utilisateur en question
         $username = session('username');
         $user = User::where('username', $username)->first();
     

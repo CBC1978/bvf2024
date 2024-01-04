@@ -136,7 +136,7 @@
                                 <div class="d-flex">
                                     <div class="ms-auto">
                                         <a
-                                            href=""
+                                            href="{{ route('codeRequest')}}"
                                             id="to-recover"
                                             class="link font-weight-medium"
                                         ><i class="fa fa-lock me-1"></i> Renvoyer le code</a

@@ -237,7 +237,7 @@
                         @enderror
                     </div>
 
-                    <div class="form-group row">
+                    <!--div class="form-group row">
                         <div class="col-12">
                             <input
                                 class="form-control @error('pass1') is-invalid @enderror"
@@ -248,7 +248,7 @@
                         @error('pass1')
                         <div class="alert alert-danger">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div-->
                     <!-- pwd -->
                     <div class="row mt-3">
                         <div class="col-12">

@@ -416,13 +416,9 @@ class offerController extends Controller
 
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
 
-<<<<<<< HEAD
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
             $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
-=======
         }elseif (Session::get('role') == env('role_carrier')){
->>>>>>> 5e734303e848f4d0e516fd52922d1d6d01b30c57
-
             $obj = new TransportAnnouncement();
             $obj->origin = intval($request->origin);
             $obj->destination = intval($request->destination);

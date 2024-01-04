@@ -11,6 +11,7 @@ use App\Models\Shipper;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -82,12 +83,35 @@ class authController extends Controller
         return view('auth.verifyEmail');
     }
 
-    public function updatePassword(emailUpdatPasswordForm  $request)
+   /* public function updatePassword(emailUpdatPasswordForm  $request)
     {
         $validated = $request->validated();
     
 
-    }
+    }*/
+public function updatePassword(Request $request)
+{
+
+// ...
+    // Générer un nouveau mot de passe
+
+    $newPassword = Str::random(10);   
+
+    // Récupérer l'utilisateur en fonction de l'adresse e-mail fournie
+    
+    $user = User::where('email', $request->email)->first();
+    if ($user){
+    // Mettre à jour le mot de passe de l'utilisateur dans la base de données
+    $user->password = Hash::make($newPassword);
+    $user->save();
+
+    // Envoyer le nouveau mot de passe par e-mail
+    Mail::to($user->email)->send(new ResetPasswordEmail($user->name, $newPassword));
+
+    return redirect()->route('login')->with('success_message', 'Votre mot de passe a été réinitialisé. Veuillez vérifier votre e-mail pour le nouveau mot de passe.');
+}
+}
+
 
     public function getUsersValide()
     {
@@ -131,42 +155,44 @@ public function index2()
 }
 
 
-public function register( Request $request)
-{
-    $request->validate(
-        [
+    public function register(Request $request)
+    {
+
+
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
             'user_phone' => ['required', 'string', 'max:20'],
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'string', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:chargeur,transporteur'],
-        ]
-    );
-    $user = new User();
-    $user->name = $request->name;
-    $user->first_name = $request->first_name;
-    $user->user_phone = $request->user_phone;
-    $user->username = $request->username;
-    $user->email = $request->email;
-    $user->code = Helper::random_int(4, 9999);
-    $user->email = $request->email;
-    $user->password =Hash::make( $request->password);
-    $user->role = $request->role;
-    $user->status = 0;
-    
-    try {
 
-        Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
-        $user->save();
-        return view('auth.verifyEmail');
+            'role' => ['required', 'string', 'in:chargeur,transporteur'],
+        ]);
+
+        $user = new User();
+
+        $user->name = $request->name;
+        $user->first_name = $request->first_name;
+        $user->user_phone = $request->user_phone;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->code = Helper::random_int(4, 9999);
+        $user->password = Hash::make($request->password);
+        $user->role = $request->role;
+        $user->status = 0;
         
-    }catch (\Exception $e){
-        return view('auth.register');
+
+        try {
+            Mail::to($user->email)->send(new RegisterEmails($user->first_name, 'Valider votre inscription', $user->code));
+            $user->save();
+            return view('auth.verifyEmail');
+        } catch (\Exception $e) {
+            return view('auth.register');
+        }
     }
 
-}
+
 
     public function otpVerify(Request $request)
     {
@@ -193,19 +219,32 @@ public function register( Request $request)
         } else {
             // Si le code OTP ne correspond pas alors le compte n'est pas vérifié, rediriger vers la page d'envoi de code OTP avec un message d'erreur
             
-            return redirect()->route('confirmation-email')->with('error_message', 'Le code OTP est incorrect.');
+            return redirect()->route('verifyEmail')->with('error_message', 'Le code OTP est incorrect.');
         }
     }
 
     public function codeRequest(Request $request)
     {
-        // Si le compte n'est pas vérifié, générer et envoyer un nouveau code OTP
-        $user = User::whereEmail($request->email)->first();
-        Mail::to($user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));;
+        $user = User::where('email', $request->email)->first();
+        //$user = User::firstOrCreate(['email' => $request->email]);
 
-        return redirect()->route('confirmation-email')->with('success_message', 'Un nouveau code OTP a été envoyé.');
-
+    
+        // Vérifier si l'utilisateur existe
+        if ($user) {
+            // Générer un nouveau code OTP et l'associer à l'utilisateur
+            $user->code = Helper::random_int(4, 9999);
+            $user->save();
+    
+            // Envoyer le nouveau code OTP par e-mail
+            Mail::to($user->email)->send(new RegisterEmails($user->first_name, 'Valider votre inscription', $user->code));
+    
+            return redirect()->route('verifyEmail')->with('error_message', 'Un nouveau code OTP a été envoyé.');
+        }
+    
+        // Rediriger vers une page appropriée si l'utilisateur n'est pas trouvé
+        return redirect()->route('verifyEmail')->with('error_message', 'Adresse e-mail non trouvée.');
     }
+    
 
 
 }

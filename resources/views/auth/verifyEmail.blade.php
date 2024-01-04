@@ -131,19 +131,19 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        
-                            <div class="form-group">
-                                <div class="d-flex">
-                                    <div class="ms-auto">
-                                        <a
-                                            href="{{ route('codeRequest')}}"
-                                            id="to-recover"
-                                            class="link font-weight-medium"
-                                        ><i class="fa fa-lock me-1"></i> Renvoyer le code</a
-                                        >
-                                    </div>
-                                </div>
-                            </div>
+
+{{--                            <div class="form-group">--}}
+{{--                                <div class="d-flex">--}}
+{{--                                    <div class="ms-auto">--}}
+{{--                                        <a--}}
+{{--                                            href="{{ route('codeRequest')}}"--}}
+{{--                                            id="to-recover"--}}
+{{--                                            class="link font-weight-medium"--}}
+{{--                                        ><i class="fa fa-lock me-1"></i> Renvoyer le code</a--}}
+{{--                                        >--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="form-group text-center mt-4 mb-3">
                                 <div class="col-xs-12">
                                     <button class=" btn btn-info d-block w-100 waves-effect waves-light " type="submit">

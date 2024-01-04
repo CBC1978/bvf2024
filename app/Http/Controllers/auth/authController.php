@@ -94,10 +94,10 @@ public function updatePassword(Request $request)
 // ...
     // Générer un nouveau mot de passe
 
-    $newPassword = Str::random(10);   
+    $newPassword = Str::random(10);
 
     // Récupérer l'utilisateur en fonction de l'adresse e-mail fournie
-    
+
     $user = User::where('email', $request->email)->first();
     if ($user){
     // Mettre à jour le mot de passe de l'utilisateur dans la base de données
@@ -178,7 +178,6 @@ public function index2()
     public function register(Request $request)
     {
 
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
@@ -190,6 +189,7 @@ public function index2()
             'role' => ['required', 'string', 'in:chargeur,transporteur'],
         ]);
 
+
         $user = new User();
 
         $user->name = $request->name;
@@ -197,14 +197,11 @@ public function index2()
         $user->user_phone = $request->user_phone;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->code = Helper::random_int(4, 9999);
+        $user->code = Helper::random_int(5, 9999);
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
         $user->status = 0;
-        
 
-       
-   
         try {
 
             Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
@@ -221,11 +218,10 @@ public function index2()
     {
 
         $request->validate([
-            'otp' => ['required', 'string', 'min:4', 'max:255'],
+            'otp' => ['required', 'string', 'max:255'],
         ]);
 
         $user = User::where('code', $request->otp)->first();
-
 
         $user = User::whereCode($request->otp)->first();
 
@@ -237,12 +233,12 @@ public function index2()
             // Envoyez un e-mail pour informer de la vérification
             Mail::to($user->email)->send(new ValidatedRegisterEmails($user->first_name));
 
-            return view('auth.VerifiedAccount');
+            return redirect()->route('index')->with('error', 'Le code OTP est incorrect.');
 
         } else {
             // Si le code OTP ne correspond pas alors le compte n'est pas vérifié, rediriger vers la page d'envoi de code OTP avec un message d'erreur
-            
-            return redirect()->route('verifyEmail')->with('error_message', 'Le code OTP est incorrect.');
+
+            return redirect()->route('verifyEmail')->with('error', 'Le code OTP est incorrect.');
 
             return redirect()->route('confirmation-email')->with('error_message', 'Le code OTP est incorrect.');
         }
@@ -253,23 +249,23 @@ public function index2()
         $user = User::where('email', $request->email)->first();
         //$user = User::firstOrCreate(['email' => $request->email]);
 
-    
+
         // Vérifier si l'utilisateur existe
         if ($user) {
             // Générer un nouveau code OTP et l'associer à l'utilisateur
             $user->code = Helper::random_int(4, 9999);
             $user->save();
-    
+
             // Envoyer le nouveau code OTP par e-mail
             Mail::to($user->email)->send(new RegisterEmails($user->first_name, 'Valider votre inscription', $user->code));
-    
+
             return redirect()->route('verifyEmail')->with('error_message', 'Un nouveau code OTP a été envoyé.');
         }
-    
+
         // Rediriger vers une page appropriée si l'utilisateur n'est pas trouvé
         return redirect()->route('verifyEmail')->with('error_message', 'Adresse e-mail non trouvée.');
     }
-    
+
 
     public function getUserEntreprise()
     {

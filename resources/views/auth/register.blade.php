@@ -110,6 +110,11 @@
     <div class="card">
     <div class="card-body">
     <div class="text-center">
+        @if(Session::has('error'))
+            <div class="alert alert-danger">
+                {{Session::get('error')}}
+            </div>
+        @endif
                                 <p class="font-sm text-brand-2">Inscription </p>
                                 <p class="font-sm text-muted mb-30">Créer un compte facilement et rapidement</p>
                                     <form class="login-register text-start mt-20" method="post" action="{{ route('registerUser') }}">
@@ -294,7 +299,7 @@
 
                                         </div>
                                     </div>
-                                        
+
 
                                         <div class="d-md-flex align-items-center">
                                             <div class="mt-3 mt-md-0 ms-auto">
@@ -318,12 +323,12 @@
 
                                             </div>
                                         </div>
-                                    
+
                                     </form>
-                                    <div class="text-muted text-center">Avez-vous déjà un compte? <a href="">Connexion</a></div>
+                                    <div class="text-muted text-center">Avez-vous déjà un compte? <a href="{{route('index')}}">Connexion</a></div>
 
                             </div>
-            
+
     </div>
 </div>
 <!-- -------------------------------------------------------------- -->

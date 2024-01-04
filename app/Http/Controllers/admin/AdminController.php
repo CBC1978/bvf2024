@@ -131,41 +131,39 @@ class AdminController extends Controller
 
     public function AdminRegister(Request $request)
     {
-        dd($request);
 
+        $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'first_name' => ['required', 'string', 'max:255'],
+                'user_phone' => ['required', 'string', 'max:20'],
+                'username' => ['required', 'string', 'max:255', 'unique:users'],
+                'email' => ['required', 'string', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'role' => ['required', 'string', 'in:admin'],
+            ]
+        );
+        $user = new User();
+        $user->name = $request->name;
+        $user->first_name = $request->first_name;
+        $user->user_phone = $request->user_phone;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->code = Helper::random_int(4, 9999);
+        $user->email = $request->email;
+        $user->password =Hash::make( $request->password);
+        $user->role = $request->role;
+        $user->status = 3;
+        try {
 
-    $request->validate(
-        [
-            'name' => ['required', 'string', 'max:255'],
-            'first_name' => ['required', 'string', 'max:255'],
-            'user_phone' => ['required', 'string', 'max:20'],
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'string', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', 'in:admin'],
-        ]
-    );
-    $user = new User();
-    $user->name = $request->name;
-    $user->first_name = $request->first_name;
-    $user->user_phone = $request->user_phone;
-    $user->username = $request->username;
-    $user->email = $request->email;
-    $user->code = Helper::random_int(4, 9999);
-    $user->email = $request->email;
-    $user->password =Hash::make( $request->password);
-    $user->role = $request->role;
-    $user->status = 3;
-    try {
+            Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
+            $user->save();
+            return view('auth.verifyEmail');
 
-        Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
-        $user->save();
-        return view('auth.verifyEmail');
+        }catch (\Exception $e){
 
-    }catch (\Exception $e){
-        //return view('pages.admin.registerForAdmin');
-    }
-
+            return view('pages.admin.registerForAdmin');
+        }
     }
 
     public function addShipper(Request $request)
@@ -188,8 +186,6 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Chargeur ajouté avec succès.');
     }
 
-
-//-------------------------profil
     public function displayProfile()
     {
         if (session()->has('username')) {
@@ -230,9 +226,7 @@ class AdminController extends Controller
 
             return redirect()->route('admin.profile.affichage')->with('success', 'donnéés mise à jour avec succès.');
         }
-
     }
-
 
     public function affichage()
     {
@@ -246,8 +240,6 @@ class AdminController extends Controller
         }
     }
 
-
-
     public function update(Request $request)
     {
         // Validez les données respect de consigne pur chaq champ
@@ -259,7 +251,6 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255',
             'company_name' => 'required|string|max:255',
         ]);
-
 
         // retrouver le user en question
         $username = session('username');
@@ -346,8 +337,5 @@ class AdminController extends Controller
 
         return view('pages.admin.chargeur_user', compact('users'));
     }
-
-
-
 
 }

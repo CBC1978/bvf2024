@@ -107,90 +107,223 @@
             background-size: cover;
             "
     >
-    <div class="auth-box p-4 bg-white rounded">
+    <div class="card">
+    <div class="card-body">
     <div class="text-center">
                                 <p class="font-sm text-brand-2">Inscription </p>
                                 <p class="font-sm text-muted mb-30">Créer un compte facilement et rapidement</p>
                                     <form class="login-register text-start mt-20" method="post" action="{{ route('registerUser') }}">
                                         @csrf
-                                        <div class="form-group">
-                                            <label class="form-label" for="name">Nom <span class="text-danger">*</span></label>
-                                            <input class="form-control @error('name') is-invalid @enderror" id="name" type="text" required="" name="name" value="{{ old('name') }}" placeholder="Entrez votre nom">
-                                            @error('name')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="text"
+                                                        name="name"
+                                                        id="name"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Nom"
+                                                    />
+                                                    <label for="name"
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        > Nom<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('name')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="text"
+                                                        name="first_name"
+                                                        id="first_name"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Prénom"
+                                                    />
+                                                    <label for="first_name"
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        > Prénom(s)<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('first_name')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="text"
+                                                        name="user_phone"
+                                                        id="user_phone"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Téléphone"
+                                                    />
+                                                    <label for="user_phone"
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        > Téléphone<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('user_phone')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        id="email"
+                                                        required
+                                                        class="form-control @error('email') is-invalid @enderror"
+
+                                                        placeholder="Email"
+                                                    />
+                                                    <label for="email"
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        > Email<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('email')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="text"
+                                                        name="username"
+                                                        id="username"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Nom d'utilisateur"
+                                                    />
+                                                    <label for="username"
+                                                    ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                        > Nom d'utilisateur<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('username')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="password"
+                                                        name="password"
+                                                        id="password"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Mot de passe"
+                                                    />
+                                                    <label for="password"
+                                                    ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                        > Mot de passe<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('password')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="password"
+                                                        name="password_confirmation"
+                                                        id="password_confirmation"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Confirmer le mot de passe"
+                                                    />
+                                                    <label for="password_confirmation"
+                                                    ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                        > Confirmer mot de passe<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('Confirmer mot de passe')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <select
+                                                        class="form-select @error('role') is-invalid @enderror"
+                                                        name="role"
+                                                        id="role"
+                                                        class="form-control"
+                                                        required
+                                                        placeholder="Rôle"
+                                                    >
+                                                            <option selected value="choisir votre rôle" disabled>Choisir votre rôle</option>
+                                                            <option value="chargeur" {{ old('role') == 'chargeur' ? 'selected' : '' }}>Chargeur</option>
+                                                            <option value="transporteur" {{ old('role') == 'transporteur' ? 'selected' : '' }}>Transporteur</option>
+                                                    </select>
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Rôle<span class="text-danger">*</span></label
+                                                    >
+                                                    @error('role')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                            </div>
+
                                         </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="first_name">Prénoms <span class="text-danger">*</span></label>
-                                            <input class="form-control @error('first_name') is-invalid @enderror" id="first_name" type="text" required="" name="first_name" value="{{ old('first_name') }}" placeholder="Entrez votre prénom">
-                                            @error('first_name')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                    </div>
+                                        
+
+                                        <div class="d-md-flex align-items-center">
+                                            <div class="mt-3 mt-md-0 ms-auto">
+                                                <button
+                                                    type="submit"
+                                                    class="
+                                                            btn btn-info
+                                                            font-weight-medium
+                                                            rounded-pill
+                                                            px-4
+                                                        "
+                                                >
+                                                    <div class="d-flex align-items-center">
+                                                        <i
+                                                            data-feather="send"
+                                                            class="feather-sm fill-white me-2"
+                                                        ></i>
+                                                        S'inscrire
+                                                    </div>
+                                                </button>
+
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="user_phone">Téléphone <span class="text-danger">*</span></label>
-                                            <input class="form-control @error('user_phone') is-invalid @enderror" id="user_phone" type="text" required="" name="user_phone" value="{{ old('user_phone') }}" placeholder="Entrez votre téléphone">
-                                            @error('user_phone')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-                                            <input class="form-control @error('email') is-invalid @enderror" id="email" type="email" required="" name="email" value="{{ old('email') }}" placeholder="Entrez votre email">
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="username">Nom d'utilisateur<span class="text-danger">*</span></label>
-                                            <input class="form-control @error('username') is-invalid @enderror" id="username" type="text" required="" name="username" value="{{ old('username') }}" placeholder="Entrez votre nom d'utilisateur">
-                                            @error('username')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="password">Mot de passe <span class="text-danger">*</span></label>
-                                            <input class="form-control @error('password') is-invalid @enderror" id="password" type="password" required="" name="password" placeholder="************">
-                                            @error('password')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="password_confirmation">Confirmer le mot de passe <span class="text-danger">*</span></label>
-                                            <input class="form-control" id="password_confirmation" type="password" required="" name="password_confirmation" placeholder="************">
-                                        </div>
-                                        <div class="form-group">
-                                        <label class="">Rôle<span class="text-danger">*</span></label>
-                                            <select class="form-select @error('role') is-invalid @enderror" aria-label="Default select example" name="role" required >
-                                                <option selected value="choisir votre rôle" disabled>Choisir votre rôle</option>
-                                                <option value="chargeur" {{ old('role') == 'chargeur' ? 'selected' : '' }}>Chargeur</option>
-                                                <option value="transporteur" {{ old('role') == 'transporteur' ? 'selected' : '' }}>Transporteur</option>
-                                            </select>
-                                            @error('role')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-brand-1 hover-up w-100" type="submit" name="login"> S'inscrire</button>
-                                        </div>
+                                    
                                     </form>
                                     <div class="text-muted text-center">Avez-vous déjà un compte? <a href="">Connexion</a></div>
 
                             </div>
+            
     </div>
 </div>
 <!-- -------------------------------------------------------------- -->

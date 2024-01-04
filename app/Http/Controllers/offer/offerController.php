@@ -306,7 +306,7 @@ class offerController extends Controller
         $validated = $request->validated();
         $user = User::find(intval(session('userId')));
 
-        if (Session::get('role') == env('role_carrier')) {
+        if (Session::get('role') == env('ROLE_CARRIER')) {
             $offer = FreightAnnouncement::find(intval($request->offerId));
             $nameCarrier = Carrier::find(intval($user->fk_carrier_id));
             $nameShipper = Shipper::find($offer->fk_shipper_id);
@@ -340,7 +340,7 @@ class offerController extends Controller
                 Mail::to($shipper->email)->send(new offerReceive($data));
             }
 
-        } elseif (Session::get('role') == env('role_shipper')) {
+        } elseif (Session::get('role') == env('ROLE_SHIPPER')) {
             $offer = TransportAnnouncement::find(intval($request->offerId));
 
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
@@ -411,7 +411,7 @@ class offerController extends Controller
                 'name'=>$shipperObject->company_name,
                 'description'=>$request->description,
             );
-            //Get all Carrier User
+            //Get all Shipper User
             $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
             foreach ($carriersUser as $carrier){
                 Mail::to($carrier->email)->send(new publishOfferSend($itemEmail));
@@ -419,8 +419,9 @@ class offerController extends Controller
 
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
 
+        }elseif (Session::get('role') == env('ROLE_CARRIER')){
+            $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
         }elseif (Session::get('role') == env('role_carrier')){
-
             $obj = new TransportAnnouncement();
             $obj->origin = intval($request->origin);
             $obj->destination = intval($request->destination);
@@ -1151,7 +1152,7 @@ class offerController extends Controller
         $validated = $request->validated();
         $user = User::find(intval(session('userId')));
 
-        if (Session::get('role') == env('role_carrier')) {
+        if (Session::get('role') == env('ROLE_CARRIER')) {
 
             $offer = FreightOffer::find(intval($request->offerId));
 
@@ -1190,7 +1191,7 @@ class offerController extends Controller
                 Mail::to($shipper->email)->send(new offerReceive($data));
             }
 
-        } elseif (Session::get('role') == env('role_shipper')) {
+        } elseif (Session::get('role') == env('ROLE_SHIPPER')) {
             $offer = TransportAnnouncement::find(intval($request->offerId));
 
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));

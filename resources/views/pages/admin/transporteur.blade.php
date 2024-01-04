@@ -2,6 +2,15 @@
 
 @section('content')
     <style>
+    .custom-modal-width .modal-dialog {
+        max-width: 1000px; /* Modifiez ce pourcentage en fonction de vos besoins */
+        width: 100%;
+        margin: auto;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+
         button[type="submit"] {
             background-color: #007bff;
             color: white;
@@ -109,7 +118,7 @@
     </div>
 
 
-        <form class="mb-3" id="assign-user-form" action="{{ route('admin.assigner-entreprise-user') }}" method="post">
+    {{--    <form class="mb-3" id="assign-user-form" action="{{ route('admin.assigner-entreprise-user') }}" method="post">
             @csrf
             <div class="box-content">
                 <div class="row mt-10">
@@ -128,7 +137,7 @@
                     </div>
                 </div>
             </div>
-        </form>
+        </form> --}}
         
 
         <div class="row">
@@ -162,14 +171,14 @@
                                 <div class="col-md-2 col-sm-12 top">
                                     <button
                                         type="button"
-                                        id="btn-detail-offer"
-                                        class="
-                                        justify-content-center
-                                        w-100
-                                        btn btn-rounded btn-outline-success
-                                        d-flex
-                                        align-items-center
-                                        "
+                                            id="btn-update-camion"
+                                            class="
+                                            justify-content-center
+                                            w-100
+                                            btn btn-rounded btn-outline-info
+                                            d-flex
+                                            align-items-center
+                                            "
                                     >
                                         <i
                                             data-feather="edit"
@@ -273,7 +282,183 @@
                 </div>
             </div>
         </div>
+
+
+        {{--Modal pour voir les détials d'une entreprise--}}
+        <div class="modal fade custom-modal-width" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailModalLabel">Détails de l'Entreprise</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Ici seront affichées les informations de l'entreprise et les utilisateurs -->
+                        <div id="companyInfo">
+                            <!-- Structure pour afficher les détails de l'entreprise dans une table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="border-bottom title-part-padding">
+                                            <h4 class="card-title mb-0">
+                                                <!-- Insérer ici les détails de l'entreprise -->
+                                                <div class="row">
+                                                    <span>Nom de l'entreprise: {{ $carrier->company_name }}</span>
+                                                    <span>Adresse: {{ $carrier->address }}</span>
+                                                    <!-- Autres détails de l'entreprise -->
+                                                </div>
+                                            </h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover table-striped" id="user-table">
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Entreprise</th>
+                                                            <th>Adresse</th>
+                                                            <th>Téléphone</th>
+                                                            <th>Ville</th>
+                                                            <th>Email</th>
+                                                            <th>N° IFU</th>
+                                                            <th>N° RCCM</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($carriers as $carrier)
+                                                            <tr>
+                                                                <td>{{ $carrier->id }}</td>
+                                                                <td>{{ $carrier->company_name }}</td>
+                                                                <td>{{ $carrier->address }}</td>
+                                                                <td>{{ $carrier->phone }}</td>
+                                                                <td>{{ $carrier->city }}</td>
+                                                                <td>{{ $carrier->email }}</td>
+                                                                <td>{{ $carrier->ifu }}</td>
+                                                                <td>{{ $carrier->rccm }}</td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="usersInfo">
+                            <!-- Liste des utilisateurs -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="border-bottom title-part-padding">
+                                            <h4 class="card-title mb-0">Utilisateurs de l'Entreprise</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>ID</th>
+                                                            <th>Nom</th>
+                                                            <th>Email</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Insérer ici la boucle pour afficher les utilisateurs -->
+                                                        @foreach($users as $user)
+                                                            <tr>
+                                                                <td>{{ $user->id }}</td>
+                                                                <td>{{ $user->name }}</td>
+                                                                <td>{{ $user->email }}</td>
+                                                                <td>
+                                                                    <!-- Bouton Assigner -->
+                                                                    <button class="btn btn-primary btn-assign" data-user-id="{{ $user->id }}">Assigner</button>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                        <!-- Fin de la boucle des utilisateurs -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
+
+      {{--  <script>
+            $(document).ready(function () {
+                $('#btn-detail-offer').on('click', function () {
+                    var selectedCarrier = $('input[name="selected_carrier[]"]:checked');
+                    if (selectedCarrier.length === 1) {
+                        var companyId = selectedCarrier.val();
+        
+                        // Ici, tu devrais faire une requête AJAX pour récupérer les informations de l'entreprise et les utilisateurs associés à cette entreprise
+                        // Par exemple, en utilisant une route dans Laravel pour récupérer les données nécessaires
+                        $.ajax({
+                            url: '/get-company-details/' + companyId, // Remplace '/get-company-details/' par la route réelle de récupération des données de l'entreprise
+                            type: 'GET',
+                            success: function(response) {
+                                $('#companyInfo').html(response.companyHtml); // Insère les détails de l'entreprise dans le modal
+                                $('#usersInfo').html(response.usersHtml); // Insère les détails des utilisateurs associés dans le modal
+                                $('#detailModal').modal('show'); // Affiche le modal
+                            },
+                            error: function(xhr) {
+                                // Gère les erreurs si la requête AJAX échoue
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    } else {
+                        alert('Veuillez sélectionner une seule entreprise.');
+                    }
+                });
+            });
+        </script> --}}
+
+        <script>
+            $(document).ready(function () {
+                $('#btn-detail-offer').on('click', function () {
+                    var selectedCarriers = $('input[name="selected_carrier[]"]:checked');
+                    if (selectedCarriers.length === 1) {
+                        var companyId = selectedCarriers.val();
+        
+                        // Requête AJAX pour récupérer les informations de l'entreprise
+                        $.ajax({
+                            url: '/get-company-details/' + companyId, // Remplacez '/get-company-details/' par la route réelle de récupération des données de l'entreprise
+                            type: 'GET',
+                            success: function(response) {
+                                $('#detailModal .modal-body').html(response); // Insère les détails de l'entreprise dans le modal
+                                $('#detailModal').modal('show'); // Affiche le modal
+                            },
+                            error: function(xhr) {
+                                // Gère les erreurs si la requête AJAX échoue
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    } else if (selectedCarriers.length === 0 || selectedCarriers.length > 1) {
+                        // Aucune entreprise sélectionnée ou plus d'une entreprise sélectionnée
+                        var errorMessage = selectedCarriers.length === 0 ? 'Veuillez sélectionner une entreprise.' : 'Veuillez sélectionner une seule entreprise.';
+                        alert(errorMessage);
+        
+                        // Redirection vers la page précédente après 3 secondes
+                        setTimeout(function () {
+                            history.back(); // Redirection vers la page précédente
+                        }, 3000);
+                    }
+                });
+            });
+        </script>
+        
+        
+        
+        
+
    {{--     <div class="card ">
             <div class="row mt-10">
                 <div class="col-md-12">

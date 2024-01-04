@@ -97,6 +97,9 @@ Route::post('/assigner-entreprise-user', [AdminController::class, 'assignEntrepr
 Route::post('/ajouter-transporteur', [AdminController::class, 'addCarrier'])->name('admin.ajouter-transporteur');
 Route::post('/ajouter-expediteur', [AdminController::class, 'addShipper'])->name('admin.ajouter-expediteur');
 
+//route page pour bouton voir plus
+//Route::get('admin/voirplus/{id}', [AdminController::class,'voirplus'])->name('admin.voirplus');
+
 // Profil admin
 Route::get('admin/profile', [AdminController::class,'displayProfile'])->name('admin.profile.affichage');
 Route::get('admin/profile/update', [AdminController::class,'updateUserProfile'])->name('admin.profile.update');

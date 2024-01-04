@@ -38,6 +38,11 @@ class AdminController extends Controller
         return view('pages.admin.transporteur', compact('users', 'carriers'));
     }
 
+    //fonction pour la page du bouton voir plus
+    public function voirplus($id){
+        $selectedCarrier = Carrier::findOrFail($id);
+        return view('pages.admin.voirPlusTrans', compact('selectedCarrier'));
+    }
     public function assignEntrepriseToUser(Request $request)
     {
         // Récupérer les données du formulaire

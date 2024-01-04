@@ -57,7 +57,7 @@
                                         <h4 class="mb-0 text-white">{{ $offer->company_name }}</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin) }}- {{ ucfirst($offer->destination) }}</h3>
+                                        <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin->libelle) }}- {{ ucfirst($offer->destination->libelle) }}</h3>
                                         <h3 class="card-title">Date expiration: {{ date("d/m/Y",strtotime($offer->limit_date)) }}</h3>
                                         <p class="card-text">
                                             {{ $offer->description }}

@@ -115,9 +115,7 @@ class AdminController extends Controller
 
     public function AdminRegister(Request $request)
     {
-        dd($request);
 
-        
     $request->validate(
         [
             'name' => ['required', 'string', 'max:255'],
@@ -147,7 +145,8 @@ class AdminController extends Controller
         return view('auth.verifyEmail');
         
     }catch (\Exception $e){
-        //return view('pages.admin.registerForAdmin');
+      
+        return view('pages.admin.registerForAdmin');
     }
         
     }

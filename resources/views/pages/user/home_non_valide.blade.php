@@ -20,7 +20,7 @@
                 <li class="breadcrumb-item">
                     <a href="javascript:void(0)">Utilsateurs</a>
                 </li>
-                <li class="breadcrumb-item active">Utilsateurs validés</li>
+                <li class="breadcrumb-item active">Utilsateurs non validés</li>
             </ol>
         </div>
     </div>
@@ -106,37 +106,37 @@
                             class="table table-striped table-bordered display"
                             style="width: 100%">
                             <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nom complet</th>
-                                    <th>Contact</th>
-                                    <th>Email</th>
-                                    <th>Nom d'utilisateur</th>
-                                </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom complet</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Nom d'utilisateur</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @if(count($users))
-                                    @foreach($users as $user)
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" name="user_id" id="user_id" value="{{$user->id}}">
-                                            </td>
-                                            <td>{{ $user->name.' '.$user->first_name }}</td>
-                                            <td>{{ $user->user_phone }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->username }}</td>
-                                        </tr>
-                                    @endforeach
-                                @endif
+                            @if(count($users))
+                                @foreach($users as $user)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="user_id" id="user_id" value="{{$user->id}}">
+                                        </td>
+                                        <td>{{ $user->name.' '.$user->first_name }}</td>
+                                        <td>{{ $user->user_phone }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->username }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nom complet</th>
-                                    <th>Contact</th>
-                                    <th>Email</th>
-                                    <th>Nom d'utilisateur</th>
-                                </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom complet</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Nom d'utilisateur</th>
+                            </tr>
                             </tfoot>
                         </table>
                     </div>

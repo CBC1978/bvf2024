@@ -225,11 +225,11 @@
                                                     </div>
                                                 @endif
                                             </div>
-                                            @if(Session::get('fk_shipper_id') != env('DEFAULT_INT'))
+                                            @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
                                                 <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                     Postuler
                                                 </button>
-                                                @elseif(Session::get('fk_carrier_id') != 0)
+                                                @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
                                                 <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                     Postuler
                                                 </button>

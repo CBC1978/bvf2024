@@ -47,32 +47,38 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        @if(count($offers) == env('DEFAULT_INT'))
+                    <div class="row" >
+                        @if( count($offers) == env('DEFAULT_INT'))
                             <p>Aucune offre disponible</p>
-                        @else
-                            @foreach($offers as $offer)
-                                <div class="col-md-4 col-sm-12" id="card_annonce">
-                                    <div class="card card-hover">
-                                        <div class="card-header bg-info">
-                                            <h4 class="mb-0 text-white">{{ $offer->company_name }}</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin) }}- {{ ucfirst($offer->destination) }}</h3>
-                                            <h3 class="card-title">Date expiration: {{ date("d/m/Y", strtotime($offer->limit_date)) }}</h3>
-                                            <p class="card-text">
-                                                {{ $offer->description }}
-                                            </p>
-                                            <div class="row mb-3">
-                                                <div class="col-3 mr-6">
-                                                    <button type="button" class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        {{ $offer->weight }}(T)
+                        @endif
+                        @foreach($offers as $offer)
+                            <div class="col-md-4 col-sm-12" id="card_annonce">
+                                <div class="card card-hover">
+                                    <div class="card-header bg-info">
+                                        <h4 class="mb-0 text-white">{{ $offer->company_name }}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin->libelle) }}- {{ ucfirst($offer->destination->libelle) }}</h3>
+                                        <h3 class="card-title">Date expiration: {{ date("d/m/Y",strtotime($offer->limit_date)) }}</h3>
+                                        <p class="card-text">
+                                            {{ $offer->description }}
+                                        </p>
+                                        <div class="row mb-3">
+                                            <div class="col-3 mr-6">
+                                                <button
+                                                    type="button"
+                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                    {{ $offer->weight }}(T)
+                                                </button>
+                                            </div>
+                                            @if( isset($offer->vehicule_type) && !empty($offer->vehicule_type))
+                                                <div class="col-9">
+                                                    <button
+                                                        type="button"
+                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                        {{ $offer->vehicule_type }}
                                                     </button>
                                                 </div>
-                                                @if(isset($offer->vehicule_type) && !empty($offer->vehicule_type))
-                                                    <div class="col-9">
-                                                        <button type="button" class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            {{ $offer->vehicule_type }}
                                             @endif
                                         </div>
                                         <div class="row mb-3">
@@ -95,11 +101,11 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        @if(Session::get('fk_shipper_id') != env('DEFAULT_INT'))
+                                        @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID') )
                                             <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                 Postuler
                                             </button>
-                                            @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT'))
+                                        @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
                                             <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                 Postuler
                                             </button>
@@ -136,6 +142,7 @@
                                             </h5>
                                             <form method="post"  action="{{ route('storeApplyOffer') }}">
                                                 @csrf
+
                                                 <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
                                                 <div class="form-floating mb-3">
                                                     <input
@@ -204,43 +211,24 @@
                                                                 Postuler
                                                             </div>
                                                         </button>
+
                                                     </div>
-                                                @endif
-                                            </div>
-                                            <div class="row mb-3">
-                                                @if(isset($offer->price) && !empty($offer->price))
-                                                    <div class="col-md-4 mb-3">
-                                                        <button type="button" class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            Prix: {{ $offer->price }}
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                                @if(isset($offer->volume) && !empty($offer->volume))
-                                                    <div class="col-md-9">
-                                                        <button type="button" class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            {{ $offer->volume }}
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') || Session::get('fk_carrier_id') != env('DEFAULT_INT'))
-                                                <button class="btn btn-rounded btn-outline-success" data-bs-toggle="modal" data-bs-target="#postuler-offre-{{ $offer->id }}">
-                                                    Postuler
-                                                </button>
-                                            @endif
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+
                                         </div>
                                     </div>
+                                    <!-- /.modal-content -->
                                 </div>
-
-                                {{-- Modal --}}
-                                <div class="modal fade" id="postuler-offre-{{ $offer->id }}" tabindex="-1" aria-labelledby="postuler-offre-{{ $offer->id }}" aria-hidden="true">
-                                    <!-- Contenu du modal à copier depuis votre code existant -->
-                                </div>
-                                {{-- Fin du Modal --}}
-                            @endforeach
-                        @endif
+                                <!-- /.modal-dialog -->
+                            </div>
+                            {{-- end Modal--}}
+                        @endforeach
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

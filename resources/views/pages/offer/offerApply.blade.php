@@ -343,6 +343,14 @@
                                                     value="${ response.origin.libelle }"
                                                     required
                                                     style="width: 100%; height: 36px"
+                                                /><input
+                                                    readOnly
+                                                    name="origin"
+                                                    id="origin"
+                                                    class="form-control"
+                                                    value="${ response.origin.libelle }"
+                                                    required
+                                                    style="width: 100%; height: 36px"
                                                 />
                                                 <label
                                                 ><i
@@ -556,6 +564,14 @@
                                                 required
                                                 class="form-control"
                                                 placeholder="Prix"
+                                            />
+                                                <input
+                                                type="hidden"
+                                                name="offerId"
+                                                value="${response.id}"
+                                                id="offerId"
+                                                class="form-control"
+
                                             />
                                             <label
                                             ><i

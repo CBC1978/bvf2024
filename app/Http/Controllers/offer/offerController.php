@@ -382,9 +382,11 @@ class offerController extends Controller
 
     public function storePublishOffer(publishForm $request)
     {
+
        $request->validated();
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
+
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
             $obj = new FreightAnnouncement();
@@ -420,8 +422,6 @@ class offerController extends Controller
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
-            $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
-        }elseif (Session::get('role') == env('role_carrier')){
             $obj = new TransportAnnouncement();
             $obj->origin = intval($request->origin);
             $obj->destination = intval($request->destination);
@@ -478,6 +478,7 @@ class offerController extends Controller
                 $obj->destination = Ville::find(intval($obj->destination));
 
             });
+
 
             return view('pages.offer.home', compact('offers'));
 
@@ -928,8 +929,8 @@ class offerController extends Controller
                 $offer->origin = $data['origin'];
                 $offer->destination = $data['destination'];
                 $offer->weight = $data['weight'];
-                $offer->price = $data['price'];
-                $offer->volume = $data['volume'];
+                $offer->price = $request->price;
+                $offer->volume =  $request->volume;
                 $offer->limit_date = $data['limit_date'];
                 $offer->description = $data['description'];
                 $offer->created_by = Session::get('userId');
@@ -1154,7 +1155,7 @@ class offerController extends Controller
 
         if (Session::get('role') == env('ROLE_CARRIER')) {
 
-            $offer = FreightOffer::find(intval($request->offerId));
+            $offer = TransportOffer::find(intval($request->offerId));
 
             $offer->price = floatval($request->price);
             $offer->description = $request->description;
@@ -1192,10 +1193,12 @@ class offerController extends Controller
             }
 
         } elseif (Session::get('role') == env('ROLE_SHIPPER')) {
-            $offer = TransportAnnouncement::find(intval($request->offerId));
 
+            $offer = FreightOffer::find(intval($request->offerId));
+
+//            dd([$offer,$request]);
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
-            $nameShipper = Shipper::find($user->fk_shipper_id);
+            $nameShipper = Shipper::find($offer->fk_shipper_id);
 
             $shipperUsers = User::where([['fk_shipper_id', $user->fk_shipper_id], ['status', env('DEFAULT_VALID')]])->get();
             $carrierUsers = User::where([['fk_carrier_id', $offer->fk_carrier_id], ['status', env('DEFAULT_VALID')]])->get();

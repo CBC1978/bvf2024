@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
 use Illuminate\Routing\AbstractRouteCollection;
-use \App\Http\Controllers\Admin\AdminController;
+use \App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\Carrier\profile\CarrierProfileController;
 use App\Http\Controllers\Shipper\profile\ShipperProfile1Controller;
 use App\Http\Controllers\Profile\ProfileController;

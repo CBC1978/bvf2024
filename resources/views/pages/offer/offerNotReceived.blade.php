@@ -220,31 +220,22 @@
     <script src="{{ asset('src/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('src/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
     <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('resources/js/bvf/offer/offerNotReceived.js') }}"></script>
     <script>
         $(document).ready(function () {
-            setTimeout(function () {
-                $("div.alert").remove();
-            }, 5000); //5s
-
-            $('#lang_file tr').click(function (event) {
-                if (event.target.type !== 'checkbox') {
-                    $(':checkbox', this).trigger('click');
-                }
-            });
-
-            $('#btn-update-offer').click(function (){
+            $('#btn-update-offer').click(function () {
 
                 var checkOffers = document.querySelectorAll('#offer-detail');
                 var data = [];
 
                 // Verify if checkboxes are checked
                 checkOffers.forEach(event => {
-                    if(event.checked){
+                    if (event.checked) {
                         data.push(event);
                     }
                 })
 
-                if(data.length == 0){
+                if (data.length == 0) {
                     Swal.fire({
                         title: 'Erreur',
                         text: 'Aucune ligne sélectionnée',
@@ -252,10 +243,10 @@
                     });
                 }
 
-                if( data.length == 1){
+                if (data.length == 1) {
 
                     $('#removeData').remove();
-                    fetch('/offre/'+data[0].value)
+                    fetch('/offre/' + data[0].value)
                         .then(response => response.json())
                         .then(response => {
 
@@ -270,7 +261,7 @@
                                                     required
                                                     style="width: 100%; height: 36px"
                                                 >
-                                                    <option value="${ response.origin.id }" >${ response.origin.libelle }</option>
+                                                    <option value="${response.origin.id}" >${response.origin.libelle}</option>
                                                 </select>
                                                 <label
                                                 ><i
@@ -284,7 +275,7 @@
                                                     type="date"
                                                     name="limit_date"
                                                     id="limit_date"
-                                                    value="${ response.limit_date}"
+                                                    value="${response.limit_date}"
                                                     required
                                                     class="form-control"
                                                     placeholder="Date"
@@ -297,12 +288,12 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="text"
-                                                        name="volume"
-                                                        id="volume"
-                                                        value="${ response.volume }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="text"
+                                    name="volume"
+                                    id="volume"
+                                    value="${response.volume}"
                                                         class="form-control"
                                                         placeholder="Volume"
                                                     />
@@ -314,18 +305,18 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
+                            </div>
 
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <select
-                                                    name="destination"
-                                                    id="destination"
-                                                    class="form-control"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                >
-                                                    <option value="${ response.destination.id }" selected>${ response.destination.libelle }</option>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <select
+                                        name="destination"
+                                        id="destination"
+                                        class="form-control"
+                                        required
+                                        style="width: 100%; height: 36px"
+                                    >
+                                        <option value="${response.destination.id}" selected>${response.destination.libelle}</option>
                                                 </select>
                                                 <label
                                                 ><i
@@ -340,7 +331,7 @@
                                                     step="0.01"
                                                     name="weight"
                                                     id="weight"
-                                                    value="${ response.weight }"
+                                                    value="${response.weight}"
                                                     required
                                                     class="form-control"
                                                     placeholder="Poids"
@@ -353,12 +344,12 @@
                                                 >
                                             </div>
                                             @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        name="price"
-                                                        value="${ response.price }"
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="price"
+                                    value="${response.price}"
                                                         id="price"
                                                         required
                                                         class="form-control"
@@ -372,16 +363,16 @@
                                                     >
                                                 </div>
                                             @endif
-                                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                                                <div class="form-floating mb-3">
-                                                    <select
-                                                        name="vehicule_type"
-                                                        id="vehicule_type"
-                                                        class="form-control"
-                                                        required
-                                                        style="width: 100%; height: 36px"
-                                                    >
-                                                        <option value="${ response.vehicule_type.id }" selected>${ response.vehicule_type.libelle }</option>
+                            @if(Session::get('role') == env('ROLE_CARRIER'))
+                            <div class="form-floating mb-3">
+                                <select
+                                    name="vehicule_type"
+                                    id="vehicule_type"
+                                    class="form-control"
+                                    required
+                                    style="width: 100%; height: 36px"
+                                >
+                                    <option value="${response.vehicule_type.id}" selected>${response.vehicule_type.libelle}</option>
 
                                                     </select>
                                                     <label
@@ -392,13 +383,13 @@
                                                     >
                                                 </div>
                                             @endif
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                type="textarea"
-                                                name="description"
-                                                id="description"
-                                                value="${response.description }"
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="textarea"
+                                    name="description"
+                                    id="description"
+                                    value="${response.description}"
                                                 required
                                                 class="form-control"
                                                 placeholder="Description"
@@ -409,7 +400,7 @@
                                                 ></i
                                                 >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
                                             >
-                                            <input type="hidden" value="${ response.id }" name="idOffer"  id="idOffer"/>
+                                            <input type="hidden" value="${response.id}" name="idOffer"  id="idOffer"/>
                                         </div>
                                   </div>
                             `);
@@ -421,10 +412,10 @@
 
                                     data.forEach(item => {
                                         $('#origin').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
+                                        <option value="${item.id}" >${item.libelle}</option>
                                     `);
                                         $('#destination').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
+                                        <option value="${item.id}" >${item.libelle}</option>
                                     `);
                                     });
 
@@ -436,7 +427,7 @@
                                 .then(data => {
                                     data.forEach(item => {
                                         $('#vehicule_type').append(`
-                                           <option value="${ item.id }"> ${ item.libelle }</option>
+                                           <option value="${item.id}"> ${item.libelle}</option>
                                         `)
                                     })
                                 });
@@ -444,7 +435,7 @@
                     $('#update-offer').modal('show');
                 }
 
-                if( data.length >= 2){
+                if (data.length >= 2) {
                     Swal.fire({
                         title: 'Erreur',
                         text: 'Sélectionnez une seule ligne',
@@ -453,53 +444,7 @@
                 }
                 data = [];
             });
-
-            $('#btn-delete-offer').click(function(){
-                var checkOffers = document.querySelectorAll('#offer-detail');
-                var data = [];
-
-                // Verify if checkboxes are checked
-                checkOffers.forEach(event => {
-                    if(event.checked){
-                        data.push(event);
-                    }
-                });
-
-                Swal.fire({
-                    title: "Voulez vous vraiment supprimez ?",
-                    showDenyButton: true,
-                    showCancelButton: false,
-                    confirmButtonText: "Supprimer",
-                    denyButtonText: "Annuler",
-                }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        data.forEach(item =>{
-                            fetch('/supprimer-offre/'+item.value)
-                                .then( response => response.json() )
-                                .then( response => {
-                                    if(response == 0){
-                                        Swal.fire({
-                                            title: 'Bravo',
-                                            text: 'L\'offre a été supprimée avec succès',
-                                            icon: 'success',
-                                        });
-                                    } else if( response == 1){
-                                        Swal.fire({
-                                            title: 'Erreur',
-                                            text: 'Vous n\'êtes pas autorisé à supprimer l\'offre',
-                                            icon: 'error',
-                                        });
-                                    }
-                                });
-                        });
-                        setTimeout(function () {
-                            location.reload();
-                        }, 3000); //5s
-                        //refresh page
-                    }
-                });
-            });
         });
+
     </script>
 @endsection

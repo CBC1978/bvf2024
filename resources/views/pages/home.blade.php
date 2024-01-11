@@ -276,6 +276,7 @@
                                                         placeholder="Prix"
                                                         name="price"
                                                         id="price"
+                                                        required
                                                     />
                                                     <label
                                                     ><i
@@ -292,6 +293,7 @@
                                                         placeholder="Poids"
                                                         name="weight"
                                                         id="weight"
+                                                        required
                                                     />
                                                     <label
                                                     ><i
@@ -307,6 +309,7 @@
                                                         placeholder="Description"
                                                         name="description"
                                                         id="description"
+                                                        required
                                                     />
                                                     <label
                                                     ><i

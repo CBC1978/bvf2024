@@ -92,7 +92,7 @@ class offerController extends Controller
                     ")
                 ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
                 ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')
-                ->where('freight_offer.status', env('status_valid'))
+                ->where('freight_offer.status', env('STATUS_VALID'))
                 ->whereBetween('contract_transport.created_at', [$debut, $fin])
                 ->where('transport_announcement.fk_carrier_id', Session::get('fk_carrier_id'))
                 ->orderBy('contract_transport.id','desc')
@@ -108,7 +108,7 @@ class offerController extends Controller
                     ")
                 ->join('transport_offer', 'contract_transport.fk_transport_offer_id', '=', 'transport_offer.id')
                 ->join('freight_announcement', 'transport_offer.fk_freight_announcement_id', '=', 'freight_announcement.id')
-                ->where('transport_offer.status',  env('status_valid'))
+                ->where('transport_offer.status',  env('STATUS_VALID'))
                 ->whereBetween('contract_transport.created_at', [$debut, $fin])
                 ->where('transport_offer.fk_carrier_id', Session::get('fk_carrier_id'))
                 ->orderBy('contract_transport.id','desc')
@@ -320,7 +320,7 @@ class offerController extends Controller
             $applyOffer->description = $request->description;
             $applyOffer->fk_freight_announcement_id = intval($request->offerId);
             $applyOffer->fk_carrier_id = intval(session('fk_carrier_id'));
-            $applyOffer->status = env('default_int');
+            $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
 
@@ -341,6 +341,7 @@ class offerController extends Controller
             }
 
         } elseif (Session::get('role') == env('ROLE_SHIPPER')) {
+
             $offer = TransportAnnouncement::find(intval($request->offerId));
 
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
@@ -356,7 +357,7 @@ class offerController extends Controller
             $applyOffer->weight = floatval($request->weight);
             $applyOffer->fk_transport_announcement_id = intval($request->offerId);
             $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
-            $applyOffer->status = env('default_int');
+            $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
 
@@ -625,6 +626,7 @@ class offerController extends Controller
 
     public function updateStatutOffer($id,$action)
     {
+
         if (Session::get('role') == env('ROLE_CARRIER')){
             $offer = FreightOffer::find(intval($id));
             //Get users to send email
@@ -680,7 +682,7 @@ class offerController extends Controller
                 $offer->status = env('STATUS_VALID');
 
                 if(!empty($contrat) && count($contrat)== env('STATUS_VALID')){
-
+                    return response()->json('0');
                 }elseif(!empty($contrat) && count($contrat) > env('STATUS_VALID')){
                     foreach ($contrat as $ct){
                         $ct->delete();
@@ -722,24 +724,23 @@ class offerController extends Controller
                 }
             }
 
-            if (intval($action) == env('DEFAULT_VALID')){
+            elseif (intval($action) == env('DEFAULT_VALID')){
                 $offer->status = env('DEFAULT_VALID');
                 if(!empty($contrat)){
                     foreach ($contrat as $ct){
                         $ct->delete();
                     }
-                }
-                foreach ($userShipper as $ship){
-                    if($ship->status >= env('STATUS_VALID')){
-                        Mail::to($ship->email)->send(new offerApplyResponse($dataEmailRefuser));
+                    foreach ($userShipper as $ship){
+                        if($ship->status >= env('STATUS_VALID')){
+                            Mail::to($ship->email)->send(new offerApplyResponse($dataEmailRefuser));
+                        }
+                    }
+                    foreach ($userCarrier as $carrier){
+                        if($carrier->status >= env('STATUS_VALID')){
+                            Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailCarrierRefuser));
+                        }
                     }
                 }
-                foreach ($userCarrier as $carrier){
-                    if($carrier->status >= env('STATUS_VALID')){
-                        Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailCarrierRefuser));
-                    }
-                }
-
             }
             $offer->save();
             return response()->json('0');
@@ -747,6 +748,7 @@ class offerController extends Controller
         }elseif (Session::get('role') == env('ROLE_SHIPPER')){
 
             $offer = TransportOffer::find(intval($id));
+
             //Get users to send email
             $tsp = $offer->freightAnnouncement;
             $carrier = $offer->Carrier;
@@ -793,11 +795,30 @@ class offerController extends Controller
                 'offer'=>$tsp,
                 'receiver'=>$shipper->company_name,
             );
+
             $contrat = ContractTransport::where('fk_transport_offer_id','=',intval($id))->get();
-            if (intval($action) == env('STATUS_VALID')){
+            if (intval($action) == env('DEFAULT_VALID')){
+                $offer->status = env('DEFAULT_VALID');
+                if(!empty($contrat)){
+                    foreach ($contrat as $ct){
+                        $ct->delete();
+                    }
+                    foreach ($userShipper as $ship){
+                        if($ship->status >= env('STATUS_VALID')){
+                            Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipperRefuser));
+                        }
+                    }
+                    foreach ($userCarrier as $carrier){
+                        if($carrier->status >= env('STATUS_VALID')){
+                            Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailRefuser));
+                        }
+                    }
+                }
+            }
+            elseif (intval($action) == env('STATUS_VALID')){
                 $offer->status = env('STATUS_VALID');
                 if(!empty($contrat) && count($contrat)== env('STATUS_VALID')){
-
+                    return response()->json('0');
                 }elseif(!empty($contrat) && count($contrat) > env('STATUS_VALID')){
                     foreach ($contrat as $ct){
                         $ct->delete();
@@ -826,11 +847,13 @@ class offerController extends Controller
                     $contrat->fk_transport_offer_id = intval($id);
                     $contrat->save();
 
+
                     foreach ($userShipper as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipper));
                         }
                     }
+
                     foreach ($userCarrier as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmail));
@@ -838,25 +861,9 @@ class offerController extends Controller
                     }
                 }
             }
-            if (intval($action) == env('DEFAULT_VALID')){
-                $offer->status = env('DEFAULT_VALID');
-                if(!empty($contrat)){
-                    foreach ($contrat as $ct){
-                        $ct->delete();
-                    }
-                }
-                foreach ($userShipper as $ship){
-                    if($ship->status >= env('STATUS_VALID')){
-                        Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipperRefuser));
-                    }
-                }
-                foreach ($userCarrier as $carrier){
-                    if($carrier->status >= env('STATUS_VALID')){
-                        Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailRefuser));
-                    }
-                }
-            }
+
             $offer->save();
+            return response()->json('0');
         }
     }
 
@@ -957,7 +964,7 @@ class offerController extends Controller
             }
 
             return redirect()->route($previousUrl)->with('success', 'Offre modifiée avec succès.');
-        }elseif (Session::get('role') == env('role_carrier')){
+        }elseif (Session::get('role') == env('ROLE_CARRIER')){
 
             $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
 
@@ -999,6 +1006,7 @@ class offerController extends Controller
 
     public function deletePublishOffer($id)
     {
+
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
             $offer = FreightAnnouncement::find( intval($id) );
@@ -1007,13 +1015,13 @@ class offerController extends Controller
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
-                'origine' => $offer->originOffer->libelle,
+                'origin' => $offer->originOffer->libelle,
                 'destination' => $offer->destinationOffer->libelle,
             );
             foreach ($shippersUser as $shipper){
                 Mail::to($shipper->email)->send(new publishOfferDelete($data));
             }
-            if ( Session::get('fk_shipper_id') == $offer->fk_shipper_id ){
+            if ( Session::get('fk_shipper_id') == $offer->fk_shipper_id && $offer->status < env('DEFAULT_VALID')){
 
                 $offer->delete();
                 return 0 ;
@@ -1023,18 +1031,20 @@ class offerController extends Controller
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
 
             $offer = TransportAnnouncement::find( intval($id) );
+
             //Get all Carrier User
             $carriersUser = User::where([['fk_carrier_id', '=', Session::get('fk_carrier_id')],['status', env('DEFAULT_VALID')]])->get();
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
-                'origine' => $offer->originOffer->libelle,
+                'origin' => $offer->originOffer->libelle,
                 'destination' => $offer->destinationOffer->libelle,
             );
             foreach ($carriersUser as $carrier){
                 Mail::to($carrier->email)->send(new publishOfferDelete($data));
             }
-            if ( Session::get('fk_carrier_id') == $offer->fk_carrier_id ){
+
+            if ( Session::get('fk_carrier_id') == $offer->fk_carrier_id && $offer->status < env('DEFAULT_VALID')){
 
                 $offer->delete();
                 return 0 ;
@@ -1042,7 +1052,6 @@ class offerController extends Controller
                 return 1 ;
             }
         }
-
     }
 
     public function getOffersApply()
@@ -1172,7 +1181,7 @@ class offerController extends Controller
             $applyOffer->description = $request->description;
             $applyOffer->fk_freight_announcement_id = intval($request->offerId);
             $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
-            $applyOffer->status = env('default_int');
+            $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
 
@@ -1196,7 +1205,6 @@ class offerController extends Controller
 
             $offer = FreightOffer::find(intval($request->offerId));
 
-//            dd([$offer,$request]);
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
             $nameShipper = Shipper::find($offer->fk_shipper_id);
 
@@ -1210,7 +1218,7 @@ class offerController extends Controller
             $applyOffer->weight = floatval($request->weight);
             $applyOffer->fk_transport_announcement_id = intval($request->offerId);
             $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
-            $applyOffer->status = env('default_int');
+            $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
 
@@ -1342,7 +1350,7 @@ class offerController extends Controller
                     ")
                 ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
                 ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')
-                ->where('freight_offer.status', env('status_valid'))
+                ->where('freight_offer.status', env('STATUS_VALID'))
                 ->where('transport_announcement.fk_carrier_id', Session::get('fk_carrier_id'))
                 ->orderBy('contract_transport.id','desc')
                 ->get();
@@ -1363,7 +1371,7 @@ class offerController extends Controller
                     ")
                 ->join('transport_offer', 'contract_transport.fk_transport_offer_id', '=', 'transport_offer.id')
                 ->join('freight_announcement', 'transport_offer.fk_freight_announcement_id', '=', 'freight_announcement.id')
-                ->where('transport_offer.status',  env('status_valid'))
+                ->where('transport_offer.status',  env('STATUS_VALID'))
                 ->where('transport_offer.fk_carrier_id', Session::get('fk_carrier_id'))
                 ->orderBy('contract_transport.id','desc')
                 ->get();

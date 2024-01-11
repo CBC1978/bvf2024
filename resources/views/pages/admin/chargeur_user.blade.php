@@ -69,7 +69,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(count($users)  > env('default_int'))
+                            @if(count($users)  > env('DEFAULT_INT'))
                                 @foreach($users as $user)
                                     <tr>
                                         <td>

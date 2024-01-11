@@ -1,7 +1,7 @@
 $(document).ready(function () {
     setTimeout(function () {
         $("div.alert").remove();
-    }, 5000); //5s
+    }, 4000); //4s
 
     var searchInput = document.querySelector('input[id^="recherche"]');
     $(searchInput).keyup(function () {

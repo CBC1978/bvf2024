@@ -92,9 +92,7 @@
                                 <th>#</th>
                                 <th>Itinéraire</th>
                                 <th>Description</th>
-                                @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                    <th>Prix</th>
-                                @endif
+                                <th>Prix</th>
                                 <th>Nombre d'offres</th>
                                 <th>Date d'expiration</th>
                                 <th>Poids (T)</th>
@@ -112,9 +110,7 @@
                                         </td>
                                         <td>{{ $offer->origin->libelle.'-'.$offer->destination->libelle }}</td>
                                         <td>{{ $offer->description }}</td>
-                                        @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                            <td>{{ $offer->price }}</td>
-                                        @endif
+                                        <td>{{ $offer->price }}</td>
                                         <td>
                                             <button
                                                 type="button"
@@ -138,9 +134,7 @@
                                 <th>#</th>
                                 <th>Itinéraire</th>
                                 <th>Description</th>
-                                @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                    <th>Prix</th>
-                                @endif
+                                <th>Prix</th>
                                 <th>Nombre d'offres</th>
                                 <th>Date d'expiration</th>
                                 <th>Poids (T)</th>
@@ -287,24 +281,25 @@
                                                     >Date d'expiration <span class="text-danger">*</span></label
                                                 >
                                             </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${response.volume}"
+                                                 <div class="form-floating mb-3">
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        name="price"
+                                                        value="${response.price}"
+                                                        id="price"
+                                                        required
                                                         class="form-control"
-                                                        placeholder="Volume"
+                                                        placeholder="Prix"
                                                     />
                                                     <label
                                                     ><i
                                                             class="feather-sm text-dark fill-white me-2"
                                                         ></i
-                                                        >Volume (m3)</label
+                                                        >Prix<span class="text-danger">*</span></label
                                                     >
                                                 </div>
-                                            @endif
+
                             </div>
 
                             <div class="col-6">
@@ -343,23 +338,22 @@
                                                     >Poids(T)<span class="text-danger">*</span></label
                                                 >
                                             </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
+
+                            @if(Session::get('role') == env('ROLE_SHIPPER'))
                             <div class="form-floating mb-3">
                                 <input
-                                    type="number"
-                                    step="0.01"
-                                    name="price"
-                                    value="${response.price}"
-                                                        id="price"
-                                                        required
+                                    type="text"
+                                    name="volume"
+                                    id="volume"
+                                    value="${response.volume}"
                                                         class="form-control"
-                                                        placeholder="Prix"
+                                                        placeholder="Volume"
                                                     />
                                                     <label
                                                     ><i
                                                             class="feather-sm text-dark fill-white me-2"
                                                         ></i
-                                                        >Prix<span class="text-danger">*</span></label
+                                                        >Volume (m3)</label
                                                     >
                                                 </div>
                                             @endif

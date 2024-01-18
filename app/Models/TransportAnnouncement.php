@@ -19,6 +19,7 @@ class TransportAnnouncement extends Model
         'fk_carrier_id',
         'origin',
         'destination',
+        'price',
         'limit_date',
         'vehicule_type',
         'weight',

@@ -200,27 +200,25 @@
                                                         <button
                                                             type="button"
                                                             class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            {{ $offer->vehicule_type }}
+                                                            {{ $offer->vehicule_type->libelle }}
                                                         </button>
                                                     </div>
                                                 @endif
                                             </div>
                                             <div class="row mb-3">
-                                                @if(isset($offer->price) && !empty($offer->price))
-                                                    <div class="col-md-4 mb-3">
+                                                    <div class="col-md-6 mb-3">
                                                         <button
                                                             type="button"
                                                             class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            Prix: {{ $offer->price }}
+                                                            Prix: {{ $offer->price }} F
                                                         </button>
                                                     </div>
-                                                @endif
                                                 @if( isset($offer->volume) && !empty($offer->volume))
-                                                    <div class="col-md-9">
+                                                    <div class="col-md-6">
                                                         <button
                                                             type="button"
                                                             class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            {{ $offer->volume }}
+                                                            {{ $offer->volume }} m3
                                                         </button>
                                                     </div>
                                                 @endif

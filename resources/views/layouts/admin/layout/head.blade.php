@@ -21,7 +21,7 @@
     rel="icon"
     type="image/png"
     sizes="16x16"
-    href="{{ asset('src/assets/images/favicon.png') }}"
+    href="{{ asset('src/assets/images/favicon.ico') }}"
 />
 <meta
     name="keywords"

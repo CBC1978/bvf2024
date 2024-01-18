@@ -25,7 +25,7 @@
         rel="icon"
         type="image/png"
         sizes="16x16"
-        href="{{ asset('src/assets/images/favicon.png') }}"
+        href="{{ asset('src/assets/images/favicon.ico') }}"
     />
     <!-- Custom CSS -->
     <link href="{{ asset('src/dist/css/style.min.css') }}" rel="stylesheet" />
@@ -173,6 +173,7 @@
                                 </div>
                             </div>
                         </form>
+                        <div class="text-muted text-center">Avez-vous déjà un compte? <a href="{{route('index')}}">Connexion</a></div>
                     </div>
                 </div>
             </div>

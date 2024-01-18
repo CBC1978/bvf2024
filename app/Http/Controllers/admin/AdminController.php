@@ -33,6 +33,15 @@ class AdminController extends Controller
         return view('pages.admin.chargeur', compact('shippers', 'villes'));
     }
 
+    public function getCarriers()
+    {
+        return Carrier::all();
+    }
+    public function getShippers()
+    {
+        return Shipper::all();
+    }
+
     public function displayEntrepriseTransporteur()
     {
         $users = User::all();

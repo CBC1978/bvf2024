@@ -25,7 +25,7 @@ class loginForm extends FormRequest
     {
         return [
             'email' => ['required', 'email:rfc','exists:users'],
-            'password' => ['required', 'min:8']
+            'password' => ['required', 'min:4']
         ];
     }
 

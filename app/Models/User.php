@@ -29,6 +29,7 @@ class User extends Authenticatable
         'status',
         'fk_carrier_id',
         'fk_shipper_id',
+        'email_verified',
     ];
 
     /**
@@ -48,4 +49,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function carrier()
+    {
+        return $this->belongsTo(Carrier::class, 'fk_carrier_id');
+    }
+
+    public function shipper()
+    {
+        return $this->belongsTo(Shipper::class, 'fk_shipper_id');
+    }
 }

@@ -343,14 +343,6 @@
                                                     value="${ response.origin.libelle }"
                                                     required
                                                     style="width: 100%; height: 36px"
-                                                /><input
-                                                    readOnly
-                                                    name="origin"
-                                                    id="origin"
-                                                    class="form-control"
-                                                    value="${ response.origin.libelle }"
-                                                    required
-                                                    style="width: 100%; height: 36px"
                                                 />
                                                 <label
                                                 ><i
@@ -377,25 +369,26 @@
                                                     >Date d'expiration <span class="text-danger">*</span></label
                                                 >
                                             </div>
-                                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        readOnly
-                                                        type="text"
-                                                        name="volume"
-                                                        id="volume"
-                                                        value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
+                                            <div class="form-floating mb-3">
+                                        <input
+                                            readOnly
+                                            type="number"
+                                            step="0.01"
+                                            name="price"
+                                            value="${ response.price }"
+                                            id="price"
+                                            required
+                                            class="form-control"
+                                            placeholder="Prix"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Prix<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+
                                         </div>
 
                             <div class="col-6">
@@ -435,27 +428,26 @@
                                         >Poids(T)<span class="text-danger">*</span></label
                                     >
                                 </div>
-                                @if(Session::get('role') == env('ROLE_CARRIER'))
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            readOnly
-                                            type="number"
-                                            step="0.01"
-                                            name="price"
-                                            value="${ response.price }"
-                                            id="price"
-                                            required
-                                            class="form-control"
-                                            placeholder="Prix"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Prix<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                @endif
+
+                            @if(Session::get('role') == env('ROLE_CARRIER'))
+                            <div class="form-floating mb-3">
+                                <input
+                                    readOnly
+                                    type="text"
+                                    name="volume"
+                                    id="volume"
+                                    value="${ response.volume }"
+                                                        class="form-control"
+                                                        placeholder="Volume"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Volume (m3)</label
+                                                    >
+                                                </div>
+                                            @endif
                                 @if(Session::get('role') == env('ROLE_SHIPPER'))
                                     <div class="form-floating mb-3">
                                         <input

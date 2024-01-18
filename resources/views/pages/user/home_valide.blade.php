@@ -41,7 +41,7 @@
                             <div class="col-md-2 col-sm-12 top">
                                 <button
                                     type="button"
-                                    id="btn-detail-offer"
+                                    id="btn-detail-user"
                                     class="
                                       justify-content-center
                                       w-100
@@ -60,7 +60,7 @@
                             <div class="col-md-2 col-sm-12 top">
                                 <button
                                     type="button"
-                                    id="btn-update-offer"
+                                    id="btn-activer-user"
                                     class="
                                       justify-content-center
                                       w-100
@@ -70,7 +70,7 @@
                                     "
                                 >
                                     <i
-                                        data-feather="edit"
+                                        data-feather="toggle-right"
                                         class="feather-sm fill-white me-2"
                                     ></i>
                                     Désactiver
@@ -78,8 +78,27 @@
                             </div>
                             <div class="col-md-2 col-sm-12 top">
                                 <button
-                                    id="btn-delete-offer"
                                     type="button"
+                                    id="btn-update-user"
+                                    class="
+                                      justify-content-center
+                                      w-100
+                                      btn btn-rounded btn-outline-warning
+                                      d-flex
+                                      align-items-center
+                                    "
+                                >
+                                    <i
+                                        data-feather="edit"
+                                        class="feather-sm fill-white me-2"
+                                    ></i>
+                                    Modifier
+                                </button>
+                            </div>
+                            <div class="col-md-2 col-sm-12 top">
+                                <button
+                                    type="button"
+                                    id="btn-delete-user"
                                     class="
                                       justify-content-center
                                       w-100
@@ -95,7 +114,6 @@
                                     Supprimer
                                 </button>
                             </div>
-                            <div class="col-6"></div>
                         </div>
                     </h4>
                 </div>
@@ -106,42 +124,155 @@
                             class="table table-striped table-bordered display"
                             style="width: 100%">
                             <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nom complet</th>
-                                    <th>Contact</th>
-                                    <th>Email</th>
-                                    <th>Nom d'utilisateur</th>
-                                </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom complet</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Raison sociale</th>
+                                <th>Rôle</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                @if(count($users))
-                                    @foreach($users as $user)
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" name="user_id" id="user_id" value="{{$user->id}}">
-                                            </td>
-                                            <td>{{ $user->name.' '.$user->first_name }}</td>
-                                            <td>{{ $user->user_phone }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>{{ $user->username }}</td>
-                                        </tr>
-                                    @endforeach
-                                @endif
+                            @foreach($users as $user)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="user-checkbox" id="id_user" name="id_user" value="{{ $user->id }}">
+                                    </td>
+                                    <td>{{ $user->name }} {{$user->first_name }}</td>
+                                    <td>{{$user->user_phone }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    @if($user->company)
+                                        <td>{{ $user->company->company_name}}</td>
+                                    @endif
+                                    <td>
+                                        @if($user->status == env('STATUS_ADMIN'))
+                                            Admin
+                                        @elseif($user->status == env('DEFAULT_VALID'))
+                                            Membre
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Nom complet</th>
-                                    <th>Contact</th>
-                                    <th>Email</th>
-                                    <th>Nom d'utilisateur</th>
-                                </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom complet</th>
+                                <th>Contact</th>
+                                <th>Email</th>
+                                <th>Raison sociale</th>
+                                <th>Rôle</th>
+                            </tr>
                             </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
+
+            {{-- Modal detail--}}
+            <div
+                class="modal fade"
+                id="detail-user"
+                tabindex="-1"
+                aria-labelledby="detail-user"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+                        <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                            <h4 class="modal-title" id="detail-user">
+                                Détail sur l'utilisateur
+                            </h4>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="card-title mb-3">profil</h4>
+                            <div class="row" id="profil">
+
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="card-title mb-3">Structure</h4>
+                            <div class="row" id="structure">
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            {{-- end Modal--}}
+
+            {{-- Modal update--}}
+            <div
+                class="modal fade"
+                id="update-user"
+                tabindex="-1"
+                aria-labelledby="update-user"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+                        <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                            <h4 class="modal-title" id="update-user">
+                                Modifier l'utilisateur
+                            </h4>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <form id="formUser" method="POST">
+                            @csrf
+                            <input type="hidden" value="{{ csrf_token() }}" id="_token">
+                            <div class="modal-body">
+                                <h4 class="card-title mb-3">profil</h4>
+                                <div class="row" id="profile">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="d-md-flex align-items-center">
+                                    <div class="mt-3 mt-md-0 ms-auto">
+                                        <button
+                                            type=""
+                                            class="
+                                    btn btn-info
+                                    font-weight-medium
+                                    rounded-pill
+                                    px-4
+                                "
+                                        >
+                                            <div class="d-flex align-items-center">
+                                                <i
+                                                    data-feather="edit"
+                                                    class="feather-sm fill-white me-2"
+                                                ></i>
+                                                Modifier
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            {{-- end Modal--}}
         </div>
     </div>
 @endsection
@@ -162,10 +293,10 @@
                 }
             });
 
-            //Detail Offer
-            $('#btn-detail-offer').click(function (){
+            //Detail User
+            $('#btn-detail-user').click(function (){
 
-                var checkOffers = document.querySelectorAll('#offer-detail');
+                var checkOffers = document.querySelectorAll('#id_user');
                 var data = [];
 
                 // Verify if checkboxes are checked
@@ -186,169 +317,187 @@
                 if( data.length == 1){
 
                     $('#removeData').remove();
-                    fetch('/offre/'+data[0].value)
+                    $('#removeStructure').remove();
+                    fetch('/utilisateur/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
-
-                            $('#formDetailOffer').append(`
+                            $('#profil').append(`
                                   <div class="row" id="removeData">
                                         <div class="col-6">
                                             <div class="form-floating mb-3">
                                                 <input
                                                     readOnly
-                                                    name="origin"
-                                                    id="origin"
+                                                    type="text"
                                                     class="form-control"
-                                                    value="${ response.origin.libelle }"
-                                                    required
+                                                    value="${ response.name+' '+response.first_name }"
                                                     style="width: 100%; height: 36px"
                                                 />
                                                 <label
                                                 ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de départ <span class="text-danger">*</span> </label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    type="date"
-                                                    name="limit_date"
-                                                    id="limit_date"
-                                                    value="${ response.limit_date}"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Date"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Date d'expiration <span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        readOnly
-                                        name="destination"
-                                        id="destination"
-                                        value="${ response.destination.libelle }"
-                                                    class="form-control"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de destination<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    type="number"
-                                                    step="0.01"
-                                                    name="weight"
-                                                    id="weight"
-                                                    value="${ response.weight }"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Poids"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Poids(T)<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="number"
-                                    step="0.01"
-                                    name="price"
-                                    value="${ response.price }"
-                                                        id="price"
-                                                        required
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    name="vehicule_type"
-                                    id="vehicule_type"
-                                    class="form-control"
-                                    value="${ response.vehicule_type.libelle }"
-                                                        required
-                                                        style="width: 100%; height: 36px"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Type d'engin<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value="${response.description }"
-                                                required
-                                                class="form-control"
-                                                placeholder="Description"
-                                            />
-                                            <label
-                                            ><i
                                                     class="feather-sm text-dark fill-white me-2"
-                                                ></i
-                                                >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
-                                            >
+                                                    ></i
+                                                    >Nom complet <span class="text-danger">*</span> </label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.user_phone}"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Téléphone <span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.email }"
+                                                    class="form-control"
+                                                    style="width: 100%; height: 36px"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Email</label
+                                                    >
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.username }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Nom d'utilisateur</label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.role }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Rôle</label
+                                                >
+                                            </div>
+                                        </div>
+                                  </div>
+                            `);
+                            $('#structure').append(`
+                                  <div class="row" id="removeStructure">
+                                        <div class="col-6">
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="${ response.company.company_name }"
+                                                    style="width: 100%; height: 36px"
+                                                />
+                                                <label
+                                                ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Raison sociale <span class="text-danger">*</span> </label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.company.address}"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Adresse <span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.company.city.libelle }"
+                                                    class="form-control"
+                                                    style="width: 100%; height: 36px"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Ville</label
+                                                    >
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.company.email }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Email</label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.company.ifu }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Numéro IFU</label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    readOnly
+                                                    type="text"
+                                                    value="${ response.company.rccm }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Numéro RCCM</label
+                                                >
+                                            </div>
                                         </div>
                                   </div>
                             `);
                         });
-                    $('#detail-offer').modal('show');
+                    $('#detail-user').modal('show');
 
                 }
 
@@ -360,14 +509,17 @@
                     });
                 }
                 data = [];
-                console.log(data);
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        event.checked = false;
+                    }
+                });
 
             });
+            //Update User
+            $('#btn-update-user').click(function (){
 
-            //Update Offer
-            $('#btn-update-offer').click(function (){
-
-                var checkOffers = document.querySelectorAll('#offer-detail');
+                var checkOffers = document.querySelectorAll('#id_user');
                 var data = [];
 
                 // Verify if checkboxes are checked
@@ -375,7 +527,7 @@
                     if(event.checked){
                         data.push(event);
                     }
-                })
+                });
 
                 if(data.length == 0){
                     Swal.fire({
@@ -387,194 +539,155 @@
 
                 if( data.length == 1){
 
-                    $('#removeData').remove();
-                    fetch('/offre/'+data[0].value)
+                    $('#removeProfil').remove();
+                    fetch('/utilisateur/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
 
-                            $('#formUpdateOffer').append(`
-                                  <div class="row" id="removeData">
+                            $('#profile').append(`
+                                  <div class="row" id="removeProfil">
                                         <div class="col-6">
                                             <div class="form-floating mb-3">
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    id="name"
+                                                    class="form-control"
+                                                    required
+                                                    value="${ response.name}"
+                                                    style="width: 100%; height: 36px"
+                                                />
+                                                <input
+                                                    type="hidden"
+                                                    name="id_users"
+                                                    id="id_users"
+                                                    class="form-control"
+                                                    value="${ response.id}"
+                                                    style="width: 100%; height: 36px"
+                                                />
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="text"
+                                                    name="first_name"
+                                                    id="first_name"
+                                                    class="form-control"
+                                                    required
+                                                    value="${ response.first_name}"
+                                                    style="width: 100%; height: 36px"
+                                                />
+                                                <label
+                                                ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Prénom(s)<span class="text-danger">*</span> </label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="text"
+                                                    name="user_phone"
+                                                    id="user_phone"
+                                                    required
+                                                    value="${ response.user_phone}"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Téléphone <span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="text"
+                                                    name="email"
+                                                    id="email"
+                                                    required
+                                                    value="${ response.email }"
+                                                    class="form-control"
+                                                    style="width: 100%; height: 36px"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Email<span class="text-danger">*</span></label
+                                                    >
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="text"
+                                                    name="username"
+                                                    id="username"
+                                                    required
+                                                    value="${ response.username }"
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Nom d'utilisateur <span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="password"
+                                                    name="password"
+                                                    id="password"
+                                                    value=""
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Mot de passe<span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="password"
+                                                    name="cpassword"
+                                                    id="cpassword"
+                                                    value=""
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Confirmer le mot de passe<span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
                                                 <select
-                                                    name="origin"
-                                                    id="origin"
+                                                    name="roles"
+                                                    id="roles"
                                                     class="form-control"
                                                     required
                                                     style="width: 100%; height: 36px"
                                                 >
-                                                    <option value="${ response.origin.id }" >${ response.origin.libelle }</option>
+                                                    <option value="${response.role}" selected>${response.role}</option>
+                                                    <option value="transporteur" >Transporteur</option>
+                                                    <option value="chargeur" >Chargeur</option>
                                                 </select>
                                                 <label
                                                 ><i
                                                         class="feather-sm text-dark fill-white me-2"
                                                     ></i
-                                                    >Lieu de départ <span class="text-danger">*</span> </label
+                                                    >Rôle<span class="text-danger">*</span> </label
                                                 >
                                             </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    type="date"
-                                                    name="limit_date"
-                                                    id="limit_date"
-                                                    value="${ response.limit_date}"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Date"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Date d'expiration <span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <select
-                                        name="destination"
-                                        id="destination"
-                                        class="form-control"
-                                        required
-                                        style="width: 100%; height: 36px"
-                                    >
-                                        <option value="${ response.destination.id }" selected>${ response.destination.libelle }</option>
-                                                            </select>
-                                                            <label
-                                                            ><i
-                                                                    class="feather-sm text-dark fill-white me-2"
-                                                                ></i
-                                                                >Lieu de destination<span class="text-danger">*</span></label
-                                                            >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    name="weight"
-                                                    id="weight"
-                                                    value="${ response.weight }"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Poids"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Poids(T)<span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            @if(Session::get('role') == env('ROLE_SHIPPER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    name="price"
-                                    value="${ response.price }"
-                                                        id="price"
-                                                        required
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                            <div class="form-floating mb-3">
-                                <select
-                                    name="vehicule_type"
-                                    id="vehicule_type"
-                                    class="form-control"
-                                    required
-                                    style="width: 100%; height: 36px"
-                                >
-                                    <option value="${ response.vehicule_type.id }" selected>${ response.vehicule_type.libelle }</option>
-
-                                                    </select>
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Type d'engin<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                            @endif
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value="${response.description }"
-                                                            required
-                                                            class="form-control"
-                                                            placeholder="Description"
-                                                        />
-                                                        <label
-                                                        ><i
-                                                                class="feather-sm text-dark fill-white me-2"
-                                                            ></i
-                                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
-                                                        >
-                                                        <input type="hidden" value="${ response.id }" name="idOffer"  id="idOffer"/>
                                         </div>
                                   </div>
                             `);
-
-                            //Get all villes
-                            fetch('/villes')
-                                .then(response => response.json())
-                                .then(data => {
-
-                                    data.forEach(item => {
-                                        $('#origin').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
-                                    `);
-                                        $('#destination').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
-                                    `);
-                                    });
-
-                                });
-
-                            //Get all type of car
-                            fetch('/type-car')
-                                .then(response => response.json())
-                                .then(data => {
-                                    data.forEach(item => {
-                                        $('#vehicule_type').append(`
-                                           <option value="${ item.id }"> ${ item.libelle }</option>
-                                        `)
-                                    })
-                                });
+                            $('#update-user').modal('show');
                         });
-                    $('#update-offer').modal('show');
                 }
 
                 if( data.length >= 2){
@@ -585,11 +698,84 @@
                     });
                 }
                 data = [];
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        event.checked = false;
+                    }
+                });
+
+            });
+            $('#formUser').submit(function (e){
+                e.preventDefault();
+                var formData = new FormData(this);
+                var token = $('#_token').val();
+                //Store Message
+                fetch('/utilisateur/modifier',{
+                    headers: {
+                        "X-CSRF-Token": token
+                    },
+                    method:"POST",
+                    body:formData ,
+                })
+                    .then(response => response.json())
+                    .then(data =>{
+                        if(data == 0){
+                            Swal.fire({
+                                title: "Succès",
+                                text: 'Utilisateur moidifié avec succès',
+                                icon: 'success',
+                            });
+
+                        }else if(data == 1){
+                            Swal.fire({
+                                title: "Erreur",
+                                text: 'Les mots de passes ne correspondent pas',
+                                icon: 'error',
+                            });
+                        }
+                    });
+
+                setTimeout(function () {
+                    location.reload();
+                }, 3000); //5s refresh page
             });
 
-            //Delete Offer
-            $('#btn-delete-offer').click(function(){
-                var checkOffers = document.querySelectorAll('#offer-detail');
+            $('#roles').change(function (){
+                console.log('test');
+                $( "#structures option").each(function (){
+                    $(this).remove();
+                });
+                var obj = $('#structures option:selected').val();
+                if(obj == 'chargeur'){
+
+                    fetch('/chargeur/liste')
+                        .then(response=>response.json())
+                        .then(response=>{
+
+                            response.forEach(item=>{
+                                $('#structures').append(`
+                                            <option value ="${item.id}">${item.company_name}</option>
+                                        `);
+                            });
+                        });
+                } else if(obj == 'transporteur'){
+                    fetch('/transporteur/liste')
+                        .then(response=>response.json())
+                        .then(response=>{
+                            response.forEach(item=>{
+                                $('#structures').append(`
+                                            <option value ="${item.id}">${item.company_name}</option>
+                                        `);
+                            });
+                        });
+                }
+
+
+
+            });
+            //Activer User
+            $('#btn-activer-user').click(function(){
+                var checkOffers = document.querySelectorAll('#id_user');
                 var data = [];
 
                 // Verify if checkboxes are checked
@@ -599,6 +785,41 @@
                     }
                 });
 
+                data.forEach(item =>{
+                    fetch('/utilisateur/2/'+item.value)
+                        .then( response => response.json() )
+                        .then( response => {
+                            if(response == 0){
+                                Swal.fire({
+                                    title: 'Bravo',
+                                    text: 'L\'utilisateur est désactivé avec succès',
+                                    icon: 'success',
+                                });
+                            }
+                        });
+                });
+                data = [];
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        event.checked = false;
+                    }
+                });
+                setTimeout(function () {
+                    location.reload();
+                }, 3000); //5s refresh page
+
+            });
+            //Admin User
+            $('#btn-delete-user').click(function(){
+                var checkOffers = document.querySelectorAll('#id_user');
+                var data = [];
+
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                });
                 Swal.fire({
                     title: "Voulez vous vraiment supprimez ?",
                     showDenyButton: true,
@@ -609,19 +830,19 @@
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         data.forEach(item =>{
-                            fetch('/supprimer-offre/'+item.value)
+                            fetch('/utilisateurs/supprimer/'+item.value)
                                 .then( response => response.json() )
                                 .then( response => {
                                     if(response == 0){
                                         Swal.fire({
                                             title: 'Bravo',
-                                            text: 'L\'offre a été supprimée avec succès',
+                                            text: 'L\'utilisateur a été supprimée avec succès',
                                             icon: 'success',
                                         });
                                     } else if( response == 1){
                                         Swal.fire({
                                             title: 'Erreur',
-                                            text: 'Vous n\'êtes pas autorisé à supprimer l\'offre',
+                                            text: 'Vous n\'êtes pas autorisé à supprimer le camion',
                                             icon: 'error',
                                         });
                                     }
@@ -629,10 +850,11 @@
                         });
                         setTimeout(function () {
                             location.reload();
-                        }, 3000); //5s
-                        //refresh page
+                        }, 3000); //3s
+                        // refresh page
                     }
                 });
+
             });
         });
     </script>

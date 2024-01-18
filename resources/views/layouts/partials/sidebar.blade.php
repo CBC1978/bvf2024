@@ -84,13 +84,13 @@
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
                                 <a href="{{ route('getOffersReceived') }}" class="sidebar-link"
-                                ><i class="mdi mdi-email"></i
+                                ><i class="mdi"></i
                                     ><span class="hide-menu"> Reçu </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
                                 <a href="{{ route('getOffersNotReceived') }}" class="sidebar-link"
-                                ><i class="mdi mdi-email-alert"></i
+                                ><i class="mdi"></i
                                     ><span class="hide-menu"> Non reçu</span></a
                                 >
                             </li>
@@ -121,6 +121,7 @@
                             ><span class="hide-menu">Contrat</span></a
                         >
                     </li>
+                    @if(Session::get('status') == env('STATUS_ADMIN'))
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link has-arrow waves-effect waves-dark"
@@ -144,6 +145,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
                 @else
                     <li class="sidebar-item">
                         <a

@@ -22,6 +22,7 @@ use App\Models\ContractTransport;
 use App\Models\Driver;
 use App\Models\FreightAnnouncement;
 use App\Models\FreightOffer;
+use App\Models\Notification;
 use App\Models\Shipper;
 use App\Models\TransportAnnouncement;
 use App\Models\TransportOffer;
@@ -39,6 +40,29 @@ class offerController extends Controller
     public function countFreightAnnouncements()
     {
         return FreightAnnouncement::count();
+    }
+
+    // get Entreprise
+
+    public function getEntreprise($type,$role)
+    {
+        //transporteur
+        if ($role == env('STATUS_VALID')){
+            if($type == env('STATUS_VALID')){
+                $obj = Carrier::where('type', '=', env('STATUS_VALID'))->get();
+            }elseif($type == env('DEFAULT_VALID')){
+                $obj = Carrier::where('type', '=', env('DEFAULT_INT'))->get();
+            }
+        }
+        //chargeur
+        elseif($role == env('DEFAULT_VALID')){
+            if($type == env('STATUS_VALID')){
+                $obj = Shipper::where('type', '=', env('STATUS_VALID'))->get();
+            }elseif($type == env('DEFAULT_VALID')){
+                $obj = Shipper::where('type', '=', env('DEFAULT_INT'))->get();
+            }
+        }
+        return response()->json($obj);
     }
 
     public function getAllVille()
@@ -222,15 +246,16 @@ class offerController extends Controller
             $offers = DB::table('transport_announcement')
                 ->selectRaw("transport_announcement.id, transport_announcement.origin, transport_announcement.destination, transport_announcement.limit_date,
                         transport_announcement.weight, transport_announcement.vehicule_type, transport_announcement.description,
-                       carrier.company_name")
+                       carrier.company_name,transport_announcement.price")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
-                ->orderBy('transport_announcement.id', 'DESC')
+                ->orderBy('transport_announcement.price', 'DESC')
                 ->limit(10)
                 ->get();
             $offers->each(function ($offer){
                 $offer->origin = Ville::find(intval($offer->origin));
                 $offer->destination = Ville::find(intval($offer->destination));
+                $offer->vehicule_type =  TypeCar::find(intval($offer->vehicule_type));
             });
             $nbOffer = $this->countFreightAnnouncements();
             $nbOfferReceived = $this->countFreightOffer();
@@ -248,11 +273,11 @@ class offerController extends Controller
                 ->selectRaw("
              freight_announcement.id,freight_announcement.origin,freight_announcement.destination,freight_announcement.limit_date,
              freight_announcement.weight, freight_announcement.volume,freight_announcement.description,
-             shipper.company_name
+             shipper.company_name,freight_announcement.price
              ")
                 ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
-                ->orderBy('freight_announcement.id', 'DESC')
+                ->orderBy('freight_announcement.price', 'DESC')
                 ->limit(10)
                 ->get();
             $offers->each(function ($offer){
@@ -306,13 +331,20 @@ class offerController extends Controller
         $validated = $request->validated();
         $user = User::find(intval(session('userId')));
 
+        $notif = new Notification();
         if (Session::get('role') == env('ROLE_CARRIER')) {
             $offer = FreightAnnouncement::find(intval($request->offerId));
             $nameCarrier = Carrier::find(intval($user->fk_carrier_id));
             $nameShipper = Shipper::find($offer->fk_shipper_id);
 
-            $shipperUsers = User::where([['fk_shipper_id', $offer->fk_shipper_id], ['status', env('DEFAULT_VALID')]])->get();
-            $carrierUsers = User::where([['fk_carrier_id', $user->fk_carrier_id], ['status', env('DEFAULT_VALID')]])->get();
+            $shipperUsers = User::where([['fk_shipper_id', $offer->fk_shipper_id],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]
+                                        ])->get();
+            $carrierUsers = User::where([['fk_carrier_id', $user->fk_carrier_id],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]
+                                        ])->get();
 
             //Add offer from shipper
             $applyOffer = new TransportOffer();
@@ -323,6 +355,13 @@ class offerController extends Controller
             $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
+
+            $notif->action = env('NOTIF_ADD');
+            $notif->description = 'Proposition d\'offre de transport ajoutée par '.$nameShipper->company_name.' dont le prix est '. $applyOffer->price.
+                ' et la description est '.$applyOffer->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = $applyOffer->fk_carrier_id;
+            $notif->save();
 
             //Get data to send email
             $data['price'] = $request->price;
@@ -347,8 +386,14 @@ class offerController extends Controller
             $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
             $nameShipper = Shipper::find($user->fk_shipper_id);
 
-            $shipperUsers = User::where([['fk_shipper_id', $user->fk_shipper_id], ['status', env('DEFAULT_VALID')]])->get();
-            $carrierUsers = User::where([['fk_carrier_id', $offer->fk_carrier_id], ['status', env('DEFAULT_VALID')]])->get();
+            $shipperUsers = User::where([['fk_shipper_id', $user->fk_shipper_id],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]
+                                        ])->get();
+            $carrierUsers = User::where([['fk_carrier_id', $offer->fk_carrier_id],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]
+                                        ])->get();
 
             //Add offer from shipper
             $applyOffer = new FreightOffer();
@@ -360,6 +405,12 @@ class offerController extends Controller
             $applyOffer->status = env('DEFAULT_INT');
             $applyOffer->created_by = intval ($user->id);
             $applyOffer->save();
+            $notif->action = env('NOTIF_ADD');
+            $notif->description = 'Proposition d\'offre de fret ajoutée par '.$nameShipper->company_name.' dont le prix est '. $applyOffer->price.
+                ' et la description est '.$applyOffer->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = $applyOffer->fk_shipper_id;
+            $notif->save();
 
             //Get data to send email
             $data['price'] = $request->price;
@@ -388,6 +439,7 @@ class offerController extends Controller
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
 
+        $notif = new Notification();
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
             $obj = new FreightAnnouncement();
@@ -404,6 +456,7 @@ class offerController extends Controller
 
             $obj->save();
 
+
             //Get data to send email
             $origin = Ville::find(intval($request->origin));
             $destination = Ville::find(intval($request->destination));
@@ -415,11 +468,19 @@ class offerController extends Controller
                 'description'=>$request->description,
             );
             //Get all Shipper User
-            $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
+            $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             foreach ($carriersUser as $carrier){
                 Mail::to($carrier->email)->send(new publishOfferSend($itemEmail));
             }
 
+            $notif->action = env('NOTIF_ADD');
+            $notif->description = 'Offre de fret ajoutée par '.$shipperObject->company_name.' dont le prix est '.$obj->price.
+                ' et la description est '.$obj->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = env('DEFAULT_INT');
+            $notif->save();
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
@@ -428,6 +489,7 @@ class offerController extends Controller
             $obj->destination = intval($request->destination);
             $obj->limit_date = $request->limit_date;
             $obj->weight = $request->weight;
+            $obj->price = $request->price;
             $obj->vehicule_type = $request->vehicule_type;
             $obj->created_by = Session::get('userId');
             $obj->description = $request->description;
@@ -447,10 +509,18 @@ class offerController extends Controller
                 'description'=>$request->description
             );
             //Get all Shipper User
-            $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
+            $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             foreach ($shippersUser as $shipper){
                 Mail::to($shipper->email)->send(new publishOfferSend($itemEmail));
             }
+            $notif->action = env('NOTIF_ADD');
+            $notif->description = 'Offre de transport ajoutée par '.$carrierObject->company_name.' dont le prix est '.$obj->price.
+                ' et la description est '.$obj->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = env('DEFAULT_INT');
+            $notif->save();
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
         }
     }
@@ -472,7 +542,7 @@ class offerController extends Controller
                    carrier.company_name")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
-                ->orderBy('transport_announcement.id', 'DESC')
+                ->orderBy('transport_announcement.price', 'DESC')
                 ->get();
             $offers->each(function ($obj){
                 $obj->origin = Ville::find(intval($obj->origin));
@@ -499,7 +569,7 @@ class offerController extends Controller
                     ")
                 ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
-                ->orderBy('freight_announcement.id', 'DESC')
+                ->orderBy('freight_announcement.price', 'DESC')
                 ->get();
             $offers->each(function ($obj){
                 $obj->origin = Ville::find(intval($obj->origin));
@@ -627,14 +697,27 @@ class offerController extends Controller
     public function updateStatutOffer($id,$action)
     {
 
+        $notif = new Notification();
         if (Session::get('role') == env('ROLE_CARRIER')){
             $offer = FreightOffer::find(intval($id));
             //Get users to send email
             $tsp = $offer->transportAnnounce;
-            $carrier = $tsp->carrier;
-            $userCarrier = $carrier->users;
+            $carriers = $tsp->carrier;
+            $userCarrier = $carriers->users;
             $shipper = $offer->Shipper;
             $userShipper = $shipper->users;
+            $userCarriers = [];
+            $userShippers = [];
+
+            foreach($userCarrier as $us){
+              if (  $us->email_verified != env('STATUS_VALID')){
+                  array_push($userCarriers, $us);
+              }
+            } foreach($userShipper as $us){
+              if (  $us->email_verified != env('STATUS_VALID')){
+                  array_push($userShippers, $us);
+              }
+            }
 
             //Message to send email Shipper
             $dataEmail = array(
@@ -692,17 +775,24 @@ class offerController extends Controller
                     $contrat->fk_freight_offert_id = intval($id);
                     $contrat->fk_transport_offer_id =  env('DEFAULT_INT');
                     $contrat->save();
-                    foreach ($userShipper as $ship){
+
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmail));
                         }
                     }
 
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailCarrier));
                         }
                     }
+
+                    $notif->action = env('NOTIF_ADD');
+                    $notif->description = 'Contrat de transport ajouté entre '.$carriers->company_name.' et '.$shipper->company_name;
+                    $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                    $notif->status = env('DEFAULT_INT');
+                    $notif->save();
                 }
                 else{
                     $contrat =new ContractTransport();
@@ -711,16 +801,21 @@ class offerController extends Controller
                     $contrat->fk_transport_offer_id =  env('DEFAULT_INT');
                     $contrat->save();
 
-                    foreach ($userShipper as $ship){
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmail));
                         }
                     }
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailCarrier));
                         }
                     }
+                    $notif->action = env('NOTIF_ADD');
+                    $notif->description = 'Contrat de transport ajouté entre '.$carriers->company_name.' et '.$shipper->company_name;
+                    $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                    $notif->status = env('DEFAULT_INT');
+                    $notif->save();
                 }
             }
 
@@ -730,12 +825,12 @@ class offerController extends Controller
                     foreach ($contrat as $ct){
                         $ct->delete();
                     }
-                    foreach ($userShipper as $ship){
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmailRefuser));
                         }
                     }
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailCarrierRefuser));
                         }
@@ -751,10 +846,22 @@ class offerController extends Controller
 
             //Get users to send email
             $tsp = $offer->freightAnnouncement;
-            $carrier = $offer->Carrier;
+            $carriers = $offer->Carrier;
             $userCarrier = $carrier->users;
             $shipper = $tsp->Shipper;
             $userShipper = $shipper->users;
+            $userCarriers = [];
+            $userShippers = [];
+
+            foreach($userCarrier as $us){
+                if (  $us->email_verified != env('STATUS_VALID')){
+                    array_push($userCarriers, $us);
+                }
+            } foreach($userShipper as $us){
+                if (  $us->email_verified != env('STATUS_VALID')){
+                    array_push($userShippers, $us);
+                }
+            }
 
             //Message to send email Shipper
             $dataEmail = array(
@@ -803,12 +910,12 @@ class offerController extends Controller
                     foreach ($contrat as $ct){
                         $ct->delete();
                     }
-                    foreach ($userShipper as $ship){
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipperRefuser));
                         }
                     }
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmailRefuser));
                         }
@@ -829,16 +936,21 @@ class offerController extends Controller
                     $contrat->fk_transport_offer_id = intval($id);
                     $contrat->save();
 
-                    foreach ($userShipper as $ship){
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipper));
                         }
                     }
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmail));
                         }
                     }
+                    $notif->action = env('NOTIF_ADD');
+                    $notif->description = 'Contrat de transport ajouté entre '.$carriers->company_name.' et '.$shipper->company_name;
+                    $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                    $notif->status = env('DEFAULT_INT');
+                    $notif->save();
                 }
                 else{
                     $contrat =new ContractTransport();
@@ -848,17 +960,22 @@ class offerController extends Controller
                     $contrat->save();
 
 
-                    foreach ($userShipper as $ship){
+                    foreach ($userShippers as $ship){
                         if($ship->status >= env('STATUS_VALID')){
                             Mail::to($ship->email)->send(new offerApplyResponse($dataEmailShipper));
                         }
                     }
 
-                    foreach ($userCarrier as $carrier){
+                    foreach ($userCarriers as $carrier){
                         if($carrier->status >= env('STATUS_VALID')){
                             Mail::to($carrier->email)->send(new offerApplyResponse($dataEmail));
                         }
                     }
+                    $notif->action = env('NOTIF_ADD');
+                    $notif->description = 'Contrat de transport ajouté entre '.$carriers->company_name.' et '.$shipper->company_name;
+                    $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                    $notif->status = env('DEFAULT_INT');
+                    $notif->save();
                 }
             }
 
@@ -924,9 +1041,12 @@ class offerController extends Controller
 
     public function updatePublishOffer(publishForm $request)
     {
+
         $data = $request->validated();
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
+        $notif = new Notification();
+
         if (Session::get('role') == env('ROLE_SHIPPER')){
             $shipperObject = Shipper::find(Session::get('fk_shipper_id'));
 
@@ -944,6 +1064,13 @@ class offerController extends Controller
                 $offer->updated_at = date("Y-m-d H:i:s");
 
                 $offer->save();
+
+                $notif->action = env('NOTIF_UP');
+                $notif->description = 'Offre de fret mise à jour par '.$shipperObject->company_name.' dont le prix est '.$offer->price.
+                    ' et la description '.$offer->description;
+                $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                $notif->status = env('DEFAULT_INT');
+                $notif->save();
             }else{
                 return redirect()->route($previousUrl)->with('danger', 'Vous n\êtes pas autorisé à modifier .');
             }
@@ -958,7 +1085,9 @@ class offerController extends Controller
                 'description'=>$data['description'],
             );
             //Get all Carrier User
-            $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
+            $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],
+                                        ['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             foreach ($carriersUser as $carrier){
                 Mail::to($carrier->email)->send(new publishOfferSend($itemEmail));
             }
@@ -969,18 +1098,26 @@ class offerController extends Controller
             $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
 
             $offer = TransportAnnouncement::find(intval($request->idOffer));
-            if($offer->fk_carrier_id == Session::get('fk_shipper_id')){
+
+            if($offer->fk_carrier_id == Session::get('fk_carrier_id')){
 
                 $offer->origin = $data['origin'];
                 $offer->destination = $data['destination'];
                 $offer->weight = $data['weight'];
-                $offer->vehicule_type = $data['vehicule_type'];
+                $offer->price = $request->price;
+                $offer->vehicule_type = $request->vehicule_type;
                 $offer->limit_date = $data['limit_date'];
                 $offer->description = $data['description'];
                 $offer->created_by = Session::get('userId');
                 $offer->updated_at = date("Y-m-d H:i:s");
-
                 $offer->save();
+
+                $notif->action = env('NOTIF_UP');
+                $notif->description = 'Offre de transport mise à jour par '.$carrierObject->company_name.' dont le prix est '.$offer->price.
+                    ' et la description '.$offer->description;
+                $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                $notif->status = env('DEFAULT_INT');
+                $notif->save();
             }else{
                 return redirect()->route($previousUrl)->with('danger', 'Vous n\êtes pas autorisé à modifier .');
             }
@@ -995,11 +1132,11 @@ class offerController extends Controller
                 'description'=>$data['description'],
             );
             //Get all Shipper User
-            $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')]])->get();
+            $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             foreach ($shippersUser as $shipper){
                 Mail::to($shipper->email)->send(new publishOfferUpdate($itemEmail));
             }
-
             return redirect()->route($previousUrl)->with('success', 'Offre modifiée avec succès.');
         }
     }
@@ -1011,7 +1148,8 @@ class offerController extends Controller
 
             $offer = FreightAnnouncement::find( intval($id) );
             //Get all Shipper User
-            $shippersUser = User::where([['fk_shipper_id', '=', Session::get('fk_shipper_id')],['status', env('DEFAULT_VALID')]])->get();
+            $shippersUser = User::where([['fk_shipper_id', '=', Session::get('fk_shipper_id')],['status', env('DEFAULT_VALID')],
+                ['email_verified','!=', env('STATUS_VALID')]])->get();
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
@@ -1033,7 +1171,8 @@ class offerController extends Controller
             $offer = TransportAnnouncement::find( intval($id) );
 
             //Get all Carrier User
-            $carriersUser = User::where([['fk_carrier_id', '=', Session::get('fk_carrier_id')],['status', env('DEFAULT_VALID')]])->get();
+            $carriersUser = User::where([['fk_carrier_id', '=', Session::get('fk_carrier_id')],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
@@ -1107,8 +1246,10 @@ class offerController extends Controller
             $offer = FreightOffer::find( intval($id) );
             $carrier_fk = $offer->transportAnnounce->fk_carrier_id;
             //Get all Shipper User
-            $shippersUser = User::where([['fk_shipper_id', '=', Session::get('fk_shipper_id')],['status', env('DEFAULT_VALID')]])->get();
-            $carriersUser = User::where([['fk_carrier_id', '=', $carrier_fk],['status', env('DEFAULT_VALID')]])->get();
+            $shippersUser = User::where([['fk_shipper_id', '=', Session::get('fk_shipper_id')],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
+            $carriersUser = User::where([['fk_carrier_id', '=', $carrier_fk],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
@@ -1133,8 +1274,10 @@ class offerController extends Controller
             $offer = TransportOffer::find( intval($id) );
             $shipper_fk = $offer->freightAnnouncement->fk_shipper_id;
             //Get all Shipper User
-             $carriersUser = User::where([['fk_carrier_id', '=', Session::get('fk_carrier_id')],['status', env('DEFAULT_VALID')]])->get();
-             $shippersUser = User::where([['fk_shipper_id', '=', $shipper_fk],['status', env('DEFAULT_VALID')]])->get();
+             $carriersUser = User::where([['fk_carrier_id', '=', Session::get('fk_carrier_id')],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
+             $shippersUser = User::where([['fk_shipper_id', '=', $shipper_fk],['status', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
             $data = array(
                 'name' => Session::get('first_name').' '.Session::get('first_name'),
                 'description' => $offer->description,
@@ -1162,35 +1305,30 @@ class offerController extends Controller
         $validated = $request->validated();
         $user = User::find(intval(session('userId')));
 
+        $notif = new Notification();
         if (Session::get('role') == env('ROLE_CARRIER')) {
 
             $offer = TransportOffer::find(intval($request->offerId));
 
+            $offerFreight = FreightAnnouncement::find(intval($offer->fk_freight_announcement_id));
+            $nameShipper= Shipper::find(intval($offerFreight->fk_shipper_id));
+            $nameCarrier = Carrier::find($offer->fk_carrier_id);
+
+            $shipperUsers = User::where([['fk_shipper_id', $nameShipper->id], ['status','>=', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
+            $carrierUsers = User::where([['fk_carrier_id', $nameCarrier->id], ['status','>=', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
+
             $offer->price = floatval($request->price);
             $offer->description = $request->description;
             $offer->updated_at = date("Y-m-d H:i:s");
-            $nameCarrier = Carrier::find(intval($user->fk_carrier_id));
-            $nameShipper = Shipper::find($offer->fk_shipper_id);
-
-            $shipperUsers = User::where([['fk_shipper_id', $offer->fk_shipper_id], ['status', env('DEFAULT_VALID')]])->get();
-            $carrierUsers = User::where([['fk_carrier_id', $user->fk_carrier_id], ['status', env('DEFAULT_VALID')]])->get();
-
-            //Add offer from shipper
-            $applyOffer = new TransportOffer();
-            $applyOffer->price = floatval($request->price);
-            $applyOffer->description = $request->description;
-            $applyOffer->fk_freight_announcement_id = intval($request->offerId);
-            $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
-            $applyOffer->status = env('DEFAULT_INT');
-            $applyOffer->created_by = intval ($user->id);
-            $applyOffer->save();
 
             //Get data to send email
             $data['price'] = $request->price;
             $data['description'] = $request->description;
             $data['offer'] = $offer;
-            $data['receiver'] = $nameCarrier->company_name;
-            $data['sender'] = $nameShipper->company_name;
+            $data['receiver'] =  $nameShipper->company_name;
+            $data['sender'] =$nameCarrier->company_name;
 
             //Send mail
             foreach ($carrierUsers as $carrier){
@@ -1200,27 +1338,31 @@ class offerController extends Controller
             foreach ($shipperUsers as $shipper){
                 Mail::to($shipper->email)->send(new offerReceive($data));
             }
+            $notif->action = env('NOTIF_UP');
+            $notif->description = 'Proposition d\'offre de transport mise à jour par '.$nameCarrier->company_name.' dont le prix est '.$offer->price.
+                ' et la description '.$offer->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = $nameShipper->id;
+            $notif->save();
 
         } elseif (Session::get('role') == env('ROLE_SHIPPER')) {
 
             $offer = FreightOffer::find(intval($request->offerId));
 
-            $nameCarrier = Carrier::find(intval($offer->fk_carrier_id));
+            $offerTransport = TransportAnnouncement::find(intval($offer->fk_transport_announcement_id));
+            $nameCarrier = Carrier::find(intval($offerTransport->fk_carrier_id));
             $nameShipper = Shipper::find($offer->fk_shipper_id);
 
-            $shipperUsers = User::where([['fk_shipper_id', $user->fk_shipper_id], ['status', env('DEFAULT_VALID')]])->get();
-            $carrierUsers = User::where([['fk_carrier_id', $offer->fk_carrier_id], ['status', env('DEFAULT_VALID')]])->get();
+            $shipperUsers = User::where([['fk_shipper_id', $nameShipper->id], ['status','>=', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
+            $carrierUsers = User::where([['fk_carrier_id', $nameCarrier->id], ['status','>=', env('DEFAULT_VALID')],
+                                        ['email_verified','!=', env('STATUS_VALID')]])->get();
 
-            //Add offer from shipper
-            $applyOffer = new FreightOffer();
-            $applyOffer->price = floatval($request->price);
-            $applyOffer->description = $request->description;
-            $applyOffer->weight = floatval($request->weight);
-            $applyOffer->fk_transport_announcement_id = intval($request->offerId);
-            $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
-            $applyOffer->status = env('DEFAULT_INT');
-            $applyOffer->created_by = intval ($user->id);
-            $applyOffer->save();
+            $offer->price = floatval($request->price);
+            $offer->weight = floatval($request->weight);
+            $offer->description = $request->description;
+            $offer->updated_at = date("Y-m-d H:i:s");
+            $offer->save();
 
             //Get data to send email
             $data['price'] = $request->price;
@@ -1228,6 +1370,13 @@ class offerController extends Controller
             $data['offer'] = $offer;
             $data['receiver'] = $nameCarrier->company_name;
             $data['sender'] = $nameShipper->company_name;
+
+            $notif->action = env('NOTIF_UP');
+            $notif->description = 'Proposition d\'offre de fret mise à jour par '.$nameShipper->company_name.' dont le prix est '.$offer->price.
+                ' et la description '.$offer->description;
+            $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+            $notif->status = $nameCarrier->id;
+            $notif->save();
 
             //Send mail
             foreach ($shipperUsers as $shipper){
@@ -1670,6 +1819,7 @@ class offerController extends Controller
     {
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
+        $notif = new Notification();
         if(count($request->id_driver_contrat) ==  count($request->id_car_contrat)){
 
             if(!empty($request->id_car_contrat)){
@@ -1687,6 +1837,13 @@ class offerController extends Controller
                     $contractDetails->created_by = intval(Session::get('userId'));
                     $contractDetails->save();
                 }
+                $carrier = Carrier::find(intval(Session::get('fk_carrier_id')));
+
+                $notif->action = env('NOTIF_UP');
+                $notif->description = 'Contrat de transport, ajout de camions par '.$carrier->company_name;
+                $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                $notif->status = $carrier->id;
+                $notif->save();
             }
             return redirect()->route($previousUrl,$request->contract)->with('success', 'Contrat modifié avec succès.');
         }
@@ -1708,6 +1865,13 @@ class offerController extends Controller
         $car->fk_carrier_id = Session::get('fk_carrier_id');
         $car->save();
 
+        $carrier = Carrier::find(Session::get('fk_carrier_id'));
+        $notif = new Notification();
+        $notif->action = env('NOTIF_ADD');
+        $notif->description = 'Camions de transport ajoutés par '.$carrier->company_name;
+        $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+        $notif->status = $carrier->id;
+        $notif->save();
         return response()->json('0');
     }
 
@@ -1723,8 +1887,15 @@ class offerController extends Controller
 
         $car->save();
 
-        return response()->json('0');
+        $carrier = Carrier::find(Session::get('fk_carrier_id'));
+        $notif = new Notification();
+        $notif->action = env('NOTIF_UP');
+        $notif->description = 'Camions de transport modifiés par '.$carrier->company_name;
+        $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+        $notif->status = $carrier->id;
+        $notif->save();
 
+        return response()->json('0');
     }
 
     public function deleteCar($id)
@@ -1790,23 +1961,4 @@ class offerController extends Controller
 
         return response()->json('0');
     }
-
-    public function sendEmail()
-    {
-
-        $dataEmail = array(
-            'objet'=>'Proposition de fret pour l\'offre de transport',
-            'response'=>'Acceptée',
-            'price'=>'35000',
-            'description'=>'test',
-            'offer'=>['weight'=>'30','description'=>'test 1'],
-            'receiver'=>'JSC'
-        );
-//        foreach ($userShipper as $ship){
-            Mail::to('arduino1024@gmail.com')->send(new offerApplyResponse($dataEmail));
-//        }
-
-    }
-
-
 }

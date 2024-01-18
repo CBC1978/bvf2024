@@ -11,17 +11,17 @@
             function returnToPreviousPage() {
             window.history.back(); // Revenir à la page précédente
         }
-    </script> 
+    </script>
 </head>
 <body>
     <button type="submit" onclick="returnToPreviousPage()">Retour</button>
     @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
         @endif
         <div class="container2">
-            <h1>  {{ $user->first_name}} Profile</h1>
+            <h1>  {{ $user->first_name}} Profil</h1>
                     <div class="profile-img">
                         <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt=""/>
                         <div class="file btn btn-lg btn-primary">
@@ -29,7 +29,7 @@
                         <input type="file" name="file"/>
                         </div>
                     </div>
-        
+
         <div class="affichage">
             <ul>
                 <div class="col-md-15">
@@ -94,13 +94,13 @@
                         <h5 class="mb-0">Nom d'entreprise:</h5>
                         </div>
                         <div class="col-sm-5 text-secondary">
-                          <h5> 
-                            @if ($user->fk_shipper_id) 
-                            {{ $user->shipper->company_name }} 
-                            @else 
+                          <h5>
+                            @if ($user->fk_shipper_id)
+                            {{ $user->shipper->company_name }}
+                            @else
                             Aucune entreprise associée
                             @endif
-                         </h5> 
+                         </h5>
                         </div>
                     </div>
                     </div>
@@ -153,7 +153,7 @@
                 </div>
             </div>
         </div>
-        
+
         <script>
             $(document).ready(function () {
                 $("#edit-profile-button").click(function () {
@@ -163,7 +163,7 @@
                     $("#edit-profile-modal").modal('hide');
                 });
             });
-            
+
         </script>
 <style>
   /* Style pour le conteneur principal */

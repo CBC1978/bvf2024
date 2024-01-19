@@ -103,12 +103,7 @@
                             aria-expanded="false"
                         ><i class="mdi mdi-comment-processing-outline"></i
                             ><span class="hide-menu">
-                                Mes offres de
-                                @if(Session::get('role') == env('ROLE_CARRIER'))
-                                    frets
-                                @elseif(Session::get('role') == env('ROLE_SHIPPER'))
-                                    transports
-                                @endif
+                                Mes propositions
                             </span></a
                         >
                     </li>

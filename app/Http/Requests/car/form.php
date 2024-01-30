@@ -27,6 +27,7 @@ class form extends FormRequest
             'registration'=>['required'],
             'type_car'=>['required'],
             'brand_car'=>['required'],
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
@@ -41,6 +42,8 @@ class form extends FormRequest
             'registration.required' => 'L\' immatriculation est requis',
             'type_car.required' => 'Le type du camion est requis',
             'brand_car.required' => 'La marque du camion est requise',
+            'image.max' => 'La taille de l\'image doit être inférieur à 2 méga',
+            'image.mime' => 'Le fichier importer n\'est pas une image valide',
         ];
     }
 }

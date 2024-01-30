@@ -79,6 +79,7 @@ Route::get('/contrat/conducteur/{id}', [offerController::class, 'getDriverOne'])
 Route::post('/contrat/conducteur/modifier', [offerController::class, 'updateDriver'])->name('updateDriver');
 Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'deleteDriver'])->name('deleteDriver');
 Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->name('printContrat');
+Route::get('vehicules', [offerController::class, 'getVehicule'])->name('getVehicule');
 
 //end Contrat route
 
@@ -154,3 +155,5 @@ Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTran
 //Utilisateurs routes
 Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
 //end Utilisateurs routes
+
+

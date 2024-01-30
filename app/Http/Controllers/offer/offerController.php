@@ -1852,6 +1852,37 @@ class offerController extends Controller
         }
     }
 
+    public function storeCarContrat(form $request)
+    {
+        $request->validated();
+
+        $car = new Car();
+        $car->registration = $request->registration;
+        $car->fk_type_car = $request->type_car;
+        $car->fk_brand_car = $request->brand_car;
+        $car->model = $request->model;
+        $car->payload = $request->payload;
+        $car->fk_carrier_id = Session::get('fk_carrier_id');
+
+        if($request->file('image')){
+            $image = $request->file('image');
+            $name = $request->registration.time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/car');
+            $image->move($destinationPath, $name);
+            $car->image = $name;
+        }
+
+        $car->save();
+
+        $carrier = Carrier::find(Session::get('fk_carrier_id'));
+        $notif = new Notification();
+        $notif->action = env('NOTIF_ADD');
+        $notif->description = 'Camions de transport ajoutés par '.$carrier->company_name;
+        $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+        $notif->status = $carrier->id;
+        $notif->save();
+        return response()->json('0');
+    }
     public function storeCar(form $request)
     {
         $request->validated();
@@ -1863,6 +1894,15 @@ class offerController extends Controller
         $car->model = $request->model;
         $car->payload = $request->payload;
         $car->fk_carrier_id = Session::get('fk_carrier_id');
+
+        if($request->file('image')){
+            $image = $request->file('image');
+            $name = $request->registration.time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/car');
+            $image->move($destinationPath, $name);
+            $car->image = $name;
+        }
+
         $car->save();
 
         $carrier = Carrier::find(Session::get('fk_carrier_id'));
@@ -1872,7 +1912,8 @@ class offerController extends Controller
         $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
         $notif->status = $carrier->id;
         $notif->save();
-        return response()->json('0');
+
+        return redirect()->route('getVehicule');
     }
 
     public function updateCar(Request $request)
@@ -1895,7 +1936,7 @@ class offerController extends Controller
         $notif->status = $carrier->id;
         $notif->save();
 
-        return response()->json('0');
+        return redirect('');
     }
 
     public function deleteCar($id)
@@ -1960,5 +2001,11 @@ class offerController extends Controller
         $driver->delete();
 
         return response()->json('0');
+    }
+
+    public function getVehicule()
+    {
+        return view('pages.vehicule.home');
+
     }
 }

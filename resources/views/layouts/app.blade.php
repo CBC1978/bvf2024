@@ -66,7 +66,10 @@
                     </div>
                     <div class="modal-body">
                         <h4 class="card-title mb-3">Faites une offre</h4>
-                        <form method="post" action="{{ route('storePublishOffer') }}" >
+
+
+                        @if(Session('role') == env('ROLE_SHIPPER'))
+                            <form method="post" action="{{ route('storePublishOffer') }}" >
                             @csrf
                             <div class="row">
                                 <div class="col-6">
@@ -234,6 +237,110 @@
                                 </div>
                             </div>
                         </form>
+                        @elseif(Session('role') == env('ROLE_CARRIER'))
+                            <form method="post" action="{{ route('storePublishOffer') }}" >
+                                @csrf
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="origin"
+                                                id="origin"
+                                                class="form-control"
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option disabled selected>Choisir une ville</option>
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Lieu de départ</label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="date"
+                                                name="limit_date"
+                                                id="limit_date"
+                                                required
+                                                class="form-control"
+                                                placeholder="Date"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Date d'expiration <span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="destination"
+                                                id="destination"
+                                                class="form-control"
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option disabled selected>Choisir une ville</option>
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Lieu de destination</label
+                                            >
+                                        </div>
+                                    </div>
+                                    <table class="table-responsive table-bordered" >
+                                        <thead>
+                                            <tr>Nb Camions</tr>
+                                            <tr>Caractéristiques</tr>
+                                            <tr>Charge utile (T)</tr>
+                                        </thead>
+                                    </table>
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="textarea"
+                                            name="description"
+                                            id="description"
+                                            required
+                                            class="form-control"
+                                            placeholder="Description"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                </div>
+                                <div class="d-md-flex align-items-center">
+                                    <div class="mt-3 mt-md-0 ms-auto">
+                                        <button
+                                            type="submit"
+                                            class="
+                                                btn btn-info
+                                                font-weight-medium
+                                                rounded-pill
+                                                px-4
+                                              "
+                                        >
+                                            <div class="d-flex align-items-center">
+                                                <i
+                                                    data-feather="send"
+                                                    class="feather-sm fill-white me-2"
+                                                ></i>
+                                                Publier
+                                            </div>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+                        @endif
                     </div>
                 <div class="modal-footer">
 

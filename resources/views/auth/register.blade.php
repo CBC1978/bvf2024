@@ -127,6 +127,7 @@
                                     type="text"
                                     name="name"
                                     id="name"
+                                    value="{{old('name')}}"
                                     required
                                     class="form-control"
                                     placeholder="Nom"
@@ -144,6 +145,7 @@
                                     name="first_name"
                                     id="first_name"
                                     required
+                                    value="{{old('first_name')}}"
                                     class="form-control"
                                     placeholder="Prénom"
                                 />
@@ -159,6 +161,7 @@
                                     type="text"
                                     name="user_phone"
                                     id="user_phone"
+                                    value="{{old('user_phone')}}"
                                     required
                                     class="form-control"
                                     placeholder="Téléphone"
@@ -172,70 +175,6 @@
                             </div>
                             <div class="form-floating mb-3">
                                 <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    required
-                                    class="form-control @error('email') is-invalid @enderror"
-
-                                    placeholder="Email"
-                                />
-                                <label for="email"
-                                ><i
-                                        class="feather-sm text-dark fill-white me-2"
-                                    ></i
-                                    > Email<span class="text-danger">*</span></label
-                                >
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="form-floating mb-3">
-                                <select
-                                    class="form-select"
-                                    name="type_company"
-                                    id="type_company"
-                                    class="form-control"
-                                    required
-                                >
-                                    <option selected value="Personne Physique ou Morale" disabled>Choisir votre type</option>
-                                    <option value="1" {{ old('type_company') == '1' ? 'selected' : '' }}>Personne Physique</option>
-                                    <option value="0" {{ old('type_company') == '0' ? 'selected' : '' }}>Personne Morale</option>
-                                </select>
-                                <label
-                                ><i
-                                        class="feather-sm text-dark fill-white me-2"
-                                    ></i
-                                    >Type entreprise<span class="text-danger">*</span></label
-                                >
-                                @error('role')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-xs-12 col-sm-12">
-                            <div class="form-floating mb-3">
-                                <input
-                                    type="text"
-                                    name="username"
-                                    id="username"
-                                    required
-                                    class="form-control"
-                                    placeholder="Nom d'utilisateur"
-                                />
-                                <label for="username"
-                                ><i
-                                    class="feather-sm text-dark fill-white me-2"
-                                ></i
-                                    > Nom d'utilisateur<span class="text-danger">*</span></label
-                                >
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
                                     type="password"
                                     name="password"
                                     id="password"
@@ -245,12 +184,12 @@
                                 />
                                 <label for="password"
                                 ><i
-                                    class="feather-sm text-dark fill-white me-2"
-                                ></i
+                                        class="feather-sm text-dark fill-white me-2"
+                                    ></i
                                     > Mot de passe<span class="text-danger">*</span></label
                                 >
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
+                                <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
@@ -266,11 +205,37 @@
                                 />
                                 <label for="password_confirmation"
                                 ><i
-                                    class="feather-sm text-dark fill-white me-2"
-                                ></i
+                                        class="feather-sm text-dark fill-white me-2"
+                                    ></i
                                     > Confirmer mot de passe<span class="text-danger">*</span></label
                                 >
                             </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12 col-sm-12">
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    value="{{old('email')}}"
+                                    required
+                                    class="form-control @error('email') is-invalid @enderror"
+
+                                    placeholder="Email"
+                                />
+                                <label for="email"
+                                ><i
+                                        class="feather-sm text-dark fill-white me-2"
+                                    ></i
+                                    > Email<span class="text-danger">*</span></label
+                                >
+                                @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                             <div class="form-floating mb-3">
                                 <select
                                     class="form-select"
@@ -290,7 +255,31 @@
                                     ></i
                                     >Rôle<span class="text-danger">*</span></label
                                 >
-                        </div>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select
+                                    class="form-select"
+                                    name="type_company"
+                                    id="type_company"
+                                    class="form-control"
+                                    required
+                                >
+                                    <option selected value="Personne Physique ou Morale" disabled>Choisir votre type</option>
+                                    <option value="1">Personne Physique</option>
+                                    <option value="0">Personne Morale</option>
+                                </select>
+                                <label
+                                ><i
+                                        class="feather-sm text-dark fill-white me-2"
+                                    ></i
+                                    >Type entreprise<span class="text-danger">*</span></label
+                                >
+                                @error('role')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         <div class="form-floating mb-3">
                             <select
                                 class="form-select "
@@ -317,6 +306,7 @@
                                 type="text"
                                 name="company_name"
                                 id="company_name"
+                                value="{{old('company_name')}}"
                                 class="form-control"
                                 placeholder=""
                             />
@@ -353,6 +343,7 @@
                                     type="text"
                                     name="phone_company"
                                     id="phone_company"
+                                    value="{{old('phone_company')}}"
                                     class="form-control"
                                     placeholder=""
                                 />
@@ -372,6 +363,7 @@
                                 type="text"
                                 name="adresse"
                                 id="adresse"
+                                value="{{old('adresse')}}"
                                 class="form-control"
                                 placeholder=""
                             />
@@ -388,6 +380,7 @@
                                     type="text"
                                     name="ifu"
                                     id="ifu"
+                                    value="{{old('ifu')}}"
                                     class="form-control"
                                     placeholder=""
                                 />
@@ -403,6 +396,7 @@
                                 type="text"
                                 name="rccm"
                                 id="rccm"
+                                value="{{old('rccm')}}"
                                 class="form-control"
                                 placeholder=""
                             />

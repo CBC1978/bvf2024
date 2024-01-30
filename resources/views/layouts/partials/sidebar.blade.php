@@ -103,7 +103,12 @@
                             aria-expanded="false"
                         ><i class="mdi mdi-comment-processing-outline"></i
                             ><span class="hide-menu">
-                                Mes propositions
+                                Mes offres de
+                                @if(Session::get('role') == env('ROLE_CARRIER'))
+                                    frets
+                                @elseif(Session::get('role') == env('ROLE_SHIPPER'))
+                                    transports
+                                @endif
                             </span></a
                         >
                     </li>
@@ -123,19 +128,25 @@
                             href="javascript:void(0)"
                             aria-expanded="false"
                         ><i class="mdi mdi-inbox-arrow-down"></i
-                            ><span class="hide-menu">Utilisateur</span></a
+                            ><span class="hide-menu">Outils</span></a
                         >
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
                                 <a href="{{ route('getUsersValide') }}" class="sidebar-link"
-                                ><i class="mdi mdi-email"></i
-                                    ><span class="hide-menu"> Validé </span></a
+                                ></i
+                                    ><span class="hide-menu"> Utilisateur validé </span></a
                                 >
                             </li>
                             <li class="sidebar-item">
                                 <a href="{{ route('getUsersNoValide') }}" class="sidebar-link"
-                                ><i class="mdi mdi-email-alert"></i
-                                    ><span class="hide-menu"> En attente </span></a
+                                ></i
+                                    ><span class="hide-menu">Utilisateur En attente </span></a
+                                >
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{{ route('getVehicule') }}" class="sidebar-link"
+                                ></i
+                                    ><span class="hide-menu"> Véhicule</span></a
                                 >
                             </li>
                         </ul>

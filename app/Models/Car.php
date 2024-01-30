@@ -27,6 +27,7 @@ class Car extends Model
         'fk_brand_car',
         'model',
         'payload',
+        'image',
     ];
 
 

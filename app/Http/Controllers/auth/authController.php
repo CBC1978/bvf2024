@@ -273,7 +273,6 @@ public function index2()
                 $carrier->address = $request->adresse;
                 $carrier->phone = $request->user_phone;
                 $carrier->email = $request->email;
-
                 $carrier->city = $request->ville_company;
                 $carrier->ifu = env('DEFAULT_INT');
                 $carrier->rccm = env('DEFAULT_INT');
@@ -300,6 +299,7 @@ public function index2()
                 $shipper->phone = $request->user_phone;
                 $shipper->email = $request->email;
                 $shipper->city = $request->ville_company;
+
                 $shipper->ifu = env('DEFAULT_INT');
                 $shipper->rccm = env('DEFAULT_INT');
                 $shipper->created_by = env('DEFAULT_INT');
@@ -315,14 +315,14 @@ public function index2()
             }
         }
 
-        try {
 
+        try {
             Mail::to( $user->email)->send(new RegisterEmails($user->first_name,'Valider votre inscription',  $user->code));
             $user->save();
             return view('auth.verifyEmail');
 
         }catch (\Exception $e){
-            return view('auth.register');
+            return  redirect()->route('register');
         }
     }
 

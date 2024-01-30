@@ -70,7 +70,8 @@ Route::get('/contrat', [offerController::class, 'getContrat'])->name('getContrat
 Route::get('/contrat/{id}', [offerController::class, 'getContratDetail'])->name('getContratDetail');
 Route::get('/contrat/modifier/{id}', [offerController::class, 'updateContrat'])->name('updateContrat');
 Route::post('/contrat/modifier/contrat', [offerController::class, 'updateStoreContrat'])->name('updateStoreContrat');
-Route::post('/contrat/camion/ajouter', [offerController::class, 'storeCar'])->name('storeCar');
+Route::post('/camion/ajouter', [offerController::class, 'storeCar'])->name('storeCar');
+Route::post('/contrat/camion/ajouter', [offerController::class, 'storeCarContrat'])->name('storeCarContrat');
 Route::get('/contrat/camion/{id}', [offerController::class, 'getCarOne'])->name('getCarOne');
 Route::post('/contrat/camion/modifier', [offerController::class, 'updateCar'])->name('updateCar');
 Route::get('/contrat/camion/supprimer/{id}', [offerController::class, 'deleteCar'])->name('deleteCar');

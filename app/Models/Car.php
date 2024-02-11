@@ -28,6 +28,7 @@ class Car extends Model
         'model',
         'payload',
         'image',
+        'fk_carrier_id',
     ];
 
 

@@ -46,7 +46,6 @@
                             <input type="text" class="w-100 form-control" id="recherche" placeholder="Recherchez une annonce">
                         </div>
                     </div>
-
                     <div class="row" >
                         @if( count($offers) == env('DEFAULT_INT'))
                             <p>Aucune offre disponible</p>
@@ -58,174 +57,207 @@
                                         <h4 class="mb-0 text-white">{{ $offer->company_name }}</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h3 class="card-title">Itineraire: {{ ucfirst($offer->origin->libelle) }}- {{ ucfirst($offer->destination->libelle) }}</h3>
+                                        <h3 class="card-title">Itineraire: {{ ($offer->origin)? ucfirst($offer->origin->libelle):'' }}- {{ ($offer->destination)? ucfirst($offer->destination->libelle):'' }}</h3>
                                         <h3 class="card-title">Date expiration: {{ date("d/m/Y",strtotime($offer->limit_date)) }}</h3>
                                         <p class="card-text">
                                             {{ $offer->description }}
                                         </p>
-                                        <div class="row mb-3">
-                                            <div class="col-3 mr-6">
-                                                <button
-                                                    type="button"
-                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                    {{ $offer->weight }}(T)
-                                                </button>
-                                            </div>
-                                            @if( isset($offer->vehicule_type) && !empty($offer->vehicule_type))
-                                                <div class="col-9">
-                                                    <button
-                                                        type="button"
-                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        {{ $offer->vehicule_type }}
-                                                    </button>
+                                        <div class="row mb-2">
+                                            @if(isset($offer->cars))
+                                                @foreach($offer->cars as $car)
+                                                    <div class="row mb-3">
+                                                        <div class="col-3 mr-2">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                {{$car->car->payload}}(T)
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                {{$car->car->model.' / '.$car->type->libelle}}
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                {{$car->qte}}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="row mb-3">
+                                                    <div class="col-6 mr-2">
+                                                        <button
+                                                            type="button"
+                                                            class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                            {{$offer->weight}}(T)
+                                                        </button>
+                                                    </div>
+                                                    @if( isset($offer->volume) && !empty($offer->volume))
+                                                        <div class="col-6">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                {{ $offer->volume }} m3
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                    @endif
                                                 </div>
-                                            @endif
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6 mb-3">
+                                                        <button
+                                                            type="button"
+                                                            class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                            Prix: {{ $offer->price }} F
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button
+                                                            type="button"
+                                                            class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                            @if($offer->type_price == env('default_int'))
+                                                                Tarif/Tonne
+                                                            @elseif($offer->type_price == env('status_valid'))
+                                                                Tarif/Camion
+                                                            @endif
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
+                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                        Postuler
+                                                    </button>
+                                                @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
+                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                        Postuler
+                                                    </button>
+                                                @endif
                                         </div>
-                                        <div class="row mb-3">
-                                            @if(isset($offer->price) && !empty($offer->price))
-                                                <div class="col-md-4 mb-3">
-                                                    <button
-                                                        type="button"
-                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        Prix: {{ $offer->price }}
-                                                    </button>
-                                                </div>
-                                            @endif
-                                            @if( isset($offer->volume) && !empty($offer->volume))
-                                                <div class="col-md-9">
-                                                    <button
-                                                        type="button"
-                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        {{ $offer->volume }}
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID') )
-                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                Postuler
-                                            </button>
-                                        @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
-                                            <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                Postuler
-                                            </button>
-                                        @endif
                                     </div>
                                 </div>
-                            </div>
 
-                            {{-- Modal--}}
-                            <div
-                                class="modal fade"
-                                id="postuler-offre-{{$offer->id}}"
-                                tabindex="-1"
-                                aria-labelledby="postuler-offre-{{$offer->id}}"
-                                aria-hidden="true"
-                            >
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content ">
-                                        <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
-                                            <h4 class="modal-title" id="myLargeModalLabel">
-                                                Postuler à l'offre
-                                            </h4>
-                                            <button
-                                                type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                            ></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <h4 class="card-title">Faites une proposition</h4>
-                                            <h5 class="card-subtitle mb-3 pb-3 border-bottom">
-                                                Entrer des informations claires et valides
-                                            </h5>
-                                            <form method="post"  action="{{ route('storeApplyOffer') }}">
-                                                @csrf
+                                {{-- Modal--}}
+                                <div
+                                    class="modal fade"
+                                    id="postuler-offre-{{$offer->id}}"
+                                    tabindex="-1"
+                                    aria-labelledby="postuler-offre-{{$offer->id}}"
+                                    aria-hidden="true"
+                                >
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content ">
+                                            <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                                                <h4 class="modal-title" id="myLargeModalLabel">
+                                                    Postuler à l'offre
+                                                </h4>
+                                                <button
+                                                    type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4 class="card-title">Faites une proposition</h4>
+                                                <h5 class="card-subtitle mb-3 pb-3 border-bottom">
+                                                    Entrer des informations claires et valides
+                                                </h5>
+                                                <form method="post"  action="{{ route('storeApplyOffer') }}">
+                                                    @csrf
 
-                                                <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                        name="price"
-                                                        id="price"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix <span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        class="form-control"
-                                                        placeholder="Poids"
-                                                        name="weight"
-                                                        id="weight"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Poids(T)<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="textarea"
-                                                        class="form-control"
-                                                        placeholder="Description"
-                                                        name="description"
-                                                        id="description"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Description <span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                                <div class="d-md-flex align-items-center">
+                                                    <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
+                                                    <div class="form-floating mb-3">
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            class="form-control"
+                                                            placeholder="Prix"
+                                                            name="price"
+                                                            id="price"
+                                                            required
+                                                        />
+                                                        <label
+                                                        ><i
+                                                                class="feather-sm text-dark fill-white me-2"
+                                                            ></i
+                                                            >Prix <span class="text-danger">*</span></label
+                                                        >
+                                                    </div>
+                                                    <div class="form-floating mb-3">
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            class="form-control"
+                                                            placeholder="Poids"
+                                                            name="weight"
+                                                            id="weight"
+                                                            required
+                                                        />
+                                                        <label
+                                                        ><i
+                                                                class="feather-sm text-dark fill-white me-2"
+                                                            ></i
+                                                            >Poids(T)<span class="text-danger">*</span></label
+                                                        >
+                                                    </div>
+                                                    <div class="form-floating mb-3">
+                                                        <input
+                                                            type="textarea"
+                                                            class="form-control"
+                                                            placeholder="Description"
+                                                            name="description"
+                                                            id="description"
+                                                            required
+                                                        />
+                                                        <label
+                                                        ><i
+                                                                class="feather-sm text-dark fill-white me-2"
+                                                            ></i
+                                                            >Description <span class="text-danger">*</span></label
+                                                        >
+                                                    </div>
+                                                    <div class="d-md-flex align-items-center">
 
-                                                    <div class="mt-3 mt-md-0 ms-auto">
-                                                        <button
-                                                            type="submit"
-                                                            class="
+                                                        <div class="mt-3 mt-md-0 ms-auto">
+                                                            <button
+                                                                type="submit"
+                                                                class="
                                                         btn btn-info
                                                         font-weight-medium
                                                         rounded-pill
                                                         px-4
                                                       "
-                                                        >
-                                                            <div class="d-flex align-items-center">
-                                                                <i
-                                                                    data-feather="send"
-                                                                    class="feather-sm fill-white me-2"
-                                                                ></i>
-                                                                Postuler
-                                                            </div>
-                                                        </button>
+                                                            >
+                                                                <div class="d-flex align-items-center">
+                                                                    <i
+                                                                        data-feather="send"
+                                                                        class="feather-sm fill-white me-2"
+                                                                    ></i>
+                                                                    Postuler
+                                                                </div>
+                                                            </button>
 
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
 
+                                            </div>
                                         </div>
+                                        <!-- /.modal-content -->
                                     </div>
-                                    <!-- /.modal-content -->
+                                    <!-- /.modal-dialog -->
                                 </div>
-                                <!-- /.modal-dialog -->
+                                {{-- end Modal--}}
+                                @endforeach
                             </div>
-                            {{-- end Modal--}}
-                        @endforeach
                     </div>
                 </div>
             </div>

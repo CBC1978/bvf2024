@@ -6,6 +6,7 @@ use App\Mail\RegisterEmails;
 use App\Http\Controllers\auth\Helper;
 use App\Http\Requests\auth\emailUpdatPasswordForm;
 use App\Http\Requests\auth\loginForm;
+use App\Mail\ResetPasswordEmail;
 use App\Models\Carrier;
 use App\Models\Notification;
 use App\Models\Shipper;
@@ -85,32 +86,24 @@ class authController extends Controller
         return view('auth.verifyEmail');
     }
 
-   /* public function updatePassword(emailUpdatPasswordForm  $request)
+
+    public function updatePassword(Request $request)
     {
-        $validated = $request->validated();
+        $newPassword = Str::random(10);
 
-    }*/
-public function updatePassword(Request $request)
-{
+        $user = User::where('email', $request->email1)->first();
+        if ($user){
+        // Mettre à jour le mot de passe de l'utilisateur dans la base de données
+        $user->password = Hash::make($newPassword);
+        $user->save();
+        // Envoyer le nouveau mot de passe par e-mail
+        Mail::to($user->email)->send(new ResetPasswordEmail($user->name, $newPassword));
 
-// ...
-    // Générer un nouveau mot de passe
-
-    $newPassword = Str::random(10);
-
-    // Récupérer l'utilisateur en fonction de l'adresse e-mail fournie
-
-    $user = User::where('email', $request->email)->first();
-    if ($user){
-    // Mettre à jour le mot de passe de l'utilisateur dans la base de données
-    $user->password = Hash::make($newPassword);
-    $user->save();
-
-    // Envoyer le nouveau mot de passe par e-mail
-    Mail::to($user->email)->send(new ResetPasswordEmail($user->name, $newPassword));
-
-    return redirect()->route('login')->with('success_message', 'Votre mot de passe a été réinitialisé. Veuillez vérifier votre e-mail pour le nouveau mot de passe.');
-}
+        return redirect()->route('index')->with('success', 'Votre mot de passe a été réinitialisé. Veuillez vérifier votre e-mail pour le nouveau mot de passe.');
+        }
+        else{
+            return back()->with('fail', "L'email n'existe pas");
+        }
 }
 
 
@@ -159,7 +152,7 @@ public function updatePassword(Request $request)
                 }
             });
 
-            return view('pages.admin.home_valide_admin',compact('users'));
+            return view('pages.admin.utilisateur.home_valide_admin',compact('users'));
         }
     }
 
@@ -220,7 +213,7 @@ public function updatePassword(Request $request)
                    }
                }
            });
-            return view('pages.admin.home_no_valide_admin', compact('users'));
+            return view('pages.admin.utilisateur.home_no_valide_admin', compact('users'));
         }
     }
 
@@ -411,6 +404,12 @@ public function index2()
         return response()->json('0');
     }
 
+    public function updateSession(Request  $request)
+    {
+        $user = User::find(Session::get('userId'));
+        $request->session()->put('status', $user->status);
+    }
+
     public function getUserOne($id)
     {
         $user = User::find($id);
@@ -436,6 +435,7 @@ public function index2()
         }elseif ($action == env('DEFAULT_VALID')){
             $user->status = env('STATUS_VALID');
         }
+
 
         $user->save();
 

@@ -25,6 +25,7 @@ use App\Models\FreightOffer;
 use App\Models\Notification;
 use App\Models\Shipper;
 use App\Models\TransportAnnouncement;
+use App\Models\TransportCar;
 use App\Models\TransportOffer;
 use App\Models\TypeCar;
 use App\Models\User;
@@ -244,19 +245,29 @@ class offerController extends Controller
 
             //Get the ten latest carrier offer
             $offers = DB::table('transport_announcement')
-                ->selectRaw("transport_announcement.id, transport_announcement.origin, transport_announcement.destination, transport_announcement.limit_date,
-                        transport_announcement.weight, transport_announcement.vehicule_type, transport_announcement.description,
+                ->selectRaw("transport_announcement.id, transport_announcement.origin,
+                        transport_announcement.destination, transport_announcement.limit_date,
+                        transport_announcement.description,transport_announcement.type_price,
                        carrier.company_name,transport_announcement.price")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
                 ->orderBy('transport_announcement.price', 'DESC')
                 ->limit(10)
                 ->get();
+
             $offers->each(function ($offer){
+                $offer->cars = TransportCar::where('fk_transport','=', intval($offer->id))->get();
+
+                if( isset($offer->cars) && count($offer->cars) > env('DEFAULT_INT')){
+                    $offer->cars->each(function($car){
+                        $car->car = Car::find(intval($car->fk_car));
+                        $car->type = TypeCar::find(intval($car->car->fk_type_car));
+                    });
+                }
                 $offer->origin = Ville::find(intval($offer->origin));
                 $offer->destination = Ville::find(intval($offer->destination));
-                $offer->vehicule_type =  TypeCar::find(intval($offer->vehicule_type));
             });
+
             $nbOffer = $this->countFreightAnnouncements();
             $nbOfferReceived = $this->countFreightOffer();
 
@@ -272,7 +283,7 @@ class offerController extends Controller
             $offers = DB::table('freight_announcement')
                 ->selectRaw("
              freight_announcement.id,freight_announcement.origin,freight_announcement.destination,freight_announcement.limit_date,
-             freight_announcement.weight, freight_announcement.volume,freight_announcement.description,
+             freight_announcement.weight, freight_announcement.volume,freight_announcement.description,freight_announcement.type_price,
              shipper.company_name,freight_announcement.price
              ")
                 ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
@@ -296,7 +307,7 @@ class offerController extends Controller
             //Get the ten latest carrier offer
             $offersT = DB::table('transport_announcement')
                 ->selectRaw("transport_announcement.id, transport_announcement.origin, transport_announcement.destination, transport_announcement.limit_date,
-                        transport_announcement.weight, transport_announcement.vehicule_type, transport_announcement.description,
+                        transport_announcement.description,
                        carrier.company_name")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
@@ -434,7 +445,6 @@ class offerController extends Controller
 
     public function storePublishOffer(publishForm $request)
     {
-
        $request->validated();
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
@@ -449,6 +459,7 @@ class offerController extends Controller
             $obj->weight = $request->weight;
             $obj->volume = $request->volume;
             $obj->price = $request->price;
+            $obj->type_price = $request->type_price;
             $obj->description = $request->description;
             $obj->created_by = Session::get('userId');
             $obj->status = env('DEFAULT_INT');
@@ -458,12 +469,12 @@ class offerController extends Controller
 
 
             //Get data to send email
-            $origin = Ville::find(intval($request->origin));
-            $destination = Ville::find(intval($request->destination));
+            $origin = (isset($request->origin))? Ville::find(intval($request->origin)) : '';
+            $destination = (isset($request->destination))? Ville::find(intval($request->destination)):'';
             $shipperObject = Shipper::find(Session::get('fk_shipper_id'));
             $itemEmail = array(
-                'origin'=>$origin->libelle,
-                'destination'=>$destination->libelle,
+                'origin'=>(!empty($origin))? $origin->libelle:'',
+                'destination'=> (!empty($destination))? $destination->libelle:'',
                 'name'=>$shipperObject->company_name,
                 'description'=>$request->description,
             );
@@ -484,13 +495,13 @@ class offerController extends Controller
             return redirect()->route($previousUrl)->with('success', 'Offre publiée avec succès.');
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
+
             $obj = new TransportAnnouncement();
             $obj->origin = intval($request->origin);
             $obj->destination = intval($request->destination);
             $obj->limit_date = $request->limit_date;
-            $obj->weight = $request->weight;
             $obj->price = $request->price;
-            $obj->vehicule_type = $request->vehicule_type;
+            $obj->type_price = $request->type_price;
             $obj->created_by = Session::get('userId');
             $obj->description = $request->description;
             $obj->status = env('DEFAULT_INT');
@@ -498,13 +509,26 @@ class offerController extends Controller
 
             $obj->save();
 
+            if(isset($request->id_vehicule) && count($request->id_vehicule) >0){
+
+                for($i=0; $i< count($request->id_vehicule); $i++){
+
+                    $transport = new TransportCar();
+                    $transport->fk_transport =  $obj->id;
+                    $transport->fk_car = $request->id_vehicule[$i];
+                    $transport->qte = $request->nb_vehicule[$i];
+
+                    $transport->save();
+                }
+            }
+
             //Get data to send email
-            $origin = Ville::find(intval($request->origin));
-            $destination = Ville::find(intval($request->destination));
+            $origin = (isset($request->origin))? Ville::find(intval($request->origin)) : '';
+            $destination = (isset($request->destination))? Ville::find(intval($request->destination)):'';
             $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
             $itemEmail = array(
-                'origin'=>$origin->libelle,
-                'destination'=>$destination->libelle,
+                'origin'=>(!empty($origin))? $origin->libelle:'',
+                'destination'=> (!empty($destination))? $destination->libelle:'',
                 'name'=>$carrierObject->company_name,
                 'description'=>$request->description
             );
@@ -529,51 +553,52 @@ class offerController extends Controller
     {
         if (Session::get('role') == env('ROLE_SHIPPER')){
 
-            //Get the ten latest carrier offer
+            //Get all carrier offer
             $offers = DB::table('transport_announcement')
                 ->selectRaw("
                     transport_announcement.id,
                     transport_announcement.origin,
                     transport_announcement.destination,
                     transport_announcement.limit_date,
-                    transport_announcement.weight,
-                    transport_announcement.vehicule_type,
                     transport_announcement.description,
-                   carrier.company_name")
+                    transport_announcement.type_price,
+                    carrier.company_name,
+                    transport_announcement.price")
                 ->join('carrier', 'transport_announcement.fk_carrier_id','=', 'carrier.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
                 ->orderBy('transport_announcement.price', 'DESC')
                 ->get();
-            $offers->each(function ($obj){
-                $obj->origin = Ville::find(intval($obj->origin));
-                $obj->destination = Ville::find(intval($obj->destination));
 
+            $offers->each(function ($offer){
+                $offer->cars = TransportCar::where('fk_transport','=', intval($offer->id))->get();
+
+                if( isset($offer->cars) && count($offer->cars) > env('DEFAULT_INT')){
+                    $offer->cars->each(function($car){
+                        $car->car = Car::find(intval($car->fk_car));
+                        $car->type = TypeCar::find(intval($car->car->fk_type_car));
+                    });
+                }
+                $offer->origin = Ville::find(intval($offer->origin));
+                $offer->destination = Ville::find(intval($offer->destination));
             });
-
 
             return view('pages.offer.home', compact('offers'));
 
         }elseif (Session::get('role') == env('ROLE_CARRIER')){
 
-            //Get the ten latest shipper offer
             $offers = DB::table('freight_announcement')
                 ->selectRaw("
-                    freight_announcement.id,
-                    freight_announcement.origin,
-                    freight_announcement.destination,
-                    freight_announcement.limit_date,
-                    freight_announcement.weight,
-                    freight_announcement.volume,
-                    freight_announcement.description,
-                    shipper.company_name
-                    ")
+             freight_announcement.id,freight_announcement.origin,freight_announcement.destination,freight_announcement.limit_date,
+             freight_announcement.weight, freight_announcement.volume,freight_announcement.description,freight_announcement.type_price,
+             shipper.company_name,freight_announcement.price
+             ")
                 ->join('shipper','freight_announcement.fk_shipper_id' ,"=",'shipper.id')
                 ->where('limit_date', '>=', date("Y-m-d"))
                 ->orderBy('freight_announcement.price', 'DESC')
                 ->get();
-            $offers->each(function ($obj){
-                $obj->origin = Ville::find(intval($obj->origin));
-                $obj->destination = Ville::find(intval($obj->destination));
+            $offers->each(function ($offer){
+                $offer->origin = Ville::find(intval($offer->origin));
+                $offer->destination = Ville::find(intval($offer->destination));
             });
 
             return view('pages.offer.home', compact('offers'));
@@ -1916,7 +1941,7 @@ class offerController extends Controller
         return redirect()->route('getVehicule');
     }
 
-    public function updateCar(Request $request)
+    public function updateCarContrat(Request $request)
     {
         $car = Car::find(intval($request->id_car_up));
 
@@ -1937,6 +1962,36 @@ class offerController extends Controller
         $notif->save();
 
         return redirect('');
+    }
+
+    public function updateCar(Request $request)
+    {
+        $car = Car::find(intval($request->id_car_up));
+
+        $car->registration = $request->registration_up;
+        $car->model = $request->model_up;
+        $car->fk_brand_car = $request->brand_car_up;
+        $car->fk_type_car = $request->type_car_up;
+        $car->payload = $request->payload_up;
+        if($request->file('image')){
+            $image = $request->file('image');
+            $name = $request->registration.time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/car');
+            $image->move($destinationPath, $name);
+            $car->image = $name;
+        }
+
+        $car->save();
+
+        $carrier = Carrier::find(Session::get('fk_carrier_id'));
+        $notif = new Notification();
+        $notif->action = env('NOTIF_UP');
+        $notif->description = 'Camions de transport modifiés par '.$carrier->company_name;
+        $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+        $notif->status = $carrier->id;
+        $notif->save();
+
+        return redirect()->route('getVehicule');
     }
 
     public function deleteCar($id)
@@ -2005,7 +2060,26 @@ class offerController extends Controller
 
     public function getVehicule()
     {
-        return view('pages.vehicule.home');
+        $cars = Car::where('fk_carrier_id' ,'=', Session('fk_carrier_id'))->get();
+        $types = TypeCar::all();
+        $brands = BrandCar::all();
+        $cars->each(function($obj){
+            $obj->fk_type =$obj->type;
+            $obj->fk_brand =$obj->brand;
 
+        });
+        return view('pages.vehicule.home', compact('cars','types','brands'));
+    }
+
+
+    public function getVehicules()
+    {
+        $cars = Car::where('fk_carrier_id' ,'=', Session('fk_carrier_id'))->get();
+
+        $cars->each(function($obj){
+            $obj->fk_type =$obj->type;
+            $obj->fk_brand =$obj->brand;
+        });
+        return response()->json($cars);
     }
 }

@@ -123,14 +123,56 @@ $("#dom_jq_event tbody").on("click", "tr", function () {
 //=============================================//
 $("#lang_file").DataTable({
   language: {
-    url: "../../dist/js/pages/datatable/German.json",
-  },
+      "sEmptyTable": "Aucune donnée n'existe dans la table",
+      "sInfo": "_START_ à _END_ sur _TOTAL_ entrées",
+      "sInfoEmpty": "0 à 0 sur 0 entrées",
+      "sInfoFiltered": "(filtré par _MAX_ entrées)",
+      "sInfoPostFix": "",
+      "sInfoThousands": ".",
+      "sLengthMenu":  "Afficher _MENU_  entrées",
+      "sLoadingRecords": "Chargement en cours...",
+      "sProcessing": "Veuillez patienter...",
+      "sSearch": "Rechercher",
+      "sZeroRecords": "Aucune entrée disponible.",
+      "oPaginate": {
+          "sFirst": "Premier",
+          "sPrevious": "Précédent",
+          "sNext": "Suivant",
+          "sLast": "Dernier"
+      },
+      "oAria": {
+          "sSortAscending": ": permet de trier les colonnes par ordre croissant",
+          "sSortDescending": ": permet de trier les colonnes par ordre décroissant"
+      }
+  }
 });
+
+
 
 $("#lang_files").DataTable({
   language: {
-    url: "../../dist/js/pages/datatable/German.json",
-  },
+      "sEmptyTable": "Aucune donnée n'existe dans la table",
+      "sInfo": "_START_ à _END_ sur _TOTAL_ entrées",
+      "sInfoEmpty": "0 à 0 sur 0 entrées",
+      "sInfoFiltered": "(filtré par _MAX_ entrées)",
+      "sInfoPostFix": "",
+      "sInfoThousands": ".",
+      "sLengthMenu": " Afficher _MENU_ entrées",
+      "sLoadingRecords": "Chargement en cours...",
+      "sProcessing": "Veuillez patienter...",
+      "sSearch": "Rechercher",
+      "sZeroRecords": "Aucune entrée disponible.",
+      "oPaginate": {
+          "sFirst": "Premier",
+          "sPrevious": "Précédent",
+          "sNext": "Suivant",
+          "sLast": "Dernier"
+      },
+      "oAria": {
+          "sSortAscending": ": permet de trier les colonnes par ordre croissant",
+          "sSortDescending": ": permet de trier les colonnes par ordre décroissant"
+      }
+  }
 });
 
 //=============================================//

@@ -41,7 +41,6 @@
                             <div class="col-md-2 col-sm-12 top">
                                 <button
                                     type="button"
-                                    id="btn-add-vehicule"
                                     class="
                                       justify-content-center
                                       w-100
@@ -49,6 +48,7 @@
                                       d-flex
                                       align-items-center
                                     "
+                                    data-bs-toggle="modal" data-bs-target="#modal-add"
                                 >
                                     <i
                                         data-feather="plus-circle"
@@ -116,7 +116,65 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @php
+                                $i=1;
+//                            @endphp
+                            @foreach($cars as $car)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="car-id" id="car-id" value="{{ $car->id }}">
+                                    </td>
+                                    <td>{{ $car->registration }}</td>
+                                    <td>{{ $car->fk_type->libelle }}</td>
+                                    <td>{{ $car->model }}</td>
+                                    <td>{{ $car->fk_brand->libelle }}</td>
+                                    <td>{{ $car->payload }}</td>
+                                    <td>
+                                        @if(isset($car->image) && !empty($car->image))
+                                            <button class="mt-3 btn btn btn-rounded btn-light-info " data-bs-toggle="modal" data-bs-target="#afficher-image" >
+                                                Afficher
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
 
+
+                                {{-- Modal affocher image--}}
+                                <div
+                                    class="modal fade"
+                                    id="afficher-image"
+                                    tabindex="-1"
+                                    aria-labelledby="afficher-image"
+                                    aria-hidden="true"
+                                >
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content ">
+                                            <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                                                <h4 class="modal-title" id="myLargeModalLabel">
+                                                  Afficher image
+                                                </h4>
+                                                <button
+                                                    type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"
+                                                ></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <img src="'http://boursebf.test/images/car/'.$car->image )}}" alt="">
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            </div>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
+                                {{-- end Modal --}}
+                            @endforeach
+
+                            </tbody>
                             <tfoot>
                             <tr>
                                 <th>#</th>
@@ -133,19 +191,19 @@
                 </div>
             </div>
 
-            {{-- Modal user--}}
+            {{-- Modal add vehicule--}}
             <div
                 class="modal fade"
-                id="modal-user"
+                id="modal-add"
                 tabindex="-1"
-                aria-labelledby="modal-user"
+                aria-labelledby="modal-add"
                 aria-hidden="true"
             >
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content ">
                         <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
                             <h4 class="modal-title">
-                                Détail
+                                Ajouter un camion
                             </h4>
                             <button
                                 type="button"
@@ -155,7 +213,313 @@
                             ></button>
                         </div>
                         <div class="modal-body">
-                            <div id="body-modal" ></div>
+                            <form  action="{{route('storeCar')}}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row" >
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="registration"
+                                                id="registration"
+                                                required
+                                                class="form-control"
+                                                placeholder="11GH0000"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Immatriculation <span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="type_car"
+                                                id="type_car"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option disabled selected>Choisir un type de camion</option>
+                                                @foreach($types as $type)
+                                                    <option value="{{$type->id}}" selected>{{$type->libelle}}</option>
+                                                @endforeach
+
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Type de camion <span class="text-danger">*</span> </label
+                                            >
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="brand_car"
+                                                id="brand_car"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option disabled selected>Choisir une marque de camion</option>
+                                                @foreach($brands as $brand)
+                                                    <option value="{{$brand->id}}" selected>{{$brand->libelle}}</option>
+                                                @endforeach
+
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Marque du camion <span class="text-danger">*</span> </label
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="model"
+                                                id="model"
+                                                class="form-control"
+                                                placeholder="Modèle"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Modèle</label
+                                            >
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="payload"
+                                                id="payload"
+                                                class="form-control"
+                                                placeholder="Charge utile"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Charge utile (T)</label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="file"
+                                                name="image"
+                                                id="image"
+                                                class="form-control"
+                                                placeholder="image"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Photo</label
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-md-flex align-items-center">
+                                    <div class="mt-3 mt-md-0 ms-auto">
+                                        <button
+                                            type="submit"
+                                            class="
+                                        btn btn-info
+                                        font-weight-medium
+                                        rounded-pill
+                                        px-4
+                                      "
+                                            id="btn-form-car"
+                                        >
+                                            <div class="d-flex align-items-center">
+                                                <i
+                                                    data-feather="send"
+                                                    class="feather-sm fill-white me-2"
+                                                ></i>
+                                                Enregistrer
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            {{-- end Modal--}}
+
+            {{-- Modal add vehicule--}}
+            <div
+                class="modal fade"
+                id="modal-update"
+                tabindex="-1"
+                aria-labelledby="modal-update"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+                        <div class="modal-header d-flex align-items-center modal-colored-header bg-info text-white">
+                            <h4 class="modal-title">
+                                Modifier un camion
+                            </h4>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <form  action="{{route('updateCar')}}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row" id="row_form" >
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="registration_up"
+                                                id="registration_up"
+                                                required
+                                                value=""
+                                                class="form-control"
+
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Immatriculation <span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="type_car_up"
+                                                id="type_car_up"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                @foreach($types as $type)
+                                                    <option value="{{$type->id}}" selected>{{$type->libelle}}</option>
+                                                @endforeach
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Type de camion <span class="text-danger">*</span> </label
+                                            >
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="brand_car_up"
+                                                id="brand_car_up"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                @foreach($brands as $brand)
+                                                    <option value="{{$brand->id}}" selected>{{$brand->libelle}}</option>
+                                                @endforeach
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Marque du camion <span class="text-danger">*</span> </label
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="model_up"
+                                                value=""
+                                                id="model_up"
+                                                class="form-control"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Modèle</label
+                                            >
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="payload_up"
+                                                id="payload_up"
+                                                value=""
+                                                class="form-control"
+                                                placeholder="Charge utile"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Charge utile (T)</label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="file"
+                                                name="image_up"
+                                                id="image_up"
+                                                class="form-control"
+                                                placeholder="image"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Photo</label
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-md-flex align-items-center">
+                                    <div class="mt-3 mt-md-0 ms-auto">
+                                        <button
+                                            type="submit"
+                                            class="
+                                            btn btn-info
+                                            font-weight-medium
+                                            rounded-pill
+                                            px-4
+                                            "
+                                            id="btn-form-car"
+                                        >
+                                            <div class="d-flex align-items-center">
+                                                <i
+                                                    data-feather="send"
+                                                    class="feather-sm fill-white me-2"
+                                                ></i>
+                                                Enregistrer
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
 
@@ -168,9 +532,6 @@
             {{-- end Modal--}}
         </div>
     </div>
-
-
-
 @endsection
 
 @section('script')
@@ -189,542 +550,117 @@
                 }
             });
 
-            //Detail User
-            $('#btn-add-vehicule').click(function (){
 
-                $('h4.modal-title').text('Ajouter un véhicule');
-                $('#body-modal').remove();
-                $('.modal-body').append(`
-                    <div id="body-modal" >
-                      <form  action="{{route('storeCar')}}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row" >
-                                <div class="col-6">
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            type="text"
-                                            name="registration"
-                                            id="registration"
-                                            required
-                                            class="form-control"
-                                            placeholder="11GH0000"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Immatriculation <span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <select
-                                            name="type_car"
-                                            id="type_car"
-                                            class="form-control"
-                                            required
-                                            style="width: 100%; height: 36px"
-                                        >
-                                            <option disabled selected>Choisir un type de camion</option>
+            //Update Car
+            $('#btn-update-vehicule').click(function (){
 
-                                    </select>
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Type de camion <span class="text-danger">*</span> </label
-                                    >
-                                </div>
+                var checkOffers = document.querySelectorAll('#car-id');
+                var data = [];
 
-                                <div class="form-floating mb-3">
-                                    <select
-                                        name="brand_car"
-                                        id="brand_car"
-                                        class="form-control"
-                                        required
-                                        style="width: 100%; height: 36px"
-                                    >
-                                        <option disabled selected>Choisir une marque de camion</option>
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                });
 
-                                    </select>
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Marque du camion <span class="text-danger">*</span> </label
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        type="text"
-                                        name="model"
-                                        id="model"
-                                        class="form-control"
-                                        placeholder="Modèle"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Modèle</label
-                                    >
-                                </div>
-
-                                <div class="form-floating mb-3">
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        name="payload"
-                                        id="payload"
-                                        class="form-control"
-                                        placeholder="Charge utile"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Charge utile (T)</label
-                                    >
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        id="image"
-                                        class="form-control"
-                                        placeholder="image"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Photo</label
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-md-flex align-items-center">
-                            <div class="mt-3 mt-md-0 ms-auto">
-                                <button
-                                    type="submit"
-                                    class="
-                                        btn btn-info
-                                        font-weight-medium
-                                        rounded-pill
-                                        px-4
-                                      "
-                                    id="btn-form-car"
-                                >
-                                    <div class="d-flex align-items-center">
-                                        <i
-                                            data-feather="send"
-                                            class="feather-sm fill-white me-2"
-                                        ></i>
-                                        Enregistrer
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            `);
-
-                fetch('/type-car')
-                    .then(response => response.json())
-                    .then(response => {
-                        response.forEach(item => {
-                            $('#type_car').append(`
-                            <option value="${item.id}">${item.libelle}</option>
-                            `);
-                        });
+                if(data.length == 0){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Aucune ligne sélectionnée',
+                        icon: 'error',
                     });
+                }
 
-                fetch('/brand-car')
-                    .then(response => response.json())
-                    .then(response => {
-                        response.forEach(item=>{
-                            $('#brand_car').append(`
-                            <option value="${item.id}">${item.libelle}</option>
+                if( data.length == 1){
+
+                    fetch('/contrat/camion/'+data[0].value)
+                        .then(response => response.json())
+                        .then(response => {
+                            $('#registration_up').val(response.registration);
+                            $('#model_up').val(response.model);
+                            $('#payload_up').val(response.payload);
+                            $('#type_car_up').append(`
+                                <option value="${response.type.id}"selected>${response.type.libelle}</option>
                             `);
+                            $('#brand_car_up').append(`
+                                <option value="${response.brand.id}"selected>${response.brand.libelle}</option>
+                            `);
+                            $('#payload_up').val(response.payload);
+
+                            $('#row_form').append(
+                                `
+                                <input type="hidden" value="${response.id}" name="id_car_up" id="id_car_up"/>
+                                `
+                            );
                         });
+                    $('#modal-update').modal('show');
+
+                }
+
+                if( data.length >= 2){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Sélectionnez une seule ligne',
+                        icon: 'error',
                     });
-                $('#modal-user').modal('show');
+                }
+                data = [];
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        event.checked = false;
+                    }
+                });
+
             });
 
+            //Admin User
+            $('#btn-delete-vehicule').click(function(){
+                var checkOffers = document.querySelectorAll('#car-id');
+                var data = [];
 
-            $('#formStoreCar').submit(function (e){
-                e.preventDefault();
-                alert('test');
-                var formData = new FormData(this);
-                var token = $('#_token').val();
-                //Store Message
-                // fetch('/contrat/camion/ajouter',{
-                //     headers: {
-                //         "X-CSRF-Token": token
-                //     },
-                //     method:"POST",
-                //     body:formData ,
-                // })
-                //     .then(response => response.json())
-                //     .then(data =>{
-                //         if(data == 0){
-                //             Swal.fire({
-                //                 title: "Succès",
-                //                 text: 'Camion ajouté avec succès',
-                //                 icon: 'success',
-                //             }).then((result) => {
-                //                 /* Read more about isConfirmed, isDenied below */
-                //                 if (result.isConfirmed) {
-                //                     $('#formAddCar').modal('hide');
-                //                     $('#camions').modal('show');
-                //                 }
-                //             });
-                //         }
-                //     });
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                });
+                Swal.fire({
+                    title: "Voulez vous vraiment supprimez ?",
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: "Supprimer",
+                    denyButtonText: "Annuler",
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        data.forEach(item =>{
+                            fetch('/contrat/camion/supprimer/'+item.value)
+                                .then( response => response.json() )
+                                .then( response => {
+                                    if(response == 0){
+                                        Swal.fire({
+                                            title: 'Bravo',
+                                            text: 'Le camion a été supprimée avec succès',
+                                            icon: 'success',
+                                        });
+                                    } else if( response == 1){
+                                        Swal.fire({
+                                            title: 'Erreur',
+                                            text: 'Vous n\'êtes pas autorisé à supprimer le camion',
+                                            icon: 'error',
+                                        });
+                                    }
+                                });
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); //3s
+                        // refresh page
+                    }
+                });
+
             });
-
-            //Update User
-            // $('#btn-update-user').click(function (){
-            //
-            //     var checkOffers = document.querySelectorAll('#id_user');
-            //     var data = [];
-            //
-            //     // Verify if checkboxes are checked
-            //     checkOffers.forEach(event => {
-            //         if(event.checked){
-            //             data.push(event);
-            //         }
-            //     });
-            //
-            //     if(data.length == 0){
-            //         Swal.fire({
-            //             title: 'Erreur',
-            //             text: 'Aucune ligne sélectionnée',
-            //             icon: 'error',
-            //         });
-            //     }
-            //
-            //     if( data.length == 1){
-            //
-            //         $('#removeProfil').remove();
-            //         fetch('/utilisateur/'+data[0].value)
-            //             .then(response => response.json())
-            //             .then(response => {
-            //
-            //                 $('#profile').append(`
-            //                       <div class="row" id="removeProfil">
-            //                             <div class="col-6">
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="text"
-            //                                         name="name"
-            //                                         id="name"
-            //                                         class="form-control"
-            //                                         required
-            //                                         value="${ response.name}"
-            //                                         style="width: 100%; height: 36px"
-            //                                     />
-            //                                     <input
-            //                                         type="hidden"
-            //                                         name="id_users"
-            //                                         id="id_users"
-            //                                         class="form-control"
-            //                                         value="${ response.id}"
-            //                                         style="width: 100%; height: 36px"
-            //                                     />
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="text"
-            //                                         name="first_name"
-            //                                         id="first_name"
-            //                                         class="form-control"
-            //                                         required
-            //                                         value="${ response.first_name}"
-            //                                         style="width: 100%; height: 36px"
-            //                                     />
-            //                                     <label
-            //                                     ><i
-            //                                         class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Prénom(s)<span class="text-danger">*</span> </label
-            //                                     >
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="text"
-            //                                         name="user_phone"
-            //                                         id="user_phone"
-            //                                         required
-            //                                         value="${ response.user_phone}"
-            //                                         class="form-control"
-            //                                     />
-            //                                     <label
-            //                                     ><i
-            //                                             class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Téléphone <span class="text-danger">*</span></label
-            //                                     >
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="text"
-            //                                         name="email"
-            //                                         id="email"
-            //                                         required
-            //                                         value="${ response.email }"
-            //                                         class="form-control"
-            //                                         style="width: 100%; height: 36px"
-            //                                         />
-            //                                         <label
-            //                                         ><i
-            //                                                 class="feather-sm text-dark fill-white me-2"
-            //                                             ></i
-            //                                             >Email<span class="text-danger">*</span></label
-            //                                         >
-            //                                 </div>
-            //                             </div>
-            //                             <div class="col-6">
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="text"
-            //                                         name="username"
-            //                                         id="username"
-            //                                         required
-            //                                         value="${ response.username }"
-            //                                         class="form-control"
-            //                                     />
-            //                                     <label
-            //                                     ><i
-            //                                             class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Nom d'utilisateur <span class="text-danger">*</span></label
-            //                                     >
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="password"
-            //                                         name="password"
-            //                                         id="password"
-            //                                         value=""
-            //                                         class="form-control"
-            //                                     />
-            //                                     <label
-            //                                     ><i
-            //                                             class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Mot de passe<span class="text-danger">*</span></label
-            //                                     >
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <input
-            //                                         type="password"
-            //                                         name="cpassword"
-            //                                         id="cpassword"
-            //                                         value=""
-            //                                         class="form-control"
-            //                                     />
-            //                                     <label
-            //                                     ><i
-            //                                             class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Confirmer le mot de passe<span class="text-danger">*</span></label
-            //                                     >
-            //                                 </div>
-            //                                 <div class="form-floating mb-3">
-            //                                     <select
-            //                                         name="roles"
-            //                                         id="roles"
-            //                                         class="form-control"
-            //                                         required
-            //                                         style="width: 100%; height: 36px"
-            //                                     >
-            //                                         <option value="${response.role}" selected>${response.role}</option>
-            //                                         <option value="transporteur" >Transporteur</option>
-            //                                         <option value="chargeur" >Chargeur</option>
-            //                                     </select>
-            //                                     <label
-            //                                     ><i
-            //                                             class="feather-sm text-dark fill-white me-2"
-            //                                         ></i
-            //                                         >Rôle<span class="text-danger">*</span> </label
-            //                                     >
-            //                                 </div>
-            //                             </div>
-            //                       </div>
-            //                 `);
-            //                 $('#update-user').modal('show');
-            //             });
-            //     }
-            //
-            //     if( data.length >= 2){
-            //         Swal.fire({
-            //             title: 'Erreur',
-            //             text: 'Sélectionnez une seule ligne',
-            //             icon: 'error',
-            //         });
-            //     }
-            //     data = [];
-            //     checkOffers.forEach(event => {
-            //         if(event.checked){
-            //             event.checked = false;
-            //         }
-            //     });
-            //
-            // });
-            // $('#formUser').submit(function (e){
-            //     e.preventDefault();
-            //     var formData = new FormData(this);
-            //     var token = $('#_token').val();
-            //     //Store Message
-            //     fetch('/utilisateur/modifier',{
-            //         headers: {
-            //             "X-CSRF-Token": token
-            //         },
-            //         method:"POST",
-            //         body:formData ,
-            //     })
-            //         .then(response => response.json())
-            //         .then(data =>{
-            //             if(data == 0){
-            //                 Swal.fire({
-            //                     title: "Succès",
-            //                     text: 'Utilisateur moidifié avec succès',
-            //                     icon: 'success',
-            //                 });
-            //
-            //             }else if(data == 1){
-            //                 Swal.fire({
-            //                     title: "Erreur",
-            //                     text: 'Les mots de passes ne correspondent pas',
-            //                     icon: 'error',
-            //                 });
-            //             }
-            //         });
-            //
-            //     setTimeout(function () {
-            //         location.reload();
-            //     }, 3000); //5s refresh page
-            // });
-            //
-            // $('#roles').change(function (){
-            //     console.log('test');
-            //     $( "#structures option").each(function (){
-            //         $(this).remove();
-            //     });
-            //     var obj = $('#structures option:selected').val();
-            //     if(obj == 'chargeur'){
-            //
-            //         fetch('/chargeur/liste')
-            //             .then(response=>response.json())
-            //             .then(response=>{
-            //
-            //                 response.forEach(item=>{
-            //                     $('#structures').append(`
-            //                                 <option value ="${item.id}">${item.company_name}</option>
-            //                             `);
-            //                 });
-            //             });
-            //     } else if(obj == 'transporteur'){
-            //         fetch('/transporteur/liste')
-            //             .then(response=>response.json())
-            //             .then(response=>{
-            //                 response.forEach(item=>{
-            //                     $('#structures').append(`
-            //                                 <option value ="${item.id}">${item.company_name}</option>
-            //                             `);
-            //                 });
-            //             });
-            //     }
-            //
-            //
-            //
-            // });
-            // //Activer User
-            // $('#btn-activer-user').click(function(){
-            //     var checkOffers = document.querySelectorAll('#id_user');
-            //     var data = [];
-            //
-            //     // Verify if checkboxes are checked
-            //     checkOffers.forEach(event => {
-            //         if(event.checked){
-            //             data.push(event);
-            //         }
-            //     });
-            //
-            //     data.forEach(item =>{
-            //         fetch('/utilisateur/2/'+item.value)
-            //             .then( response => response.json() )
-            //             .then( response => {
-            //                 if(response == 0){
-            //                     Swal.fire({
-            //                         title: 'Bravo',
-            //                         text: 'L\'utilisateur est désactivé avec succès',
-            //                         icon: 'success',
-            //                     });
-            //                 }
-            //             });
-            //     });
-            //     data = [];
-            //     checkOffers.forEach(event => {
-            //         if(event.checked){
-            //             event.checked = false;
-            //         }
-            //     });
-            //     setTimeout(function () {
-            //         location.reload();
-            //     }, 3000); //5s refresh page
-            //
-            // });
-            // //Admin User
-            // $('#btn-delete-user').click(function(){
-            //     var checkOffers = document.querySelectorAll('#id_user');
-            //     var data = [];
-            //
-            //     // Verify if checkboxes are checked
-            //     checkOffers.forEach(event => {
-            //         if(event.checked){
-            //             data.push(event);
-            //         }
-            //     });
-            //     Swal.fire({
-            //         title: "Voulez vous vraiment supprimez ?",
-            //         showDenyButton: true,
-            //         showCancelButton: false,
-            //         confirmButtonText: "Supprimer",
-            //         denyButtonText: "Annuler",
-            //     }).then((result) => {
-            //         /* Read more about isConfirmed, isDenied below */
-            //         if (result.isConfirmed) {
-            //             data.forEach(item =>{
-            //                 fetch('/utilisateurs/supprimer/'+item.value)
-            //                     .then( response => response.json() )
-            //                     .then( response => {
-            //                         if(response == 0){
-            //                             Swal.fire({
-            //                                 title: 'Bravo',
-            //                                 text: 'L\'utilisateur a été supprimée avec succès',
-            //                                 icon: 'success',
-            //                             });
-            //                         } else if( response == 1){
-            //                             Swal.fire({
-            //                                 title: 'Erreur',
-            //                                 text: 'Vous n\'êtes pas autorisé à supprimer le camion',
-            //                                 icon: 'error',
-            //                             });
-            //                         }
-            //                     });
-            //             });
-            //             setTimeout(function () {
-            //                 location.reload();
-            //             }, 3000); //3s
-            //             // refresh page
-            //         }
-            //     });
-            //
-            // });
         });
     </script>
 @endsection

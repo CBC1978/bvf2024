@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\auth\authController;
 use \App\Http\Controllers\offer\offerController;
 use \App\Http\Controllers\admin\AdminController;
-use App\Http\Controllers\Carrier\profile\CarrierProfileController;
 use App\Http\Controllers\Shipper\profile\ShipperProfile1Controller;
 use App\Http\Controllers\Profile\ProfileController;
 
@@ -20,15 +19,20 @@ use App\Http\Controllers\Profile\ProfileController;
 */
 
 //Auth routes
+Route::get('/', [authController::class, 'index'])->name('index');
+Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
+Route::post('/changer-mot-de-passe', [authController::class, 'updatePassword'])->name('updatePassword');
+Route::post('/login', [authController::class, 'login'])->name('login');
+Route::get('/register', [authController::class, 'index2'])->name('register');
+Route::get('/codeRequest', [authController::class, 'codeRequest'])->name('codeRequest');
+
+//Route::middleware([\App\Http\Middleware\AuthUser::class])->group(function ()
+
 Route::get('/discussion', [offerController::class, 'chat'])->name('chat');
 Route::get('/discussions', [offerController::class, 'chatInverse'])->name('chatInverse');
 Route::post('/envoyer-message', [offerController::class, 'sendChat'])->name('sendChat');
 Route::get('/logout', [authController::class, 'logout'])->name('logout');
-Route::get('/', [authController::class, 'index'])->name('index');
-Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
 
-Route::post('/changer-mot-de-passe', [authController::class, 'updatePassword'])->name('updatePassword');
-Route::post('/login', [authController::class, 'login'])->name('login');
 Route::get('/admin_home', [authController::class, 'login'])->name('admin_home');
 Route::get('/affecter-utilisateur-entreprise', [authController::class, 'getUserEntreprise'])->name('getUserEntreprise');
 Route::get('/affecter-utilisateur/{id}', [authController::class, 'affectUserEntreprise'])->name('affectUserEntreprise');
@@ -80,7 +84,8 @@ Route::get('/contrat/conducteur/{id}', [offerController::class, 'getDriverOne'])
 Route::post('/contrat/conducteur/modifier', [offerController::class, 'updateDriver'])->name('updateDriver');
 Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'deleteDriver'])->name('deleteDriver');
 Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->name('printContrat');
-Route::get('vehicules', [offerController::class, 'getVehicule'])->name('getVehicule');
+Route::get('/vehicules', [offerController::class, 'getVehicule'])->name('getVehicule');
+Route::get('/vehicules/api', [offerController::class, 'getVehicules'])->name('getVehicules');
 
 //end Contrat route
 
@@ -140,14 +145,15 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 // end offer routes
 
 //Utilisateurs routes
-    Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
-    Route::get('/utilisateur/{id}', [authController::class, 'getUserOne'])->name('getUserOne');
-    Route::get('/utilisateur/{action}/{id}', [authController::class, 'updateStatutUser'])->name('updateStatutUser');
-    Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
-    Route::get('/register', [authController::class, 'index2'])->name('register');
-    Route::post('/register', [authController::class, 'register'])->name('registerUser');
-    Route::get('/codeRequest', [authController::class, 'codeRequest'])->name('codeRequest');
-    Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
+Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+Route::get('/utilisateur/session/update', [authController::class, 'updateSession'])->name('updateSession');
+Route::get('/utilisateur/{id}', [authController::class, 'getUserOne'])->name('getUserOne');
+Route::get('/utilisateur/{action}/{id}', [authController::class, 'updateStatutUser'])->name('updateStatutUser');
+Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
+
+Route::post('/register', [authController::class, 'register'])->name('registerUser');
+
+Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
 
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
@@ -157,4 +163,4 @@ Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTran
 Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
 //end Utilisateurs routes
 
-
+//});

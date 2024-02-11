@@ -135,15 +135,6 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-5">
-                                <h5 class="mb-0">Nom d'utilisateur:</h5>
-                            </div>
-                            <div class="col-sm-5 text-secondary">
-                                <h5>{{ $user->username}}</h5>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-5">
                                 <h5 class="mb-0">contact:</h5>
                             </div>
                             <div class="col-sm-5 text-secondary">
@@ -201,46 +192,130 @@
     <div id="edit-profile-modal" style="display: none;" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" style="text-align: center;">Modifier Votre profil</h5>
+                <div class="modal-header bg-info ">
+                    <h5 class="modal-title text-white" style="text-align: center;">Modifier Votre profil</h5>
                     <button style="padding: 5px 5px;" type="button" id="close-modal-button" class="btn btn-secondary small-button" data-dismiss="modal">X</button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('updateProfil') }}" method="post">
                         @csrf
-                        <div class="form-group">
-                            <label for="name">Nom</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        id="name"
+                                        value="{{ old('name', $user->name) }}"
+                                        required
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Nom </label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="first_name"
+                                        value="{{ old('first_name', $user->first_name) }}"
+                                        id="first_name"
+                                        required
+                                        class="form-control"
+                                        placeholder="Prix"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Prénoms<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="user_phone"
+                                        value="{{ old('user_phone', $user->user_phone) }}"
+                                        id="user_phone"
+                                        required
+                                        class="form-control"
+                                        placeholder="Prix"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Contact<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        id="email"
+                                        value="{{ old('email', $user->email) }}"
+                                        required
+                                        class="form-control"
+                                        placeholder="Poids"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Email<span class="text-danger">*</span></label
+                                    >
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select
+                                        name="verified"
+                                        id="verified"
+                                        class="form-control"
+                                        style="width: 100%; height: 36px"
+                                    >
+                                        @if($user->email_verified == env('STATUS_VALID'))
+                                            <option value="0">OUI</option>
+                                            <option value="1" selected>NON</option>
+                                        @else
+                                            <option value="0" selected>OUI</option>
+                                            <option value="1" >NON</option>
+                                        @endif
+                                    </select>
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Réception d'email</label
+                                    >
+                                </div>
+
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="first_name">Prénom</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ old('first_name', $user->first_name) }}">
+                        <div class="d-md-flex align-items-center">
+                            <div class="mt-3 mt-md-0 ms-auto">
+                                <button
+                                    type="submit"
+                                    class="
+                                                btn btn-info
+                                                font-weight-medium
+                                                rounded-pill
+                                                px-4
+                                              "
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <i
+                                            data-feather="send"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Modifier
+                                    </div>
+                                </button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="username">Nom d'utilisateur</label>
-                            <input type="text" class="form-control" id="username" name="username" value="{{ old('username', $user->username) }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="user_phone">Contact</label>
-                            <input type="tel" class="form-control" id="user_phone" name="user_phone" value="{{ old('user_phone', $user->user_phone) }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $user->email) }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Réception d'email</label>
-                                <select name="verified" id="verified" class="form-control">
-                                    @if($user->email_verified == env('STATUS_VALID'))
-                                        <option value="0">OUI</option>
-                                        <option value="1" selected>NON</option>
-                                    @else
-                                        <option value="0" selected>OUI</option>
-                                        <option value="1" >NON</option>
-                                    @endif
-                                </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Modifier</button>
                     </form>
                 </div>
             </div>

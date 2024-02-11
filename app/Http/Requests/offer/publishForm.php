@@ -24,9 +24,6 @@ class publishForm extends FormRequest
     public function rules()
     {
         return [
-            'origin'=>['required'],
-            'destination'=>['required'],
-            'weight'=>['required','numeric'],
             'description'=>['required'],
             'limit_date'=>['required','date'],
         ];

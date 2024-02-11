@@ -20,9 +20,8 @@ class TransportAnnouncement extends Model
         'origin',
         'destination',
         'price',
+        'type_price',
         'limit_date',
-        'vehicule_type',
-        'weight',
         'description',
         'created_by',
     ];
@@ -42,9 +41,9 @@ class TransportAnnouncement extends Model
         return $this->belongsTo(Ville::class, 'origin','id');
     }
 
-    public function vehiculeType()
+    public function transportCar()
     {
-        return $this->belongsTo(TypeCar::class, 'vehicule_type','id');
+        return $this->hasMany(TransportCar::class, 'fk_transport','id');
     }
 
     public function destinationOffer()

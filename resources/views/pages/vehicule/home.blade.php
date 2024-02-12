@@ -542,7 +542,7 @@
         $(document).ready(function () {
             setTimeout(function () {
                 $("div.alert").remove();
-            }, 5000); //5s
+            }, 4000); //5s
 
             $('#lang_file tr').click(function (event) {
                 if (event.target.type !== 'checkbox') {

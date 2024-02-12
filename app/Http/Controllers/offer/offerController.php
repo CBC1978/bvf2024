@@ -651,8 +651,10 @@ class offerController extends Controller
             $cptOffer =0;
             $dataOffers->each(function ($offer) {
                 $offer->offerCount = $offer->freightOffer;
-                $offer->origin = $offer->originOffer;
-                $offer->destination = $offer->destinationOffer;
+                if($offer->origin != env('DEFAULT_INT') && $offer->destination != env('DEFAULT_INT')){
+                    $offer->origin = $offer->originOffer;
+                    $offer->destination = $offer->destinationOffer;
+                }
 
                 $offer->offerColor = "primary";
                 if (count($offer->offerCount ) != env('DEFAULT_INT')){
@@ -872,7 +874,7 @@ class offerController extends Controller
             //Get users to send email
             $tsp = $offer->freightAnnouncement;
             $carriers = $offer->Carrier;
-            $userCarrier = $carrier->users;
+            $userCarrier = $carriers->users;
             $shipper = $tsp->Shipper;
             $userShipper = $shipper->users;
             $userCarriers = [];
@@ -1046,9 +1048,10 @@ class offerController extends Controller
             // Add detail to offer
             $dataOffers->each(function ($offer) {
                 $offer->offerCount = $offer->freightOffer;
-                $offer->origin = $offer->originOffer;
-                $offer->destination = $offer->destinationOffer;
-
+                if( $offer->origin != env('DEFAULT_INT') && $offer->destination != env('DEFAULT_INT')){
+                    $offer->origin = $offer->originOffer;
+                    $offer->destination = $offer->destinationOffer;
+                }
                 if (count($offer->offerCount ) == env('DEFAULT_INT')){
                     $offer->offerCount = intval(env('DEFAULT_INT'));
                 }
@@ -1519,8 +1522,7 @@ class offerController extends Controller
                     contract_transport.id,
                     transport_announcement.origin,
                     transport_announcement.destination,
-                    transport_announcement.description,
-                    transport_announcement.weight
+                    transport_announcement.description
                     ")
                 ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
                 ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')
@@ -1581,8 +1583,7 @@ class offerController extends Controller
                         contract_transport.id,
                         transport_announcement.origin,
                         transport_announcement.destination,
-                        transport_announcement.description,
-                        transport_announcement.weight
+                        transport_announcement.description
                         ")
                 ->join('freight_offer', 'contract_transport.fk_freight_offert_id', '=', 'freight_offer.id')
                 ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id', '=', 'transport_announcement.id')

@@ -127,7 +127,13 @@
                                         <td>
                                             <input type="checkbox" name="offer-detail" id="offer-detail" value="{{ $offer->id }}">
                                         </td>
-                                        <td>{{ $offer->origin->libelle.'-'.$offer->destination->libelle }}</td>
+                                        <td>
+                                            @if($offer->origin && $offer->destination)
+                                            {{ $offer->origin->libelle.'-'.$offer->destination->libelle }}
+                                            @else
+                                                Aucun itinéraire renseigné
+                                            @endif
+                                        </td>
                                         <td>{{ $offer->description }}</td>
                                         <td>{{ $offer->price }}</td>
                                         <td>

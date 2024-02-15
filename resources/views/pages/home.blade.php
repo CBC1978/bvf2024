@@ -232,8 +232,9 @@
                                                                 </button>
                                                             </div>
                                                         @endif
-                                                        @endif
                                                     </div>
+                                                @endif
+
                                                     <div class="row mb-3">
                                                         <div class="col-md-6 mb-3">
                                                             <button
@@ -254,15 +255,15 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
-                                                        <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                            Postuler
-                                                        </button>
-                                                    @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
-                                                        <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                            Postuler
-                                                        </button>
-                                                    @endif
+                                                    {{--                                                    @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))--}}
+                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                        Postuler
+                                                    </button>
+                                                    {{--                                                    @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))--}}
+{{--                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">--}}
+{{--                                                        Postuler--}}
+{{--                                                    </button>--}}
+                                                    {{--                                                    @endif--}}
                                             </div>
                                         </div>
 

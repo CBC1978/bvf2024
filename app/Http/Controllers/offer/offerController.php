@@ -1836,7 +1836,6 @@ class offerController extends Controller
                 ->selectRaw("
                 transport_announcement.origin,
                 transport_announcement.destination,
-                transport_announcement.weight,
                 transport_announcement.description,
 
                 shipper.company_name as shipperName,

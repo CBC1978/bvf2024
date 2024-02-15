@@ -190,81 +190,83 @@
                                             <div class="row mb-2">
                                                 @if(isset($offer->cars))
                                                     @foreach($offer->cars as $car)
-                                                    <div class="row mb-3">
-                                                        <div class="col-3 mr-2">
-                                                            <button
-                                                                type="button"
-                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                                {{$car->car->payload}}(T)
-                                                            </button>
+                                                        <div class="row mb-3">
+                                                            <div class="col-3 mr-2">
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                    {{$car->car->payload}}(T)
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-7">
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                    {{$car->car->model.' / '.$car->type->libelle}}
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-2">
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                    {{$car->qte}}
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-7">
-                                                            <button
-                                                                type="button"
-                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                                {{$car->car->model.' / '.$car->type->libelle}}
-                                                            </button>
-                                                        </div>
-                                                        <div class="col-2">
-                                                            <button
-                                                                type="button"
-                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                                {{$car->qte}}
-                                                            </button>
-                                                        </div>
-                                                    </div>
                                                     @endforeach
                                                 @else
-                                                <div class="row mb-3">
-                                                    <div class="col-6 mr-2">
-                                                        <button
-                                                            type="button"
-                                                            class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                            {{$offer->weight}}(T)
-                                                        </button>
-                                                    </div>
-                                                    @if( isset($offer->volume) && !empty($offer->volume))
-                                                        <div class="col-6">
+                                                    <div class="row mb-3">
+                                                        <div class="col-6 mr-2">
                                                             <button
                                                                 type="button"
                                                                 class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                                {{ $offer->volume }} m3
+                                                                {{$offer->weight}}(T)
                                                             </button>
                                                         </div>
-                                                    @endif
-                                                @endif
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-md-6 mb-3">
-                                                    <button
-                                                        type="button"
-                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        Prix: {{ $offer->price }} F
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <button
-                                                        type="button"
-                                                        class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
-                                                        @if($offer->type_price == env('default_int'))
-                                                        Tarif/Tonne
-                                                        @elseif($offer->type_price == env('status_valid'))
-                                                            Tarif/Camion
+                                                        @if( isset($offer->volume) && !empty($offer->volume))
+                                                            <div class="col-6">
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                    {{ $offer->volume }} m3
+                                                                </button>
+                                                            </div>
                                                         @endif
-                                                    </button>
-                                                </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-6 mb-3">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                Prix: {{ $offer->price }} F
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button
+                                                                type="button"
+                                                                class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                                @if($offer->type_price == env('default_int'))
+                                                                    Tarif/Tonne
+                                                                @elseif($offer->type_price == env('status_valid'))
+                                                                    Tarif/Camion
+                                                                @endif
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
+                                                        <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                            Postuler
+                                                        </button>
+                                                    @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
+                                                        <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                            Postuler
+                                                        </button>
+                                                    @endif
                                             </div>
-                                            @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
-                                                <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                    Postuler
-                                                </button>
-                                                @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
-                                                <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
-                                                    Postuler
-                                                </button>
-                                            @endif
                                         </div>
-                                    </div>
+
+                                </div>
                                 </div>
 
                             {{-- Modal--}}

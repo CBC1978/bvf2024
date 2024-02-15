@@ -203,7 +203,11 @@ class offerController extends Controller
             $offer = TransportAnnouncement::find(intval($id));
             $offer->origin = $offer->originOffer;
             $offer->destination = $offer->destinationOffer;
-            $offer->vehicule_type = $offer->vehiculeType;
+            $offer->cars = $offer->transportCar;
+            $offer->cars->each(function($car){
+                $car->car = Car::find(intval($car->fk_car));
+                $car->type = TypeCar::find(intval($car->car->fk_type_car));
+            });
         }
         return $offer;
     }
@@ -1067,10 +1071,9 @@ class offerController extends Controller
         }
     }
 
-    public function updatePublishOffer(publishForm $request)
+    public function updatePublishOffer(Request $request)
     {
 
-        $data = $request->validated();
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
         $notif = new Notification();
@@ -1078,16 +1081,17 @@ class offerController extends Controller
         if (Session::get('role') == env('ROLE_SHIPPER')){
             $shipperObject = Shipper::find(Session::get('fk_shipper_id'));
 
-            $offer = FreightAnnouncement::find(intval($request->idOffer));
+            $offer = FreightAnnouncement::find(intval($request->id_offer_up));
             if($offer->fk_shipper_id == Session::get('fk_shipper_id')){
 
-                $offer->origin = $data['origin'];
-                $offer->destination = $data['destination'];
-                $offer->weight = $data['weight'];
-                $offer->price = $request->price;
-                $offer->volume =  $request->volume;
-                $offer->limit_date = $data['limit_date'];
-                $offer->description = $data['description'];
+                $offer->origin = $request->origin_up;
+                $offer->destination = $request->destination_up;
+                $offer->weight = $request->weight_up;
+                $offer->price = $request->price_up;
+                $offer->type_price = $request->type_price_up;
+                $offer->volume =  $request->volume_up;
+                $offer->limit_date = $request->limit_date_up;
+                $offer->description = $request->description_up;
                 $offer->created_by = Session::get('userId');
                 $offer->updated_at = date("Y-m-d H:i:s");
 
@@ -1104,13 +1108,13 @@ class offerController extends Controller
             }
 
             //Get data to send email
-            $origin = Ville::find(intval($data['origin']));
-            $destination = Ville::find(intval($data['destination']));
+            $origin = Ville::find(intval($request->origin_up));
+            $destination = Ville::find(intval($request->destination_up));
             $itemEmail = array(
                 'origin'=>$origin->libelle,
                 'destination'=>$destination->libelle,
                 'name'=>$shipperObject->company_name,
-                'description'=>$data['description'],
+                'description'=>$request->description_up,
             );
             //Get all Carrier User
             $carriersUser = User::where([['fk_carrier_id', '!=', env('DEFAULT_INT')],
@@ -1125,20 +1129,36 @@ class offerController extends Controller
 
             $carrierObject = Carrier::find(Session::get('fk_carrier_id'));
 
-            $offer = TransportAnnouncement::find(intval($request->idOffer));
+            $offer = TransportAnnouncement::find(intval($request->id_offer_up));
 
             if($offer->fk_carrier_id == Session::get('fk_carrier_id')){
 
-                $offer->origin = $data['origin'];
-                $offer->destination = $data['destination'];
-                $offer->weight = $data['weight'];
-                $offer->price = $request->price;
-                $offer->vehicule_type = $request->vehicule_type;
-                $offer->limit_date = $data['limit_date'];
-                $offer->description = $data['description'];
+                $offer->origin = $request->origin_up;
+                $offer->destination = $request->destination_up;
+                $offer->price = $request->price_up;
+                $offer->type_price = $request->type_price_up;
+                $offer->limit_date = $request->limit_date_up;
+                $offer->description = $request->description_up;
                 $offer->created_by = Session::get('userId');
                 $offer->updated_at = date("Y-m-d H:i:s");
                 $offer->save();
+
+                if(isset($request->id_vehicule_up) && count($request->id_vehicule_up) >0){
+                    $transports = TransportCar::where('fk_transport','=',$request->id_offer_up)->get();
+                    foreach ($transports as $ts){
+
+                        $ts->delete();
+                    }
+
+                    for($i=0; $i< count($request->id_vehicule_up); $i++){
+                        $transport = new TransportCar();
+                        $transport->fk_transport =  $offer->id;
+                        $transport->fk_car = $request->id_vehicule_up[$i];
+                        $transport->qte = $request->nb_vehicule_up[$i];
+
+                        $transport->save();
+                    }
+                }
 
                 $notif->action = env('NOTIF_UP');
                 $notif->description = 'Offre de transport mise à jour par '.$carrierObject->company_name.' dont le prix est '.$offer->price.
@@ -1151,13 +1171,13 @@ class offerController extends Controller
             }
 
             //Get data to send email
-            $origin = Ville::find(intval($data['origin']));
-            $destination = Ville::find(intval($data['destination']));
+            $origin = ( !empty(Ville::find(intval($request->origin_up))) ) ? Ville::find(intval($request->origin_up)) : '' ;
+            $destination = ( !empty(Ville::find(intval($request->destination_up))) ) ? Ville::find(intval($request->destination_up)) : '' ;
             $itemEmail = array(
-                'origin'=>$origin->libelle,
-                'destination'=>$destination->libelle,
+                'origin'=>(!empty($origin))? $origin->libelle: '',
+                'destination'=>(!empty($destination))?$destination->libelle:'',
                 'name'=>$carrierObject->company_name,
-                'description'=>$data['description'],
+                'description'=>$request->description_up,
             );
             //Get all Shipper User
             $shippersUser = User::where([['fk_shipper_id', '!=', env('DEFAULT_INT')],['status', env('DEFAULT_VALID')],

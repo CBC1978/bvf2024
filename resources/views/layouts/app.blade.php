@@ -425,7 +425,7 @@
         {{-- end Modal --}}
 
 
-        {{-- Modal for publier offre--}}
+        {{-- Modal for vehicule offre--}}
         <div
             class="modal fade"
             id="camion-liste"

@@ -86,6 +86,7 @@
                 <!-- Search -->
                 <!-- ============================================================== -->
 {{--                <li class="nav-item d-none d-md-block search-box">--}}
+{{--                    BOURSE VIRTUELLE DE FRET--}}
 {{--                    <a--}}
 {{--                        class="nav-link d-none d-md-block waves-effect waves-dark"--}}
 {{--                        href="javascript:void(0)"--}}

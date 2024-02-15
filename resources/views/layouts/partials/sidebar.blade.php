@@ -121,7 +121,7 @@
                             ><span class="hide-menu">Contrat</span></a
                         >
                     </li>
-                    @if(Session::get('status') == env('STATUS_ADMIN'))
+
                     <li class="sidebar-item">
                         <a
                             class="sidebar-link has-arrow waves-effect waves-dark"
@@ -131,6 +131,7 @@
                             ><span class="hide-menu">Outils</span></a
                         >
                         <ul aria-expanded="false" class="collapse first-level">
+                            @if(Session::get('status') == env('STATUS_ADMIN'))
                             <li class="sidebar-item">
                                 <a href="{{ route('getUsersValide') }}" class="sidebar-link"
                                 ></i
@@ -143,15 +144,18 @@
                                     ><span class="hide-menu">Utilisateur En attente </span></a
                                 >
                             </li>
-                            <li class="sidebar-item">
-                                <a href="{{ route('getVehicule') }}" class="sidebar-link"
-                                ></i
-                                    ><span class="hide-menu"> Véhicule</span></a
-                                >
-                            </li>
+                            @endif
+                            @if(Session::get('role') == env('ROLE_CARRIER'))
+                                <li class="sidebar-item">
+                                    <a href="{{ route('getVehicule') }}" class="sidebar-link"
+                                    ></i
+                                        ><span class="hide-menu"> Véhicule</span></a
+                                    >
+                                </li>
+                            @endif
                         </ul>
                     </li>
-                    @endif
+
                 @else
                     <li class="sidebar-item">
                         <a

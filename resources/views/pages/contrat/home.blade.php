@@ -125,7 +125,9 @@
                                         </td>
                                         <td>{{ $obj->description }}</td>
                                         <td>{{ $obj->origin->libelle .'-'.$obj->destination->libelle }}</td>
-{{--                                        <td>{{ $obj->weight }}</td>--}}
+                                        <td>
+{{--                                            {{ $obj->weight }}--}}
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -137,7 +139,9 @@
                                         </td>
                                         <td>{{ $obj->description }}</td>
                                         <td>{{ $obj->origin->libelle .'-'.$obj->destination->libelle }}</td>
-{{--                                        <td>{{ $obj->weight }}</td>--}}
+                                        <td>
+{{--                                            {{ $obj->weight }}--}}
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif

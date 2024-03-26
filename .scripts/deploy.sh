@@ -8,7 +8,7 @@ echo "Deployment started ..."
 (php artisan down) || true
 
 # Pull the latest version of the app
-cd /var/www/html/boursebf
+cd /var/www/html/bvf/boursebf
 git pull
 
 # allow composer for root

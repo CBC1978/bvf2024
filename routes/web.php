@@ -67,6 +67,7 @@ Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOff
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
 Route::get('/entreprise/{type}/{role}', [offerController::class, 'getEntreprise'])->name('getEntreprise');
+Route::get('/transport/car/{id}', [offerController::class, 'getTransportCar'])->name('getTransportCar');
 //end Offer route
 
 //Contrat, Car, Driver

@@ -20,4 +20,9 @@
             'fk_car',
             'qte',
         ];
+
+        public function Cars()
+        {
+            return $this->belongsTo(Car::class, 'fk_car');
+        }
     }

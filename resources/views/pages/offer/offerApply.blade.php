@@ -331,166 +331,375 @@
                     fetch('/offre-publie/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
+                            @if(Session::get('role') == env('ROLE_SHIPPER'))
+
                             $('#formDetailOffer').append(`
-                                  <div class="row" id="removeData">
-                                        <div class="col-6">
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    name="origin"
-                                                    id="origin"
-                                                    class="form-control"
-                                                    value="${ response.origin.libelle }"
-                                                    required
-                                                    style="width: 100%; height: 36px"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Lieu de départ <span class="text-danger">*</span> </label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input
-                                                    readOnly
-                                                    type="date"
-                                                    name="limit_date"
-                                                    id="limit_date"
-                                                    value="${ response.limit_date}"
-                                                    required
-                                                    class="form-control"
-                                                    placeholder="Date"
-                                                />
-                                                <label
-                                                ><i
-                                                        class="feather-sm text-dark fill-white me-2"
-                                                    ></i
-                                                    >Date d'expiration <span class="text-danger">*</span></label
-                                                >
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                        <input
-                                            readOnly
-                                            type="number"
-                                            step="0.01"
-                                            name="price"
-                                            value="${ response.price }"
-                                            id="price"
-                                            required
-                                            class="form-control"
-                                            placeholder="Prix"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Prix<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-
+                                <div class="row" id="removeData">
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="origin_plus"
+                                                id="origin_plus"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option value="${response.origin.id}" selected>${response.origin.libelle}</option>
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Lieu de départ <span class="text-danger">*</span> </label
+                                            >
                                         </div>
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        readOnly
-                                        name="destination"
-                                        id="destination"
-                                        value="${ response.destination.libelle }"
-                                        class="form-control"
-                                        required
-                                        style="width: 100%; height: 36px"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Lieu de destination<span class="text-danger">*</span></label
-                                    >
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input
-                                        readOnly
-                                        type="number"
-                                        step="0.01"
-                                        name="weight"
-                                        id="weight"
-                                        value="${ response.weight }"
-                                        required
-                                        class="form-control"
-                                        placeholder="Poids"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Poids(T)<span class="text-danger">*</span></label
-                                    >
-                                </div>
-
-                            @if(Session::get('role') == env('ROLE_CARRIER'))
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="text"
-                                    name="volume"
-                                    id="volume"
-                                    value="${ response.volume }"
-                                                        class="form-control"
-                                                        placeholder="Volume"
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Volume (m3)</label
-                                                    >
-                                                </div>
-                                            @endif
-                                @if(Session::get('role') == env('ROLE_SHIPPER'))
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            readOnly
-                                            name="vehicule_type"
-                                            id="vehicule_type"
-                                            class="form-control"
-                                            value="${ response.vehicule_type.libelle }"
-                                            required
-                                            style="width: 100%; height: 36px"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Type d'engin<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input
-                                    readOnly
-                                    type="textarea"
-                                    name="description"
-                                    id="description"
-                                    value="${response.description }"
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="date"
+                                                name="limit_date"
+                                                value="${response.limit_date}"
+                                                id="limit_date_plus"
                                                 required
                                                 class="form-control"
-                                                placeholder="Description"
                                             />
                                             <label
                                             ><i
                                                     class="feather-sm text-dark fill-white me-2"
                                                 ></i
-                                                >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                                >Date d'expiration <span class="text-danger">*</span> </label
                                             >
                                         </div>
-                                  </div>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <div class="form-floating mb-3">
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        name="price_plus"
+                                                        id="price"
+                                                        value="${response.price}"
+                                                        required
+                                                        class="form-control"
+                                                        placeholder="Prix"
+                                                    />
+                                                    <label
+                                                    ><i
+                                                            class="feather-sm text-dark fill-white me-2"
+                                                        ></i
+                                                        >Prix<span class="text-danger">*</span></label
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="col-3" id="type_price_plus">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-floating mb-3">
+                                            <select
+                                                name="destination"
+                                                id="destination_plus"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option value="${response.destination.id}" selected>${response.destination.libelle}</option>
+                                            </select>
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Lieu de destination<span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                name="weight"
+                                                id="weight"
+                                                value="${response.weight}"
+                                                required
+                                                class="form-control"
+                                                placeholder="Poids"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Poids(T)<span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="number"
+                                                name="volume"
+                                                value="${response.volume}"
+                                                id="volume"
+                                                class="form-control"
+                                                placeholder="Volume"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Volume (m3)</label
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="textarea"
+                                            name="description"
+                                            id="description"
+                                            value="${response.description}"
+                                            required
+                                            class="form-control"
+                                            placeholder="Description"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                </div>
                             `);
+                            if(response.type_price == 0){
+                                $('#type_price_plus').append(`
+                                   <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type_price" checked value="0">
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Tonne
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type_price" value="1" >
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Camion
+                                        </label>
+                                    </div>
+                                `);
+                            }
+                            else{
+                                $('#type_price_plus').append(`
+                                   <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type_price"  value="0">
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Tonne
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="type_price" checked value="1" >
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Camion
+                                        </label>
+                                    </div>
+                                `);
+                            }
+                            @elseif(Session::get('role') == env('ROLE_CARRIER'))
+                            $('#formDetailOffer').append(`
+                                   <div class="row" id="removeData">
+                                        <div class="col-6">
+                                            <div class="form-floating mb-3">
+                                                <select
+                                                    name="origin_plus"
+                                                    id="origin_plus"
+                                                    readonly
+                                                    class="form-control"
+                                                    style="width: 100%; height: 36px"
+                                                >
+                                                    <option   value="${response.id_origin}" selected>${response.name_origin}</option>
+                                                </select>
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Lieu de départ </label
+                                                >
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="date"
+                                                    name="limit_date"
+                                                    id="limit_date"
+                                                    value="${response.limit_date}"
+                                                    required
+                                                    readonly
+                                                    class="form-control"
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Date d'expiration <span class="text-danger">*</span> </label
+                                                >
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-floating mb-3">
+                                                <select
+                                                    name="destination_plus"
+                                                    id="destination_plus"
+                                                    class="form-control"
+                                                    readonly
+                                                    style="width: 100%; height: 36px"
+                                                >
+                                                    <option   value="${response.id_destination}" selected>${response.name_destination}</option>
+                                                </select>
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Lieu de destination</label
+                                                >
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <div class="form-floating mb-3">
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            name="price"
+                                                            value="${response.price}"
+                                                            readonly
+                                                            id="price"
+                                                            class="form-control"
+                                                            placeholder="Prix"
+                                                        />
+                                                        <label
+                                                        ><i
+                                                                class="feather-sm text-dark fill-white me-2"
+                                                            ></i
+                                                            >Prix</label
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <div class="col-3" id="type_price_plus">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                    <table
+                                                        class="table table-striped table-bordered display"
+                                                        style="width: 100%">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Nombre camion</th>
+                                                            <th>Caractéristique</th>
+                                                            <th>Charge utilte (T)</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="table-list-vehicules_view">
+
+                                                        </tbody>
+                                                        <tfoot>
+                                                        <tr>
+                                                            <th>Nombre camion</th>
+                                                            <th>Caractéristique</th>
+                                                            <th>Charge utilte (T)</th>
+                                                        </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            <div class="form-floating mb-3">
+                                                <input
+                                                    type="textarea"
+                                                    name="description"
+                                                    id="description"
+                                                    value="${response.description}"
+                                                    required
+                                                    class="form-control"
+                                                    placeholder="Description"
+                                                    readonly
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                               `)
+                            if(response.type_price == 0){
+                                $('#type_price_plus').append(`
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="type_price" readonly value="0" checked>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Tonne
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" readonly name="type_price" value="1" >
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Camion
+                                    </label>
+                                </div>
+                            `);
+                            }else{
+                                $('#type_price_plus').append(`
+                                 <div class="form-check">
+                                    <input class="form-check-input" type="radio" readonly name="type_price"  value="0">
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Tonne
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" readonly name="type_price" value="1" checked>
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        Camion
+                                    </label>
+                                </div>
+                            `);
+                            }
+                            //display camions
+                            fetch('/transport/car/'+response.id)
+                                .then(response => response.json())
+                                .then(response=>{
+                                    $('#table-list-vehicules_view tr').remove();
+                                    if(response.length == 0){
+                                        $('#table-list-vehicules_view').append(`
+                                            <tr>
+                                                <td colspan="4">
+                                                    Aucune donnée
+                                                </td>
+
+                                            </tr>
+                                        `);
+                                    }
+
+                                    response.forEach( (obj)=>{
+                                            $('#table-list-vehicules_view').append(`
+                                                <tr>
+                                                    <td>
+                                                        <input class="form-control" type="number" value="${obj.qte}" placeholder="Entrez le nombre de camion">
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="textarea"
+                                                            class="form-control"
+                                                            value="${obj.cars.type.libelle+' / '+obj.cars.brand.libelle}" readonly
+                                                        />
+                                                    </td>
+                                                    <td> <input class="form-control mr-5" type="text" value="${obj.cars.payload}" readonly>
+                                                    </td>
+                                                </tr>
+                                        `);
+                                        }
+                                    );
+                                });
+
+
+                            @endif
+
                         });
                     $('#detail-offer').modal('show');
-
                 }
 
                 if( data.length >= 2){

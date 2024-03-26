@@ -43,8 +43,19 @@ class offerController extends Controller
         return FreightAnnouncement::count();
     }
 
+    public function getTransportCar($id)
+    {
+        $cars = TransportCar::where('fk_transport', '=', $id)->get();
+        $cars->each(function ($obj){
+            $obj->cars = $obj->Cars;
+            if(isset( $obj->cars ) &&  !empty($obj->cars)){
+                $obj->cars->type = $obj->cars->type;
+                $obj->cars->brand = $obj->cars->brand;
+            }
+        });
+        return $cars;
+    }
     // get Entreprise
-
     public function getEntreprise($type,$role)
     {
         //transporteur
@@ -203,10 +214,28 @@ class offerController extends Controller
             $offer = TransportAnnouncement::find(intval($id));
             $offer->origin = $offer->originOffer;
             $offer->destination = $offer->destinationOffer;
+            $offer->id_origin = '';
+            $offer->name_origin = '';
+
+            $offer->id_destination = '';
+            $offer->name_destination = '';
+
+            if(!empty($offer->origin)){
+                $offer->id_origin = $offer->origin->id;
+                $offer->name_origin = $offer->origin->libelle;
+
+                $offer->id_destination = $offer->destination->id;
+                $offer->name_destination = $offer->destination->libelle;
+            }
+
             $offer->cars = $offer->transportCar;
+
             $offer->cars->each(function($car){
-                $car->car = Car::find(intval($car->fk_car));
-                $car->type = TypeCar::find(intval($car->car->fk_type_car));
+                $car->car  = Car::find(intval($car->fk_car));
+                if(isset( $obj->cars ) &&  !empty($obj->cars)){
+                    $obj->cars->type = $obj->cars->type;
+                    $obj->cars->brand = $obj->cars->brand;
+                }
             });
         }
         return $offer;
@@ -1073,7 +1102,6 @@ class offerController extends Controller
 
     public function updatePublishOffer(Request $request)
     {
-
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
         $notif = new Notification();

@@ -7,9 +7,12 @@ echo "Deployment started ..."
 # if already is in maintenance mode
 (php artisan down) || true
 
-# Pull the latest version of the app
+
+
+# pull latest version of app
 cd /var/www/html/bvf/boursebf
 git pull
+
 
 # allow composer for root
 export COMPOSER_ALLOW_SUPERUSER=1;

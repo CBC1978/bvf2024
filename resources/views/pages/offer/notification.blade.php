@@ -58,7 +58,7 @@
                             @php
                             $i =1;
                             @endphp
-                            @foreach($notifs->sortBy('created_at') as $notif)
+                            @foreach($notifs->sortByDesc('created_at') as $notif)
                                 <tr  >
                                     <td>{{ $i }}</td>
                                     <td>{{ $notif->action }}</td>

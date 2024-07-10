@@ -25,7 +25,11 @@
 <script>
 
 $(document).ready(function (){
-    fetch('/utilisateur/session/update');
+    function setUserStatutFromSession(){
+           fetch('/utilisateur/session/update');
+    }
+
+    setUserStatutFromSession();
 
     $('#table_vehicule tr').click(function (event) {
         if (event.target.type !== 'checkbox') {

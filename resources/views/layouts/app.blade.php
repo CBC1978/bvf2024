@@ -526,7 +526,7 @@
 <!-- ============================================================== -->
 <!-- customizer Panel -->
 <!-- ============================================================== -->
-@include('layouts.partials.settings')
+{{--@include('layouts.partials.settings')--}}
 @include('layouts.partials.script')
 @yield('script')
 </body>

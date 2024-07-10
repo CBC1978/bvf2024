@@ -26,7 +26,7 @@ Route::post('/login', [authController::class, 'login'])->name('login');
 Route::get('/register', [authController::class, 'index2'])->name('register');
 Route::get('/codeRequest', [authController::class, 'codeRequest'])->name('codeRequest');
 
-//Route::middleware([\App\Http\Middleware\AuthUser::class])->group(function ()
+Route::middleware(['login'])->group(function (){
 
 Route::get('/discussion', [offerController::class, 'chat'])->name('chat');
 Route::get('/discussions', [offerController::class, 'chatInverse'])->name('chatInverse');
@@ -41,6 +41,7 @@ Route::post('/utilisateur/modifier', [authController::class, 'updateUser'])->nam
 Route::get('/utilisateurs/supprimer/{id}', [authController::class, 'deleteUser'])->name('deleteUser');
 Route::get('/profil', [authController::class,'getProfil'])->name('getProfil');
 Route::post('profil/update', [authController::class,'updateProfil'])->name('updateProfil');
+
 //Route::post('profile/update', [CarrierProfileController::class,'update'])->name('carrier.profile.update');
 
 //Auth end routes
@@ -163,5 +164,4 @@ Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTran
 //Utilisateurs routes
 Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
 //end Utilisateurs routes
-
-//});
+});

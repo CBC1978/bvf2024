@@ -616,12 +616,11 @@
                 <!-- Messages -->
                 <!-- ============================================================== -->
                 <li class="nav-item dropdown">
-{{--                    @if(Session::get('status') >= env('DEFAULT_VALID'))--}}
+                    @if(Session::get('status') >= env('DEFAULT_VALID'))
                         <button class="mt-3 btn btn btn-rounded btn-light-info " id="btn-publier-offre" data-bs-toggle="modal" data-bs-target="#publier-offre" >
                             Publier une offre
                         </button>
-{{--                    @endif--}}
-
+                    @endif
                 </li>
                 <li class="nav-item dropdown">
                     <a

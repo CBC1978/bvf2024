@@ -17,7 +17,7 @@
         function returnToPreviousPage() {
         window.history.back(); // Revenir à la page précédente
     }
-</script> 
+</script>
 </head>
 <body>
     <button type="submit" onclick="returnToPreviousPage()">Retour</button>
@@ -29,7 +29,7 @@
     @endif
 
     <div class="container2">
-        <h1>  {{ $user->username }} Profile</h1>
+        <h1>  {{ $user->username }} Profil</h1>
 
         <div class="profile-img">
             <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" width="100" height="100"/>
@@ -103,13 +103,13 @@
                                     <h5 class="mb-0">Nom d'entreprise:</h5>
                                 </div>
                                 <div class="col-sm-5 text-secondary">
-                                    <h5> 
-                                        @if ($user->role === 'transporteur') 
-                                            {{ $user->carrier ? $user->carrier->company_name : 'Aucune entreprise associée' }} 
+                                    <h5>
+                                        @if ($user->role === 'transporteur')
+                                            {{ $user->carrier ? $user->carrier->company_name : 'Aucune entreprise associée' }}
                                         @elseif ($user->role === 'shipper')
                                             {{ $user->shipper ? $user->shipper->company_name : 'Aucune entreprise associée' }}
                                         @endif
-                                    </h5> 
+                                    </h5>
                                 </div>
                             </div>
                         </div>

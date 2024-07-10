@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
-class AuthUser
+class IsLogin
 {
     /**
      * Handle an incoming request.
@@ -17,10 +16,10 @@ class AuthUser
      */
     public function handle(Request $request, Closure $next)
     {
-//        if(!empty( Session::get('userId'))){
-//            return $next($request);
-//        }else{
-//            return redirect()->route('index');
-//        }
+        if(!empty (session('userId'))){
+            return $next($request);
+        }else{
+            return redirect()->route('index')->with('error', 'Vous devez vous connecter pour accéder à cette page.');
+        }
     }
 }

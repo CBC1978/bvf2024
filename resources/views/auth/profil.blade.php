@@ -103,8 +103,12 @@
         {{ session('success') }}
     </div>
 @endif
+
+@if(Session::has('fail'))
+    <div class="alert alert-danger"> {{ Session::get('fail') }}</div>
+@endif
 <div class="container2">
-    <h1>  {{ $user->username}} Profile</h1>
+    <h1>  {{ $user->username}} Profil</h1>
 
     <div class="profile-img">
         <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt=""/>
@@ -225,7 +229,7 @@
                                         id="first_name"
                                         required
                                         class="form-control"
-                                        placeholder="Prix"
+
                                     />
                                     <label
                                     ><i
@@ -242,7 +246,6 @@
                                         id="user_phone"
                                         required
                                         class="form-control"
-                                        placeholder="Prix"
                                     />
                                     <label
                                     ><i
@@ -261,7 +264,6 @@
                                         value="{{ old('email', $user->email) }}"
                                         required
                                         class="form-control"
-                                        placeholder="Poids"
                                     />
                                     <label
                                     ><i
@@ -292,7 +294,35 @@
                                         >Réception d'email</label
                                     >
                                 </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        id="password"
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Mot de passe</label
+                                    >
 
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="password"
+                                        name="password_confirm"
+                                        id="password_confirm"
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Confirmer mot de passe</label
+                                    >
+                                </div>
                             </div>
                         </div>
                         <div class="d-md-flex align-items-center">

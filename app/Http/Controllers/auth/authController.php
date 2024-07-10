@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Http\Requests\auth\updateProfil;
 use App\Mail\RegisterEmails;
 use App\Http\Controllers\auth\Helper;
 use App\Http\Requests\auth\emailUpdatPasswordForm;
@@ -408,6 +409,7 @@ public function index2()
     {
         $user = User::find(Session::get('userId'));
         $request->session()->put('status', $user->status);
+        return session()->get('status');
     }
 
     public function getUserOne($id)
@@ -546,17 +548,8 @@ public function index2()
         return view('auth.profil',compact('user'));
     }
 
-    public function updateProfil(Request $request)
+    public function updateProfil(updateProfil $request)
     {
-        // Validez les données respect de consigne pur chaq champ
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'first_name' => 'required|string|max:255',
-            'username' => 'required|string|max:255',
-            'user_phone' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'verified' => 'required',
-        ]);
 
         $user = User::find(Session::get('userId'));
         $user->name =$request->input('name');
@@ -564,6 +557,7 @@ public function index2()
         $user->username =$request->input('username');
         $user->user_phone =$request->input('user_phone');
         $user->email =$request->input('email');
+        $user->password = Hash::make($request->input('password'));
         $user->email_verified =$request->input('verified');
         $user->save();
 

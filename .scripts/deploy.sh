@@ -10,7 +10,7 @@ echo "Deployment started ..."
 
 
 # pull latest version of app
-cd /var/www/html/boursebf
+cd /var/www/html/bvf/boursebf
 git pull
 
 

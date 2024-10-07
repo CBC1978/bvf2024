@@ -27,6 +27,7 @@ class TransportOffer extends Model
         'fk_freight_announcement_id',
         'fk_carrier_id',
         'price',
+        'duration',
         'description',
         'status',
         'created_by',

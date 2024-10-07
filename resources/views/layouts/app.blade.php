@@ -193,7 +193,7 @@
                                             >
                                         </div>
                                     </div>
-                                    <div class="form-floating mb-3">
+                                    <div class="col-6 form-floating mb-3">
                                         <input
                                             type="textarea"
                                             name="description"
@@ -206,9 +206,26 @@
                                         ><i
                                                 class="feather-sm text-dark fill-white me-2"
                                             ></i
-                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                            >Description (Nature de la marchandise)<span class="text-danger">*</span></label
                                         >
                                     </div>
+                                    <div class="col-6 form-floating mb-3">
+                                        <input
+                                            type="number"
+                                            name="duration"
+                                            id="duration"
+                                            required
+                                            class="form-control"
+                                            placeholder="Description"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Durée du trajet (en jour(s))<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+
                                 </div>
                                 <div class="d-md-flex align-items-center">
                                     <div class="mt-3 mt-md-0 ms-auto">
@@ -370,9 +387,7 @@
                                             </div>
 
                                         </div>
-
-
-                                        <div class="form-floating mb-3">
+                                        <div class="col-6 form-floating mb-3">
                                             <input
                                                 type="textarea"
                                                 name="description"
@@ -385,7 +400,23 @@
                                             ><i
                                                     class="feather-sm text-dark fill-white me-2"
                                                 ></i
-                                                >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                                >Description (Nature de la marchandise)<span class="text-danger">*</span></label
+                                            >
+                                        </div>
+                                        <div class="col-6 form-floating mb-3">
+                                            <input
+                                                type="number"
+                                                name="duration"
+                                                id="duration"
+                                                required
+                                                class="form-control"
+                                                placeholder="Description"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Durée du trajet (en jour(s))<span class="text-danger">*</span></label
                                             >
                                         </div>
                                     </div>

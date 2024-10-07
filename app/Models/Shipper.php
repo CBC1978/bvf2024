@@ -34,9 +34,10 @@ class Shipper extends Model
         'phone',
         'city',
         'email',
-        'type',
+        'statut_juridique',
         'ifu',
         'rccm',
+        'name',
         'created_by',
     ];
 

@@ -27,6 +27,7 @@ $(document).ready(function () {
     $('.accepter').click(function(btn){
 
         var offerId = btn.target.attributes.id.value;
+        var duration = $('#duration-'+offerId).val();
 
         Swal.fire({
             title: 'Infos',
@@ -34,7 +35,7 @@ $(document).ready(function () {
             icon: 'info',
         });
 
-        fetch('/offre/statut/modifier/'+offerId+'/1')
+        fetch('/offre/statut/modifier/'+offerId+'/1/'+duration)
             .then(response => response.json())
             .then(data=>{
                 Swal.fire({
@@ -56,7 +57,7 @@ $(document).ready(function () {
             icon: 'info',
         });
         var offerId = btn.target.attributes.id.value;
-        fetch('/offre/statut/modifier/'+offerId+'/2')
+        fetch('/offre/statut/modifier/'+offerId+'/2'+duration)
             .then(response => response.json())
             .then(data=>{
                 Swal.fire({

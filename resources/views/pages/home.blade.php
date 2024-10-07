@@ -300,56 +300,83 @@
                                                 @csrf
 
                                                 <input type="hidden" name="offerId" id="offerId" value="{{ $offer->id }}">
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        class="form-control"
-                                                        placeholder="Prix"
-                                                        name="price"
-                                                        id="price"
-                                                        required
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Prix <span class="text-danger">*</span></label
-                                                    >
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="form-floating mb-3">
+                                                            <input
+                                                                type="number"
+                                                                step="0.01"
+                                                                class="form-control"
+                                                                placeholder="Prix"
+                                                                name="price"
+                                                                id="price"
+                                                                required
+                                                            />
+                                                            <label
+                                                            ><i
+                                                                    class="feather-sm text-dark fill-white me-2"
+                                                                ></i
+                                                                >Prix <span class="text-danger">*</span></label
+                                                            >
+                                                        </div>
+                                                        <div class="form-floating mb-3">
+                                                            <input
+                                                                type="textarea"
+                                                                class="form-control"
+                                                                placeholder="Description"
+                                                                name="description"
+                                                                id="description"
+                                                                required
+                                                            />
+                                                            <label
+                                                            ><i
+                                                                    class="feather-sm text-dark fill-white me-2"
+                                                                ></i
+                                                                >Description <span class="text-danger">*</span></label
+                                                            >
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-floating mb-3">
+                                                            <input
+                                                                type="number"
+                                                                step="0.01"
+                                                                class="form-control"
+                                                                placeholder="Poids"
+                                                                name="weight"
+                                                                id="weight"
+                                                                required
+                                                            />
+                                                            <label
+                                                            ><i
+                                                                    class="feather-sm text-dark fill-white me-2"
+                                                                ></i
+                                                                >Poids(T)<span class="text-danger">*</span></label
+                                                            >
+                                                        </div>
+                                                        <div class="form-floating mb-3">
+                                                            <input
+                                                                type="number"
+                                                                class="form-control"
+                                                                placeholder="Durée"
+                                                                name="duration"
+                                                                id="duration"
+                                                                required
+                                                            />
+                                                            <label
+                                                            ><i
+                                                                    class="feather-sm text-dark fill-white me-2"
+                                                                ></i
+                                                                >Durée du trajet (jour(s)) <span class="text-danger">*</span></label
+                                                            >
+                                                        </div>
+                                                    </div>
+
+
+
+
                                                 </div>
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        class="form-control"
-                                                        placeholder="Poids"
-                                                        name="weight"
-                                                        id="weight"
-                                                        required
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Poids(T)<span class="text-danger">*</span></label
-                                                    >
-                                                </div>
-                                                <div class="form-floating mb-3">
-                                                    <input
-                                                        type="textarea"
-                                                        class="form-control"
-                                                        placeholder="Description"
-                                                        name="description"
-                                                        id="description"
-                                                        required
-                                                    />
-                                                    <label
-                                                    ><i
-                                                            class="feather-sm text-dark fill-white me-2"
-                                                        ></i
-                                                        >Description <span class="text-danger">*</span></label
-                                                    >
-                                                </div>
+
                                                 <div class="d-md-flex align-items-center">
 
                                                     <div class="mt-3 mt-md-0 ms-auto">

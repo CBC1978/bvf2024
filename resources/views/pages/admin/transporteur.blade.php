@@ -235,6 +235,20 @@
                                     >Contact</label
                                 >
                             </div>
+                            <div class="form-floating mb-3">
+                                <input
+                                    type="text"
+                                    name="name_boss"
+                                    id="name_boss"
+                                    class="form-control"
+                                />
+                                <label
+                                ><i
+                                        class="feather-sm text-dark fill-white me-2"
+                                    ></i
+                                    >Nom complet du Responsable</label
+                                >
+                            </div>
                         </div>
 
                         <div class="col-6">
@@ -444,7 +458,8 @@
                     fetch('/modifier-transporteur/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
-                            console.log(response);
+                            var phone = (response.phone != null ) ? response.phone : '' ;
+                            var name = (response.name != null ) ? response.name : '' ;
                             $('#formUpdateCarrier').append(`
                                   <div class="row" id="removeData">
                                    <div class="col-6">
@@ -495,7 +510,7 @@
                                                 type="text"
                                                 name="phone"
                                                 id="phone"
-                                                value="${response.phone}"
+                                                value="${phone}"
                                                 class="form-control"
                                             />
                                             <label
@@ -503,6 +518,21 @@
                                                     class="feather-sm text-dark fill-white me-2"
                                                 ></i
                                                 >Contact</label
+                                            >
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input
+                                                type="text"
+                                                name="name_boss"
+                                                id="name_boss"
+                                                value="${name}"
+                                                class="form-control"
+                                            />
+                                            <label
+                                            ><i
+                                                    class="feather-sm text-dark fill-white me-2"
+                                                ></i
+                                                >Nom complet du Responsable</label
                                             >
                                         </div>
                                     </div>

@@ -30,6 +30,9 @@ class AdminController extends Controller
         });
         $villes = Ville::all();
 
+//        echo '<pre>';
+//        print_r ($shippers[0]->city->libelle);
+//        echo '<pre>';
         return view('pages.admin.chargeur', compact('shippers', 'villes'));
     }
 
@@ -104,15 +107,17 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'company_name' => 'required|string',
             'address' => 'required|string',
-            'phone' => 'required|string',
+            'phone' => 'max:255',
             'city' => 'required|string',
             'email' => 'required|email',
             'ifu' => 'required|string',
             'rccm' => 'required|string',
+            'name_boss' => 'max:255',
         ]);
 
         // Ajouter l'ID de l'utilisateur
         $validatedData['created_by'] = Session::get('userId');
+        $validatedData['statut_juridique'] = env('STATUS_VALID');
         // Créer un nouveau transporteur associé à l'utilisateur
         Carrier::create($validatedData);
 
@@ -181,15 +186,18 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'company_name' => 'required|string',
             'address' => 'required|string',
-            'phone' => 'required|string',
             'city' => 'required|string',
             'email' => 'required|email',
             'ifu' => 'required|string',
             'rccm' => 'required|string',
+            'name_boss' => 'max:255',
+            'phone' => 'max:255',
         ]);
 
         // Ajouter l'ID de l'utilisateur
         $validatedData['created_by'] = Session::get('userId');
+        $validatedData['statut_juridique'] = env('STATUS_VALID');
+
         Shipper::create($validatedData);
 
         return redirect()->back()->with('success', 'Chargeur ajouté avec succès.');
@@ -209,7 +217,7 @@ class AdminController extends Controller
 
     public function updateUserProfile(Request $request)
     {
-        // Validez les données respect de consigne pur chaq champ
+        // Validez les données respect de consigne pur chaque champ
         $request->validate([
             'name' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
@@ -334,6 +342,7 @@ class AdminController extends Controller
         $shipper->email = $request->email;
         $shipper->ifu = $request->email;
         $shipper->rccm = $request->email;
+        $shipper->name = $request->name;
 
         $shipper->save();
         return redirect()->route('chargeur')->with('success', 'Chargeur modifié avec succès.');

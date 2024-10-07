@@ -20,6 +20,7 @@ class TransportAnnouncement extends Model
         'origin',
         'destination',
         'price',
+        'duration',
         'type_price',
         'limit_date',
         'description',

@@ -28,6 +28,7 @@ class FreightOffer extends Model
         'fk_shipper_id',
         'price',
         'weight',
+        'duration',
         'description',
         'statut',
         'created_by',

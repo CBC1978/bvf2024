@@ -68,7 +68,7 @@
                     </div>
                     <div class="row mb-3 ">
                         @if(isset($offer->price) && !empty($offer->price))
-                            <div class=" text-center mb-3">
+                            <div class="text-center mb-3">
                                 <button
                                     type="button"
                                     class="btn btn-light-secondary text-secondary font-weight-medium">
@@ -139,6 +139,20 @@
                                                         class="btn d-flex align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
                                                         {{ $offer->weight }}(T)
                                                     </button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="row mb-3">
+                                            @if(isset($offer->duration) && !empty($offer->duration))
+                                                <div class="col-12 mr-6">
+                                                    <p>
+                                                        <span> Durée du trajet jour(s) : </span>
+                                                        <input
+                                                            id="duration-{{$offer->id}}"
+                                                            value ="{{ $offer->duration }}"
+                                                            type="text"
+                                                            class="btn d-flex w-25 align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
+                                                    </p>
                                                 </div>
                                             @endif
                                         </div>

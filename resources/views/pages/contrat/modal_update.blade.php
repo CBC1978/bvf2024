@@ -1,5 +1,4 @@
 
-
 {{-- Modal camions--}}
 <div
     class="modal fade"
@@ -81,7 +80,7 @@
             <div class="modal-body">
                 <div class="table-responsive">
                     <table
-                        id="lang_file"
+                        id="table_vehicule_contrat"
                         class="table table-striped table-bordered display"
                         style="width: 100%">
                         <thead>
@@ -92,26 +91,8 @@
                             <th>Marque</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @if(count($cars)>0)
-                            @foreach($cars as $car)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="cars_id" id="cars_id" value="{{ $car->id }}">
-                                    </td>
-                                    <td>
-                                        <p id="cars_regis">   {{$car->registration}}</p>
+                        <tbody id="table_body_cars">
 
-                                    </td>
-                                    <td>
-                                        <p id="cars_type">{{$car->type->libelle}}</p>
-                                    </td>
-                                    <td>
-                                        <p id="cars_brand">{{$car->brand->libelle}}</p>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
                         </tbody>
                         <tfoot>
                         <th>#</th>
@@ -440,44 +421,27 @@
             <div class="modal-body">
                 <div class="table-responsive">
                     <table
-                        id="lang_files"
+                        id="table_driver_contrat"
                         class="table table-striped table-bordered display"
                         style="width: 100%">
                         <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>N° Permis</th>
-                            <th>Nom</th>
-                            <th>Prénoms</th>
-                        </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>N° Permis</th>
+                                <th>Nom</th>
+                                <th>Prénoms</th>
+                            </tr>
                         </thead>
-                        <tbody>
-                        @if(count($drivers)>0)
-                            @foreach($drivers as $driver)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="drivers_id" id="drivers_id" value="{{ $driver->id }}">
-                                    </td>
-                                    <td>
-                                        <p id="drivers_licence">   {{$driver->licence}}</p>
-                                    </td>
-                                    <td>
-                                        <p id="drivers_first">{{$driver->first_name}}</p>
-                                    </td>
-                                    <td>
-                                        <p id="drivers_last">{{$driver->last_name}}</p>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+                        <tbody id="table_body_driver_contrat">
+
                         </tbody>
                         <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>N° Permis</th>
-                            <th>Nom</th>
-                            <th>Prénoms</th>
-                        </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>N° Permis</th>
+                                <th>Nom</th>
+                                <th>Prénoms</th>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>

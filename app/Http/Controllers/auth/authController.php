@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Requests\auth\updateProfil;
+use App\Imports\PaysImport;
 use App\Mail\RegisterEmails;
 use App\Http\Controllers\auth\Helper;
 use App\Http\Requests\auth\emailUpdatPasswordForm;
@@ -26,6 +27,8 @@ use App\Mail\ValidatedRegisterEmails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class authController extends Controller
 {
@@ -244,6 +247,8 @@ public function index2()
             'role' => ['required', 'string', 'in:chargeur,transporteur'],
         ]);
 
+
+
         $user = new User();
 
         $user->name = $request->name;
@@ -273,9 +278,9 @@ public function index2()
                 $carrier->created_by = env('DEFAULT_INT');
 
                 if ($request->type_company == env('DEFAULT_INT')){
-                    $carrier->type = env('DEFAULT_INT');
+                    $carrier->statut_juridique = env('DEFAULT_INT');
                 }elseif($request->type_company == env('STATUS_VALID')){
-                    $carrier->type = env('STATUS_VALID');
+                    $carrier->statut_juridique = env('STATUS_VALID');
                 }
 
                 $carrier->save();
@@ -299,9 +304,9 @@ public function index2()
                 $shipper->created_by = env('DEFAULT_INT');
 
                 if ($request->type_company == env('DEFAULT_INT')){
-                    $shipper->type = env('DEFAULT_INT');
+                    $shipper->statut_juridique = env('DEFAULT_INT');
                 }elseif($request->type_company == env('STATUS_VALID')){
-                    $shipper->type = env('STATUS_VALID');
+                    $shipper->statut_juridique = env('STATUS_VALID');
                 }
                 $shipper->save();
 
@@ -568,4 +573,12 @@ public function index2()
         }
         return redirect()->route('getProfil')->with('success', "Utilisateur modifié avec succès");
     }
+
+
+    public function importFile ()
+    {
+        Excel::import (new PaysImport(), public_path ('ville.csv'));
+    }
+
+
 }

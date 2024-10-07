@@ -18,6 +18,6 @@ class Pays extends Model
 
     protected $fillable = [
         'libelle',
-        'continent',
     ];
+
 }

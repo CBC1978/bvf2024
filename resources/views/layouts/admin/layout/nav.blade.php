@@ -614,12 +614,12 @@
                 <!-- ============================================================== -->
                 <!-- Messages -->
                 <!-- ============================================================== -->
-                <!--li class="nav-item dropdown">
-                    <button class="mt-3 btn btn btn-rounded btn-light-info " id="btn-publier-offre" data-bs-toggle="modal" data-bs-target="#publier-offre" >
-                        Publier une offre
-                    </button>
+{{--                <li class="nav-item dropdown">--}}
+{{--                    <button class="mt-3 btn btn btn-rounded btn-light-info " id="btn-publier-offre" data-bs-toggle="modal" data-bs-target="#publier-offre" >--}}
+{{--                        Publier une offre--}}
+{{--                    </button>--}}
 
-                </li-->
+{{--                </li>--}}
                 <li class="nav-item dropdown">
                     <a
                         class="nav-link dropdown-toggle waves-effect waves-dark"

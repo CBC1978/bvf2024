@@ -3,13 +3,16 @@ $(document).ready(function () {
         $("div.alert").remove();
     }, 5000); //5s
 
-    $('#lang_file tr').click(function (event) {
+    getVehiculeContrat();
+    getDriverContrat();
+
+    $('#table_body_driver_contrat tr').click(function (event) {
         if (event.target.type !== 'checkbox') {
             $(':checkbox', this).trigger('click');
         }
     });
 
-    $('#lang_files tr').click(function (event) {
+    $('#table_vehicule_contrat tr').click(function (event) {
         if (event.target.type !== 'checkbox') {
             $(':checkbox', this).trigger('click');
         }
@@ -44,6 +47,7 @@ $(document).ready(function () {
                         /* Read more about isConfirmed, isDenied below */
                         if (result.isConfirmed) {
                             $('#formAddCar').modal('hide');
+                            getVehiculeContrat();
                             $('#camions').modal('show');
                         }
                     });
@@ -240,6 +244,7 @@ $(document).ready(function () {
                         /* Read more about isConfirmed, isDenied below */
                         if (result.isConfirmed) {
                             $('#formUpCar').modal('hide');
+                            getVehiculeContrat();
                             $('#camions').modal('show');
                         }
                     });
@@ -297,9 +302,6 @@ $(document).ready(function () {
     $('#btn-select-camion').click(function(){
 
         var checkOffers = document.querySelectorAll('#cars_id');
-        var regis = document.querySelectorAll('#cars_regis');
-        var brand = document.querySelectorAll('#cars_brand');
-        var type = document.querySelectorAll('#cars_type');
         var data = [];
 
         // Verify if checkboxes are checked
@@ -307,31 +309,32 @@ $(document).ready(function () {
             if(checkOffers[i].checked){
                 data.push({
                     id:checkOffers[i].value,
-                    regis:regis[i].innerText,
-                    type:type[i].innerText,
-                    brand:brand[i].innerText,
                 });
             }
         }
 
         data.forEach(item=>{
-            $('#car_wrapper').append(
-                `
-                <div class="col-12" >
-                        <div class="form-group input-group mb-3">
-                                    <span class="input-group-text mr-5" id="remove_field_car">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                          <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-                                        </svg>
-                                    </span>
-                            <input class="form-control" type="hidden" value="${item.id}" id="id_car_contrat" name="id_car_contrat[]" >
-                            <input class="form-control mr-5" type="text" value="${item.regis}" id="car_regis_contrat" name="car_regis_contrat[]"  readonly>
-                            <input class="form-control mr-5" type="text" value="${item.type}" id="car_type_contrat" name="car_type_contrat[]"  readonly>
-                            <input class="form-control" type="text" value="${item.brand}" id="car_brand_contrat" name="car_brand_contrat[]"  readonly>
+            fetch('/contrat/camion/'+item.id)
+                .then(res => res.json())
+                .then(res=>{
+                    $('#car_wrapper').append(
+                        `
+                        <div class="col-12" >
+                            <div class="form-group input-group mb-3">
+                                <span class="input-group-text mr-5" id="remove_field_car">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                      <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                    </svg>
+                                </span>
+                                <input class="form-control" type="hidden" value="${res.id}" id="id_car_contrat" name="id_car_contrat[]" >
+                                <input class="form-control mr-5" type="text" value="${res.registration}" id="car_regis_contrat" name="car_regis_contrat[]"  readonly>
+                                <input class="form-control mr-5" type="text" value="${res.type.libelle}" id="car_type_contrat" name="car_type_contrat[]"  readonly>
+                                <input class="form-control" type="text" value="${res.brand.libelle}" id="car_brand_contrat" name="car_brand_contrat[]"  readonly>
+                            </div>
                         </div>
-                    </div>
-                `
-            );
+                        `
+                    );
+                });
         });
         checkOffers.forEach(check=>{
             if(check.checked){
@@ -366,7 +369,6 @@ $(document).ready(function () {
         })
             .then(response => response.json())
             .then(data =>{
-                console.log(data);
                 if(data == 0){
                     Swal.fire({
                         title: "Succès",
@@ -376,6 +378,7 @@ $(document).ready(function () {
                         /* Read more about isConfirmed, isDenied below */
                         if (result.isConfirmed) {
                             $('#formAddDriver').modal('hide');
+                            getDriverContrat();
                             $('#conducteurs').modal('show');
                         }
                     });
@@ -549,6 +552,7 @@ $(document).ready(function () {
                         /* Read more about isConfirmed, isDenied below */
                         if (result.isConfirmed) {
                             $('#formUpDriver').modal('hide');
+                            getDriverContrat();
                             $('#conducteurs').modal('show');
                         }
                     });
@@ -604,41 +608,40 @@ $(document).ready(function () {
     $('#btn-select-driver').click(function(){
 
         var checkOffers = document.querySelectorAll('#drivers_id');
-        var licence = document.querySelectorAll('#drivers_licence');
-        var first = document.querySelectorAll('#drivers_first');
-        var last = document.querySelectorAll('#drivers_last');
         var data = [];
-
         // Verify if checkboxes are checked
         for(i=0; i < checkOffers.length; i ++){
+
             if(checkOffers[i].checked){
                 data.push({
                     id:checkOffers[i].value,
-                    licence:licence[i].innerText,
-                    first:first[i].innerText,
-                    last:last[i].innerText,
                 });
             }
         }
-
         data.forEach(item=>{
-            $('#driver_wrapper').append(
-                `
-                <div class="col-12" >
-                        <div class="form-group input-group mb-3">
-                            <span class="input-group-text mr-5" id="remove_field_driver">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                  <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-                                </svg>
-                            </span>
-                            <input class="form-control" type="hidden" value="${item.id}" id="id_driver_contrat" name="id_driver_contrat[]" >
-                            <input class="form-control mr-5" type="text" value="${item.licence}" id="driver_licence_contrat" name="driver_licence_contrat[]"  readonly>
-                            <input class="form-control mr-5" type="text" value="${item.first}" id="driver_first_contrat" name="driver_first_contrat[]"  readonly>
-                            <input class="form-control" type="text" value="${item.last}" id="driver_last_contrat" name="driver_last_contrat[]"  readonly>
+            fetch('/contrat/conducteur/'+item.id)
+                .then(res => res.json())
+                .then(res=>{
+                    $('#driver_wrapper').append(
+                        `
+                        <div class="col-12" >
+                            <div class="form-group input-group mb-3">
+                                <span class="input-group-text mr-5" id="remove_field_driver">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                      <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                    </svg>
+                                </span>
+                                <input class="form-control" type="hidden" value="${res.id}" id="id_driver_contrat" name="id_driver_contrat[]" >
+                                <input class="form-control mr-5" type="text" value="${res.licence}" id="driver_licence_contrat" name="driver_licence_contrat[]"  readonly>
+                                <input class="form-control mr-5" type="text" value="${res.first_name}" id="driver_first_contrat" name="driver_first_contrat[]"  readonly>
+                                <input class="form-control" type="text" value="${res.last_name}" id="driver_last_contrat" name="driver_last_contrat[]"  readonly>
+                            </div>
                         </div>
-                    </div>
                 `
-            );
+                    );
+
+                });
+
         });
         checkOffers.forEach(check=>{
             if(check.checked){
@@ -719,5 +722,111 @@ $(document).ready(function () {
     //     console.log(contrat_id.value)
     //     console.log(token.value)
     // });
+
+    //Datatable vehicles contract
+    async function getVehiculeContrat(){
+        const records = await fetch('/vehicules/api').then((res)=>{ return res.json() }).then((res)=>{return res});
+
+        let tab = '';
+        records.forEach((obj)=>{
+            tab+=`
+                <tr>
+                    <td>
+                        <input type="checkbox" type="checkbox" name="cars_id" id="cars_id" value="${obj.id}">
+                    </td>
+                    <td id="cars_regis">${obj.registration} </td>
+                    <td id="cars_type">${obj.fk_type.libelle} </td>
+                    <td id="cars_brand">${obj.fk_brand.libelle} </td>
+                </tr>
+           `;
+        });
+
+        document.getElementById('table_body_cars').innerHTML = tab;
+        $('#table_vehicule_contrat').DataTable({
+            "data": records,
+            columnDefs: [
+                {
+                    targets: 0
+                }
+            ],
+            "columns":[
+                {"data":'id',
+                    render: (data, type, row) =>
+                        '<input type="checkbox" type="checkbox" name="cars_id" id="cars_id" value="'+data+'">'
+                },
+                {"data":'registration'},
+                {"data":'fk_type.libelle'},
+                {"data":'fk_brand.libelle'},
+            ],
+            retrieve: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+                "paginate": {
+                    "previous": "<",
+                    "next": ">",
+                    "first": "",
+                    "last": ""
+                }
+            }
+        });
+
+
+    }
+
+    async function getDriverContrat(){
+        const records = await fetch('/drivers/api').then((res)=>{ return res.json() }).then((res)=>{return res});
+
+        let tab = '';
+        records.forEach((obj)=>{
+            tab+=`
+                <tr>
+                    <td>
+                        <input type="checkbox" type="checkbox" name="drivers_id" id="drivers_id" value="${obj.id}">
+                    </td>
+                       <td id="drivers_licence">${obj.licence} </td>
+                       <td id="drivers_first">${obj.first_name} </td>
+                       <td id="drivers_last">${obj.last_name} </td>
+                </tr>
+           `;
+        });
+
+        document.getElementById('table_body_driver_contrat').innerHTML = tab;
+        $('#table_driver_contrat').DataTable({
+            "data": records,
+            columnDefs: [
+                {
+                    targets: 0
+                }
+            ],
+            "columns":[
+                {"data":'id',
+                    render: (data, type, row) =>
+                        '<input type="checkbox" type="checkbox" name="drivers_id" id="drivers_id" value="'+data+'">'
+                },
+                {
+                    "data": 'licence',
+                },
+                {
+                    "data": 'first_name',
+                },
+                {
+                    "data": 'last_name',
+                }
+            ],
+
+            retrieve: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+                "paginate": {
+                    "previous": "<",
+                    "next": ">",
+                    "first": "",
+                    "last": ""
+                }
+            }
+        });
+
+
+    }
 
 });

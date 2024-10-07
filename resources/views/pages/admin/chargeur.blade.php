@@ -1,5 +1,4 @@
 @extends('layouts.admin.app')
-
 @section('head')
     <link rel="stylesheet" href="{{ asset('src/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
@@ -34,13 +33,13 @@
                                     type="button"
                                     id="btn-add-shipper"
                                     class="
-                                    justify-content-center
-                                    w-100
-                                    btn btn-rounded btn-outline-success
-                                    d-flex
-                                    align-items-center
-                                    mb-3 mt-3
-                                "
+                        justify-content-center
+                        w-100
+                        btn btn-rounded btn-outline-success
+                        d-flex
+                        align-items-center
+                        mb-3 mt-3
+                        "
                                     data-bs-toggle="modal"
                                     data-bs-target="#form-add-shipper"
                                 >
@@ -56,13 +55,13 @@
                                     type="button"
                                     id="btn-detail-shipper"
                                     class="
-                                    justify-content-center
-                                    w-100
-                                    btn btn-rounded btn-outline-warning
-                                    d-flex
-                                    align-items-center
-                                    mb-3 mt-3
-                                    "
+                        justify-content-center
+                        w-100
+                        btn btn-rounded btn-outline-warning
+                        d-flex
+                        align-items-center
+                        mb-3 mt-3
+                        "
                                 >
                                     <i
                                         data-feather="eye"
@@ -76,13 +75,13 @@
                                     type="button"
                                     id="btn-update-shipper"
                                     class="
-                                    justify-content-center
-                                    w-100
-                                    btn btn-rounded btn-outline-info
-                                    d-flex
-                                    align-items-center
-                                    mb-3 mt-3
-                                    "
+                        justify-content-center
+                        w-100
+                        btn btn-rounded btn-outline-info
+                        d-flex
+                        align-items-center
+                        mb-3 mt-3
+                        "
                                 >
                                     <i
                                         data-feather="edit"
@@ -91,7 +90,8 @@
                                     Modifier
                                 </button>
                             </div>
-                            {{--                        <div class="col-md-2 col-sm-12 top">--}}
+                            {{--
+                            <div class="col-md-2 col-sm-12 top">--}}
                             {{--                            <button--}}
                             {{--                                id="btn-delete-camion"--}}
                             {{--                                type="button"--}}
@@ -110,8 +110,9 @@
                             {{--                                ></i>--}}
                             {{--                                Supprimer--}}
                             {{--                            </button>--}}
-                            {{--                        </div>--}}
-
+                            {{--
+                         </div>
+                         --}}
                         </div>
                     </h4>
                 </div>
@@ -163,7 +164,6 @@
             </div>
         </div>
     </div>
-
     {{-- Modal add--}}
     <div
         class="modal fade"
@@ -235,8 +235,21 @@
                                         >Contact</label
                                     >
                                 </div>
+                                <div class="form-floating mb-3">
+                                    <input
+                                        type="text"
+                                        name="name_boss"
+                                        id="name_boss"
+                                        class="form-control"
+                                    />
+                                    <label
+                                    ><i
+                                            class="feather-sm text-dark fill-white me-2"
+                                        ></i
+                                        >Nom complet du Responsable</label
+                                    >
+                                </div>
                             </div>
-
                             <div class="col-6">
                                 <div class="form-floating mb-3">
                                     <select
@@ -310,11 +323,11 @@
                                 <button
                                     type="submit"
                                     class="
-                                btn btn-info
-                                font-weight-medium
-                                rounded-pill
-                                px-4
-                              "
+                        btn btn-info
+                        font-weight-medium
+                        rounded-pill
+                        px-4
+                        "
                                 >
                                     <div class="d-flex align-items-center">
                                         <i
@@ -324,7 +337,6 @@
                                         Ajouter
                                     </div>
                                 </button>
-
                             </div>
                         </div>
                     </form>
@@ -337,7 +349,6 @@
         <!-- /.modal-dialog -->
     </div>
     {{-- end Modal--}}
-
     {{-- Modal update--}}
     <div
         class="modal fade"
@@ -364,7 +375,6 @@
                         @csrf
                         <div class="row" id="formUpdateShipper">
                             <div id="removeData">
-
                             </div>
                         </div>
                         <div class="d-md-flex align-items-center">
@@ -372,11 +382,11 @@
                                 <button
                                     type="submit"
                                     class="
-                                btn btn-info
-                                font-weight-medium
-                                rounded-pill
-                                px-4
-                              "
+                                        btn btn-info
+                                        font-weight-medium
+                                        rounded-pill
+                                        px-4
+                                        "
                                 >
                                     <div class="d-flex align-items-center">
                                         <i
@@ -386,7 +396,6 @@
                                         Modifier
                                     </div>
                                 </button>
-
                             </div>
                         </div>
                     </form>
@@ -400,12 +409,10 @@
     </div>
     {{-- end Modal--}}
 @endsection
-
 @section('script')
     <script src="{{ asset('src/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('src/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
     <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
-
     <script>
         $(document).ready(function () {
             setTimeout(function () {
@@ -445,137 +452,154 @@
                     fetch('/modifier-chargeur/'+data[0].value)
                         .then(response => response.json())
                         .then(response => {
+                            var phone = (response.phone != null) ? response.phone : '';
+                            var name = (response.name != null) ? response.name : '';
                             $('#formUpdateShipper').append(`
-                                  <div class="row" id="removeData">
-                                   <div class="col-6">
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                type="text"
-                                                name="company_name"
-                                                id="company_name"
-                                                class="form-control"
-                                                value="${response.company_name}"
-                                                required
-                                                style="width: 100%; height: 36px"
-                                            />
-                                            <input
-                                                type="hidden"
-                                                name="id_shipper"
-                                                id="id_shipper"
-                                                class="form-control"
-                                                value="${response.id}"
-                                                required
-                                                style="width: 100%; height: 36px"
-                                            />
-                                            <label
-                                            ><i
-                                                    class="feather-sm text-dark fill-white me-2"
-                                                ></i
-                                                >Raison sociale <span class="text-danger">*</span> </label
-                                            >
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                type="text"
-                                                name="address"
-                                                id="address"
-                                                value="${response.address}"
-                                                required
-                                                class="form-control"
-                                            />
-                                            <label
-                                            ><i
-                                                    class="feather-sm text-dark fill-white me-2"
-                                                ></i
-                                                >Adresse <span class="text-danger">*</span></label
-                                            >
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input
-                                                type="text"
-                                                name="phone"
-                                                id="phone"
-                                                value="${response.phone}"
-                                                class="form-control"
-                                            />
-                                            <label
-                                            ><i
-                                                    class="feather-sm text-dark fill-white me-2"
-                                                ></i
-                                                >Contact</label
-                                            >
-                                        </div>
-                                    </div>
+                             <div class="row" id="removeData">
+                              <div class="col-6">
+                                   <div class="form-floating mb-3">
+                                       <input
+                                           type="text"
+                                           name="company_name"
+                                           id="company_name"
+                                           class="form-control"
+                                           value="${response.company_name}"
+                                           required
+                                           style="width: 100%; height: 36px"
+                                       />
+                                       <input
+                                           type="hidden"
+                                           name="id_shipper"
+                                           id="id_shipper"
+                                           class="form-control"
+                                           value="${response.id}"
+                                           required
+                                           style="width: 100%; height: 36px"
+                                       />
+                                       <label
+                                       ><i
+                                               class="feather-sm text-dark fill-white me-2"
+                                           ></i
+                                           >Raison sociale <span class="text-danger">*</span> </label
+                                       >
+                                   </div>
+                                   <div class="form-floating mb-3">
+                                       <input
+                                           type="text"
+                                           name="address"
+                                           id="address"
+                                           value="${response.address}"
+                                           required
+                                           class="form-control"
+                                       />
+                                       <label
+                                       ><i
+                                               class="feather-sm text-dark fill-white me-2"
+                                           ></i
+                                           >Adresse <span class="text-danger">*</span></label
+                                       >
+                                   </div>
+                                   <div class="form-floating mb-3">
+                                       <input
+                                           type="text"
+                                           name="phone"
+                                           id="phone"
+                                           value="${phone} "
+                                           class="form-control"
+                                       />
+                                       <label
+                                       ><i
+                                               class="feather-sm text-dark fill-white me-2"
+                                           ></i
+                                           >Contact</label
+                                       >
+                                   </div>
+                                   <div class="form-floating mb-3">
+                                       <input
+                                           type="text"
+                                           name="name_boss"
+                                           id="name_boss"
+                                           value="${name}"
+                                           class="form-control"
+                                       />
+                                       <label
+                                       ><i
+                                               class="feather-sm text-dark fill-white me-2"
+                                           ></i
+                                           >Nom complet du Responsable</label
+                                       >
+                                   </div>
+                               </div>
 
-                                    <div class="col-6">
-                                        <div class="form-floating mb-3">
-                                            <select
-                                                name="city_up"
-                                                id="city_up"
-                                                class="form-control"
-                                                required
-                                                style="width: 100%; height: 36px"
-                                            >
-                                                <option  selected   value="${response.city.id}">${response.city.libelle}</option>
-                                        </select>
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Ville<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            id="email"
-                                            value="${response.email}"
-                                            required
-                                            class="form-control"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Email<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            type="text"
-                                            name="ifu"
-                                            id="ifu"
-                                            value="${response.ifu}"
-                                            required
-                                            class="form-control"
-                                        />
-                                        <label
-                                        ><i
-                                                class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Numéro Ifu<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input
-                                            name="rccm"
-                                            id="rccm"
-                                            value="${response.rccm}"
-                                            class="form-control"
-                                            required
-                                            style="width: 100%; height: 36px"
-                                        />
-                                        <label
-                                        ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                            ></i
-                                            >Numéro RCCM<span class="text-danger">*</span></label
-                                        >
-                                    </div>
-                                </div>
-                              </div>
-                            `);
+                               <div class="col-6">
+                                   <div class="form-floating mb-3">
+                                       <select
+                                           name="city_up"
+                                           id="city_up"
+                                           class="form-control"
+                                           required
+                                           style="width: 100%; height: 36px"
+                                       >
+                                           <option  selected   value="${response.city.id}">${response.city.libelle}</option>
+                                   </select>
+                                   <label
+                                   ><i
+                                           class="feather-sm text-dark fill-white me-2"
+                                       ></i
+                                       >Ville<span class="text-danger">*</span></label
+                                   >
+                               </div>
+                               <div class="form-floating mb-3">
+                                   <input
+                                       type="email"
+                                       name="email"
+                                       id="email"
+                                       value="${response.email}"
+                                       required
+                                       class="form-control"
+                                   />
+                                   <label
+                                   ><i
+                                           class="feather-sm text-dark fill-white me-2"
+                                       ></i
+                                       >Email<span class="text-danger">*</span></label
+                                   >
+                               </div>
+                               <div class="form-floating mb-3">
+                                   <input
+                                       type="text"
+                                       name="ifu"
+                                       id="ifu"
+                                       value="${response.ifu}"
+                                       required
+                                       class="form-control"
+                                   />
+                                   <label
+                                   ><i
+                                           class="feather-sm text-dark fill-white me-2"
+                                       ></i
+                                       >Numéro Ifu<span class="text-danger">*</span></label
+                                   >
+                               </div>
+                               <div class="form-floating mb-3">
+                                   <input
+                                       name="rccm"
+                                       id="rccm"
+                                       value="${response.rccm}"
+                                       class="form-control"
+                                       required
+                                       style="width: 100%; height: 36px"
+                                   />
+                                   <label
+                                   ><i
+                                       class="feather-sm text-dark fill-white me-2"
+                                       ></i
+                                       >Numéro RCCM<span class="text-danger">*</span></label
+                                   >
+                               </div>
+                           </div>
+                         </div>
+                       `);
 
                             //Get all villes
                             fetch('/villes')
@@ -583,8 +607,8 @@
                                 .then(data => {
                                     data.forEach(item => {
                                         $('#city_up').append(`
-                                        <option value="${ item.id }" >${ item.libelle }</option>
-                                    `);
+                                   <option value="${ item.id }" >${ item.libelle }</option>
+                               `);
                                     });
                                 });
                         });
@@ -638,5 +662,4 @@
 
         });
     </script>
-
 @endsection

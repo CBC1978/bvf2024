@@ -243,23 +243,43 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input
-                                        type="textarea"
-                                        name="description"
-                                        id="description"
-                                        required
-                                        class="form-control"
-                                        placeholder="Description"
-                                    />
-                                    <label
-                                    ><i
-                                            class="feather-sm text-dark fill-white me-2"
-                                        ></i
-                                        >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
-                                    >
+                                <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="textarea"
+                                            name="description"
+                                            id="description"
+                                            required
+                                            class="form-control"
+                                            placeholder="Description"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class="col-6">
+                                    <div class="form-floating mb-3">
+                                        <input
+                                            type="textarea"
+                                            name="description"
+                                            id="description"
+                                            required
+                                            class="form-control"
+                                            placeholder="Description"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
                                 </div>
-                            </div>
+
+                                </div>
                                 <div class="d-md-flex align-items-center">
                                     <div class="mt-3 mt-md-0 ms-auto">
                                         <button

@@ -40,30 +40,57 @@
             <div class="col-md-12 col-sm-12" >
                 <div class="card card-hover">
                     <div class="card-header bg-dark ">
-                        <h4 class="mb-0 text-white" >
-                            Contrat de transport
-                        </h4>
-                            <button
-                                style="float: right; margin-top: -25px;"
-                                type="submit"
-                                class="
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12">
+                                <h4 class="mb-0 text-white" >
+                                    Contrat de transport
+                                </h4>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <a href="{{route('printContrat',$contrat->id)}}">
+                                    <button
+                                        type="button"
+                                        class="
+                                    btn btn-info
+                                    font-weight-medium
+                                    rounded-pill
+                                    px-4
+                                    text-right
+                                    "
+                                    >
+                                        <div class="d-flex align-items-center">
+                                            <i
+                                                data-feather="printer"
+                                                class="feather-sm fill-white me-2"
+                                            ></i>
+                                            Imprimer
+                                        </div>
+                                    </button>
+                                </a>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <button
+                                    type="submit"
+                                    class="
                                 btn btn-info
                                 font-weight-medium
                                 rounded-pill
                                 px-4
                                 text-right
                                 "
-                                id="btn-contrat-save"
-                            >
-                                <div class="d-flex align-items-center">
-                                    <i
-                                        data-feather="send"
-                                        class="feather-sm fill-white me-2"
-                                    ></i>
-                                    Enregistrer
-                                </div>
-                            </button>
-                            <input type="hidden" name="contract" id="id_contrat" name="id_contrat" value="{{$contrat->id}}">
+                                    id="btn-contrat-save"
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <i
+                                            data-feather="send"
+                                            class="feather-sm fill-white me-2"
+                                        ></i>
+                                        Enregistrer
+                                    </div>
+                                </button>
+                                <input type="hidden" name="contract" id="id_contrat" name="id_contrat" value="{{$contrat->id}}">
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row">

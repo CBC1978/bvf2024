@@ -61,17 +61,17 @@ class offerController extends Controller
         //transporteur
         if ($role == env('STATUS_VALID')){
             if($type == env('STATUS_VALID')){
-                $obj = Carrier::where('type', '=', env('STATUS_VALID'))->get();
+                $obj = Carrier::where('statut_juridique', '=', env('STATUS_VALID'))->get();
             }elseif($type == env('DEFAULT_VALID')){
-                $obj = Carrier::where('type', '=', env('DEFAULT_INT'))->get();
+                $obj = Carrier::where('statut_juridique', '=', env('DEFAULT_INT'))->get();
             }
         }
         //chargeur
         elseif($role == env('DEFAULT_VALID')){
             if($type == env('STATUS_VALID')){
-                $obj = Shipper::where('type', '=', env('STATUS_VALID'))->get();
+                $obj = Shipper::where('statut_juridique', '=', env('STATUS_VALID'))->get();
             }elseif($type == env('DEFAULT_VALID')){
-                $obj = Shipper::where('type', '=', env('DEFAULT_INT'))->get();
+                $obj = Shipper::where('statut_juridique', '=', env('DEFAULT_INT'))->get();
             }
         }
         return response()->json($obj);
@@ -394,6 +394,7 @@ class offerController extends Controller
             $applyOffer = new TransportOffer();
             $applyOffer->price = floatval($request->price);
             $applyOffer->description = $request->description;
+            $applyOffer->duration = $request->duration;
             $applyOffer->fk_freight_announcement_id = intval($request->offerId);
             $applyOffer->fk_carrier_id = intval(session('fk_carrier_id'));
             $applyOffer->status = env('DEFAULT_INT');
@@ -443,6 +444,7 @@ class offerController extends Controller
             $applyOffer = new FreightOffer();
             $applyOffer->price = floatval($request->price);
             $applyOffer->description = $request->description;
+            $applyOffer->duration = $request->duration;
             $applyOffer->weight = floatval($request->weight);
             $applyOffer->fk_transport_announcement_id = intval($request->offerId);
             $applyOffer->fk_shipper_id = intval($user->fk_shipper_id);
@@ -490,6 +492,7 @@ class offerController extends Controller
             $obj->destination = intval($request->destination);
             $obj->limit_date = $request->limit_date;
             $obj->weight = $request->weight;
+            $obj->duration = $request->duration;
             $obj->volume = $request->volume;
             $obj->price = $request->price;
             $obj->type_price = $request->type_price;
@@ -534,6 +537,7 @@ class offerController extends Controller
             $obj->destination = intval($request->destination);
             $obj->limit_date = $request->limit_date;
             $obj->price = $request->price;
+            $obj->duration = $request->duration;
             $obj->type_price = $request->type_price;
             $obj->created_by = Session::get('userId');
             $obj->description = $request->description;
@@ -754,12 +758,14 @@ class offerController extends Controller
     }
 
 
-    public function updateStatutOffer($id,$action)
+    public function updateStatutOffer($id,$action,$duration)
     {
 
         $notif = new Notification();
         if (Session::get('role') == env('ROLE_CARRIER')){
             $offer = FreightOffer::find(intval($id));
+            $offer->duration = $duration;
+            $offer->save();
             //Get users to send email
             $tsp = $offer->transportAnnounce;
             $carriers = $tsp->carrier;
@@ -903,7 +909,8 @@ class offerController extends Controller
         }elseif (Session::get('role') == env('ROLE_SHIPPER')){
 
             $offer = TransportOffer::find(intval($id));
-
+            $offer->duration = $duration;
+            $offer->save();
             //Get users to send email
             $tsp = $offer->freightAnnouncement;
             $carriers = $offer->Carrier;
@@ -1734,32 +1741,45 @@ class offerController extends Controller
                 driver.last_name as driver_last,
 
                 car.id as car_id,
-                car.registration as car_registration
+                car.registration as car_registration,
+                car.model as car_model,
+                car.fk_type_car as car_type,
+                car.fk_brand_car as car_brand
 
             ")
             ->join('driver', 'contract_details.driver_id' ,'=', 'driver.id')
             ->join('car', 'contract_details.cars_id' ,'=', 'car.id')
             ->where('contract_id', $id)
             ->get();
+        if(!empty($contractDetails)){
+            $contractDetails->each(function($contract){
+                $contract->type = TypeCar::find($contract->car_type);
+                $contract->brand = BrandCar::find($contract->car_brand);
+            });
+        }
         if ( isset($contract->fk_transport_offer_id) && $contract->fk_transport_offer_id != 0){
             $contractInfos = DB::table('transport_offer')
                 ->selectRaw("
-                freight_announcement.origin,
-                freight_announcement.destination,
+                freight_announcement.origin as origin,
+                freight_announcement.destination as destination,
                 freight_announcement.weight,
-                freight_announcement.description,
+                freight_announcement.description as nature,
 
                 shipper.company_name as shipperName,
                 shipper.address as shipperAddress,
                 shipper.ifu as shipperIfu,
                 shipper.rccm as shipperRccm,
                 shipper.phone as shipperPhone,
+                shipper.name bossShipperName,
 
                 carrier.company_name as carrierName,
                 carrier.address as carrierAddress,
                 carrier.ifu as carrierIfu,
                 carrier.rccm as carrierRccm,
-                carrier.phone as carrierPhone
+                carrier.phone as carrierPhone,
+                carrier.name bossCarrierName,
+
+                transport_offer.duration as duration
                 ")
                 ->join('contract_transport', 'transport_offer.id' , '=', 'contract_transport.fk_transport_offer_id')
                 ->join('freight_announcement', 'transport_offer.fk_freight_announcement_id','=', 'freight_announcement.id')
@@ -1770,9 +1790,8 @@ class offerController extends Controller
         }elseif(isset($contract->fk_freight_offert_id) && $contract->fk_freight_offert_id != 0){
             $contractInfos = DB::table('freight_offer')
                 ->selectRaw("
-                transport_announcement.origin,
-                transport_announcement.destination,
-
+                transport_announcement.origin as origin,
+                transport_announcement.destination as destination,
                 transport_announcement.description,
 
                 shipper.company_name as shipperName,
@@ -1780,12 +1799,17 @@ class offerController extends Controller
                 shipper.ifu as shipperIfu,
                 shipper.rccm as shipperRccm,
                 shipper.phone as shipperPhone,
+                shipper.name bossShipperName,
 
                 carrier.company_name as carrierName,
                 carrier.address as carrierAddress,
                 carrier.ifu as carrierIfu,
                 carrier.rccm as carrierRccm,
-                carrier.phone as carrierPhone
+                carrier.phone as carrierPhone,
+                carrier.name bossCarrierName,
+
+                freight_offer.duration as duration,
+                freight_offer.description as nature
                 ")
                 ->join('contract_transport', 'freight_offer.id' , '=', 'contract_transport.fk_freight_offert_id')
                 ->join('transport_announcement', 'freight_offer.fk_transport_announcement_id','=', 'transport_announcement.id')
@@ -1793,6 +1817,12 @@ class offerController extends Controller
                 ->join('shipper', 'freight_offer.fk_shipper_id', '=', 'shipper.id')
                 ->where('contract_transport.id', $id)
                 ->get();
+        }
+        if(!empty($contractInfos)){
+            $contractInfos->each(function($contract){
+                $contract->origin = Ville::find($contract->origin);
+                $contract->destination = Ville::find($contract->destination);
+            });
         }
 
         $data = [
@@ -1892,36 +1922,47 @@ class offerController extends Controller
         $previousUrl  = app('router')->getRoutes(url()->previous())
             ->match(app('request')->create(url()->previous()))->getName();
         $notif = new Notification();
-        if(count($request->id_driver_contrat) ==  count($request->id_car_contrat)){
+        if ( is_array($request->id_driver_contrat) && is_array($request->id_car_contrat)){
+            if(count($request->id_driver_contrat) ==  count($request->id_car_contrat)){
 
-            if(!empty($request->id_car_contrat)){
-                $db_details = ContractDetails::where('contract_id',intval($request->contract))->get();
-                foreach ($db_details as $db){
-                    $db->delete();
+                if(!empty($request->id_car_contrat)){
+                    $db_details = ContractDetails::where('contract_id',intval($request->contract))->get();
+                    foreach ($db_details as $db){
+                        $db->delete();
+                    }
+
+                    for($i = 0; $i < count($request->id_car_contrat); $i++ ){
+
+                        $contractDetails = new ContractDetails();
+                        $contractDetails->contract_id = intval($request->contract);
+                        $contractDetails->driver_id = intval($request->id_driver_contrat[$i]);
+                        $contractDetails->cars_id = intval($request->id_car_contrat[$i]);
+                        $contractDetails->created_by = intval(Session::get('userId'));
+                        $contractDetails->save();
+                    }
+                    $carrier = Carrier::find(intval(Session::get('fk_carrier_id')));
+
+                    $notif->action = env('NOTIF_UP');
+                    $notif->description = 'Contrat de transport, ajout de camions par '.$carrier->company_name;
+                    $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
+                    $notif->status = $carrier->id;
+                    $notif->save();
                 }
-
-                for($i = 0; $i < count($request->id_car_contrat); $i++ ){
-
-                    $contractDetails = new ContractDetails();
-                    $contractDetails->contract_id = intval($request->contract);
-                    $contractDetails->driver_id = intval($request->id_driver_contrat[$i]);
-                    $contractDetails->cars_id = intval($request->id_car_contrat[$i]);
-                    $contractDetails->created_by = intval(Session::get('userId'));
-                    $contractDetails->save();
-                }
-                $carrier = Carrier::find(intval(Session::get('fk_carrier_id')));
-
-                $notif->action = env('NOTIF_UP');
-                $notif->description = 'Contrat de transport, ajout de camions par '.$carrier->company_name;
-                $notif->created_by = Session::get('first_name').' '.Session::get('last_name');
-                $notif->status = $carrier->id;
-                $notif->save();
+                return redirect()->route($previousUrl,$request->contract)->with('success', 'Contrat modifié avec succès.');
             }
-            return redirect()->route($previousUrl,$request->contract)->with('success', 'Contrat modifié avec succès.');
+            elseif(count($request->id_driver_contrat) !=  count($request->id_car_contrat)){
+                session()->flash('Le nombre de camions est différent du nombre de conducteurs.', 'error');
+                return redirect()->route($previousUrl,$request->contract);
+//                return with('error', 'Le nombre de camions est différent du nombre de conducteurs.');
+            }
+        }else{
+            $db_details = ContractDetails::where('contract_id',intval($request->contract))->get();
+            foreach ($db_details as $db){
+                $db->delete();
+            }
+            return redirect()->route($previousUrl,$request->contract)->with('error', 'Aucun camion ajouté ou aucun conducteur ajouté.');
         }
-        elseif(count($request->id_driver_contrat) !=  count($request->id_car_contrat)){
-            return redirect()->route($previousUrl,$request->contract)->with('error', 'Le nombre de camions est différent du nombre de conducteurs.');
-        }
+
     }
 
     public function storeCarContrat(form $request)
@@ -2129,4 +2170,12 @@ class offerController extends Controller
         });
         return response()->json($cars);
     }
+
+    public function getDrivers()
+    {
+        $drivers = Driver::where('fk_carrier_id','=',Session::get('fk_carrier_id'))->get();
+
+        return response()->json($drivers);
+    }
+
 }

@@ -20,6 +20,11 @@ use App\Http\Controllers\Profile\ProfileController;
 
 //Auth routes
 Route::get('/', [authController::class, 'index'])->name('index');
+Route::get('upload/file', [authController::class,'importFile']);
+Route::get('/entreprise/{type}/{role}', [offerController::class, 'getEntreprise'])->name('getEntreprise');
+Route::post('/register', [authController::class, 'register'])->name('registerUser');
+Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
+
 Route::get('/confirmation-email', [authController::class, 'verifyEmail'])->name('verifyEmail');
 Route::post('/changer-mot-de-passe', [authController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/login', [authController::class, 'login'])->name('login');
@@ -56,7 +61,7 @@ Route::get('/offres', [offerController::class, 'getOffers'])->name('getOffers');
 Route::get('/offres-reçues', [offerController::class, 'getOffersReceived'])->name('getOffersReceived');
 Route::get('/offres-reçues/detail/{id}', [offerController::class, 'getOffersReceivedDetail'])->name('getOffersReceivedDetail');
 Route::get('/offre/{id}', [offerController::class, 'getOfferOne'])->name('getOfferOne');
-Route::get('/offre/statut/modifier/{id}/{action}', [offerController::class, 'updateStatutOffer'])->name('updateStatutOffer');
+Route::get('/offre/statut/modifier/{id}/{action}/{duration}', [offerController::class, 'updateStatutOffer'])->name('updateStatutOffer');
 Route::get('/offre-publie/{id}', [offerController::class, 'getOfferPublishOne'])->name('getOfferPublishOne');
 Route::get('/offre-postulée/{id}', [offerController::class, 'getOfferApplyOne'])->name('getOfferApplyOne');
 Route::get('/offres-non-reçues', [offerController::class, 'getOffersNotReceived'])->name('getOffersNotReceived');
@@ -67,7 +72,7 @@ Route::post('/modifier-offre-publier', [offerController::class, 'updatePublishOf
 Route::post('/modifier-offre-postuler', [offerController::class, 'updateApplyOffer'])->name('updateApplyOffer');
 Route::get('/supprimer-offre/{id}', [offerController::class, 'deletePublishOffer'])->name('deletePublishOffer');
 Route::get('/supprimer-offre-postulées/{id}', [offerController::class, 'deleteApplyOffer'])->name('deleteApplyOffer');
-Route::get('/entreprise/{type}/{role}', [offerController::class, 'getEntreprise'])->name('getEntreprise');
+
 Route::get('/transport/car/{id}', [offerController::class, 'getTransportCar'])->name('getTransportCar');
 //end Offer route
 
@@ -88,6 +93,7 @@ Route::get('/contrat/conducteur/supprimer/{id}', [offerController::class, 'delet
 Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->name('printContrat');
 Route::get('/vehicules', [offerController::class, 'getVehicule'])->name('getVehicule');
 Route::get('/vehicules/api', [offerController::class, 'getVehicules'])->name('getVehicules');
+Route::get('/drivers/api', [offerController::class, 'getDrivers'])->name('getDrivers');
 
 //end Contrat route
 
@@ -138,6 +144,7 @@ Route::post('admin/profile/update', [AdminController::class,'update'])->name('ad
 Route::get('admin/profile', [AdminController::class,'affichage'])->name('admin.profile.affichage');
 
 
+
 //Profil
 // Route pour afficher le profil
 Route::get('/profile', [ProfileController::class, 'affichage'])->name('profile.affichage');
@@ -153,9 +160,6 @@ Route::get('/utilisateur/{id}', [authController::class, 'getUserOne'])->name('ge
 Route::get('/utilisateur/{action}/{id}', [authController::class, 'updateStatutUser'])->name('updateStatutUser');
 Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
 
-Route::post('/register', [authController::class, 'register'])->name('registerUser');
-
-Route::post('/otp-verify', [authController::class, 'otpVerify'])->name('otpVerify');
 
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');

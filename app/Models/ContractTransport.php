@@ -31,6 +31,7 @@ class ContractTransport extends Model
         'created_by',
         'fk_freight_offert_id',
         'fk_transport_offer_id',
+        'created_at',
     ];
 
     public function contratDetail()

@@ -94,10 +94,9 @@ Route::get('/contrat/print/{id}', [offerController::class, 'printContrat'])->nam
 Route::get('/vehicules', [offerController::class, 'getVehicule'])->name('getVehicule');
 Route::get('/vehicules/api', [offerController::class, 'getVehicules'])->name('getVehicules');
 Route::get('/drivers/api', [offerController::class, 'getDrivers'])->name('getDrivers');
-
 //end Contrat route
 
-//Les routes  ADMIN
+//Les routes ADMIN
 Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
 Route::get('/DisplayregisterAdmin', [AdminController::class, 'DisplayregisterAdmin'])->name('DisplayregisterAdmin');
@@ -126,10 +125,12 @@ Route::get('/chargeur/liste', [AdminController::class, 'getShippers'])->name('ge
 Route::get('/modifier-chargeur/{id}', [AdminController::class, 'getShipperOne'])->name('getShipperOne');
 Route::get('/chargeur/{id}', [AdminController::class, 'getShipperUsers'])->name('getShipperUsers');
 Route::post('/modifier-chargeur', [AdminController::class, 'updateShipper'])->name('updateShipper');
+Route::get('/modifier-chargeur-statut/{id}', [AdminController::class, 'updateShipperStatut'])->name('updateShipperStatut');
 Route::post('/assigner-entreprise-user', [AdminController::class, 'assignEntrepriseToUser'])->name('admin.assigner-entreprise-user');
 Route::post('/ajouter-transporteur', [AdminController::class, 'addCarrier'])->name('admin.ajouter-transporteur');
 Route::post('/ajouter-chargeur', [AdminController::class, 'addShipper'])->name('admin.ajouter-chargeur');
 Route::post('/modifier-transporteur', [AdminController::class, 'updateCarrier'])->name('updateCarrier');
+Route::get('/modifier-transporteur-statut/{id}', [AdminController::class, 'updateCarrierStatut'])->name('updateCarrierStatut');
 
 Route::get('/modifier-transporteur/{id}', [AdminController::class, 'getCarrierOne'])->name('getCarrierOne');
 Route::post('/ajouter-expediteur', [AdminController::class, 'addShipper'])->name('admin.ajouter-expediteur');
@@ -161,7 +162,8 @@ Route::get('/utilisateur/{action}/{id}', [authController::class, 'updateStatutUs
 Route::get('/utilisateurs/en-attente', [authController::class, 'getUsersNoValide'])->name('getUsersNoValide');
 
 
-Route::get('/admin.OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
+Route::get('/admin/OfferShipper', [AdminController::class, 'displayOfferShipper'])->name('admin.OfferShipper');
+Route::get('/admin/OfferShipper/{id}', [AdminController::class, 'displayOfferShipperOne'])->name('admin.displayOfferShipperOne');
 Route::get('/admin.OfferTransporter', [AdminController::class, 'displayOfferTransporter'])->name('admin.OfferTransporter');
 // end offer routes
 

@@ -122,57 +122,55 @@ $("#dom_jq_event tbody").on("click", "tr", function () {
 //    Language File                            //
 //=============================================//
 $("#lang_file").DataTable({
-  language: {
-      "sEmptyTable": "Aucune donnée n'existe dans la table",
-      "sInfo": "_START_ à _END_ sur _TOTAL_ entrées",
-      "sInfoEmpty": "0 à 0 sur 0 entrées",
-      "sInfoFiltered": "(filtré par _MAX_ entrées)",
-      "sInfoPostFix": "",
-      "sInfoThousands": ".",
-      "sLengthMenu":  "Afficher _MENU_  entrées",
-      "sLoadingRecords": "Chargement en cours...",
-      "sProcessing": "Veuillez patienter...",
-      "sSearch": "Rechercher",
-      "sZeroRecords": "Aucune entrée disponible.",
-      "oPaginate": {
-          "sFirst": "Premier",
-          "sPrevious": "Précédent",
-          "sNext": "Suivant",
-          "sLast": "Dernier"
-      },
-      "oAria": {
-          "sSortAscending": ": permet de trier les colonnes par ordre croissant",
-          "sSortDescending": ": permet de trier les colonnes par ordre décroissant"
-      }
-  }
+    responsive: true,
+    destroy: true,
+    responsive: {
+        details: false,
+    },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+        "paginate": {
+            "previous": "<",
+            "next": ">",
+            "first": "",
+            "last": ""
+        }
+    },
+});
+$("#").DataTable({
+    responsive: true,
+    destroy: true,
+    responsive: {
+        details: false,
+    },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+        "paginate": {
+            "previous": "<",
+            "next": ">",
+            "first": "",
+            "last": ""
+        }
+    },
 });
 
 
 
 $("#lang_files").DataTable({
-  language: {
-      "sEmptyTable": "Aucune donnée n'existe dans la table",
-      "sInfo": "_START_ à _END_ sur _TOTAL_ entrées",
-      "sInfoEmpty": "0 à 0 sur 0 entrées",
-      "sInfoFiltered": "(filtré par _MAX_ entrées)",
-      "sInfoPostFix": "",
-      "sInfoThousands": ".",
-      "sLengthMenu": " Afficher _MENU_ entrées",
-      "sLoadingRecords": "Chargement en cours...",
-      "sProcessing": "Veuillez patienter...",
-      "sSearch": "Rechercher",
-      "sZeroRecords": "Aucune entrée disponible.",
-      "oPaginate": {
-          "sFirst": "Premier",
-          "sPrevious": "Précédent",
-          "sNext": "Suivant",
-          "sLast": "Dernier"
-      },
-      "oAria": {
-          "sSortAscending": ": permet de trier les colonnes par ordre croissant",
-          "sSortDescending": ": permet de trier les colonnes par ordre décroissant"
-      }
-  }
+    responsive: true,
+    destroy: true,
+    responsive: {
+        details: false,
+    },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+        "paginate": {
+            "previous": "<",
+            "next": ">",
+            "first": "",
+            "last": ""
+        }
+    },
 });
 
 //=============================================//

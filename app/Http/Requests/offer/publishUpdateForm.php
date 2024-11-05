@@ -4,7 +4,7 @@ namespace App\Http\Requests\offer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class applyForm extends FormRequest
+class publishUpdateForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class applyForm extends FormRequest
     public function rules()
     {
         return [
-            'price'=>['required'],
-            'duration'=>['required'],
-            'weight'=>['required'],
-            'description'=>['required'],
+            'origin_up'=>'required',
+            'destination_up'=>'required',
+            'description_up'=>'required',
+            'limit_date_up'=>['required','date'],
         ];
     }
 
@@ -39,10 +39,11 @@ class applyForm extends FormRequest
     public function messages(): array
     {
         return [
-            'price.required' => 'Le prix est requis',
-            'weight.required' => 'Le poids est requis',
-            'description.required' => 'La description est requise',
-            'duration'=>'La durée du trajet est requise',
+            'origin_up.required' => 'La ville de départ est requise',
+            'destination_up.required' => 'La ville de destination est requise',
+            'description_up.required' => 'La description est requise',
+            'limit_date_up.required' => 'La date d\'expiration est requise',
+            'limit_date_up.date' => 'Le format de la date n\'est pas correcte',
         ];
     }
 }

@@ -91,27 +91,26 @@
                             Modifier
                             </button>
                         </div>
-{{--                        <div class="col-md-2 col-sm-12 top">--}}
-{{--                            <button--}}
-{{--                                id="btn-delete-camion"--}}
-{{--                                type="button"--}}
-{{--                                class="--}}
-{{--                                        justify-content-center--}}
-{{--                                        w-100--}}
-{{--                                        btn btn-rounded btn-outline-danger--}}
-{{--                                        d-flex--}}
-{{--                                        align-items-center--}}
-{{--                                        mb-3 mt-3--}}
-{{--                                        "--}}
-{{--                            >--}}
-{{--                                <i--}}
-{{--                                    data-feather="trash-2"--}}
-{{--                                    class="feather-sm fill-white me-2"--}}
-{{--                                ></i>--}}
-{{--                                Supprimer--}}
-{{--                            </button>--}}
-{{--                        </div>--}}
-
+                        <div class="col-md-2 col-sm-12 top">
+                            <button
+                                id="btn-bloquer-carrier"
+                                type="button"
+                                class="
+                                            justify-content-center
+                                            w-100
+                                            btn btn-rounded btn-outline-danger
+                                            d-flex
+                                            align-items-center
+                                            mb-3 mt-3
+                                            "
+                            >
+                                <i
+                                    data-feather="lock"
+                                    class="feather-sm fill-white me-2"
+                                ></i>
+                                Désactiver
+                            </button>
+                        </div>
                     </div>
                 </h4>
             </div>
@@ -128,6 +127,8 @@
                                 <th>Adresse</th>
                                 <th>Email</th>
                                 <th>Téléphone</th>
+                                <th>Type</th>
+                                <th>Statut</th>
                                 <th>Ville</th>
                             </tr>
                         </thead>
@@ -142,7 +143,30 @@
                                         <td>{{ $carrier->address }}</td>
                                         <td>{{ $carrier->email }}</td>
                                         <td>{{ $carrier->phone }}</td>
-                                        <td>{{ $carrier->city->libelle }}</td>
+                                        <td>
+                                            {{$carrier->statut_juridique}}
+                                            @if($carrier->statut_juridique == env('PERSONNE_MORAL') )
+                                                Personne morale
+                                            @elseif($carrier->statut_juridique == env('PERSONNE_PHYSIQUE'))
+                                                Personne physique
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($carrier->statut_juridique == env('PERSONNE_MORAL') || $carrier->statut_juridique == env('PERSONNE_PHYSIQUE'))
+                                                <span class="badge bg-success">
+                                                   Actif
+                                                </span>
+                                            @else
+                                                <span class="badge bg-danger">
+                                                  Inactif
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if( isset($carrier->city->libelle) && $carrier->city->libelle != '')
+                                                {{ $carrier->city->libelle }}
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -154,6 +178,8 @@
                                 <th>Adresse</th>
                                 <th>Email</th>
                                 <th>Téléphone</th>
+                                <th>Type</th>
+                                <th>Statut</th>
                                 <th>Ville</th>
                             </tr>
                         </tfoot>
@@ -572,6 +598,24 @@
                                         >
                                     </div>
                                     <div class="form-floating mb-3">
+                                            <select
+                                                name="statut_up"
+                                                id="statut_up"
+                                                class="form-control"
+                                                required
+                                                style="width: 100%; height: 36px"
+                                            >
+                                                <option  value="1">Personne physique</option>
+                                                <option  value="2">Personne moral</option>
+                                        </select>
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Type d'entreprise<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class="form-floating mb-3">
                                         <input
                                             type="text"
                                             name="ifu"
@@ -664,6 +708,61 @@
                     });
                 }
                 data = [];
+            });
+
+
+            $('#btn-bloquer-carrier').click(function (){
+
+                var checkOffers = document.querySelectorAll('#carrier_id');
+                var data = [];
+
+                // Verify if checkboxes are checked
+                checkOffers.forEach(event => {
+                    if(event.checked){
+                        data.push(event);
+                    }
+                })
+
+                if(data.length == 0){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Aucune ligne sélectionnée',
+                        icon: 'error',
+                    });
+                }
+
+                if( data.length == 1){
+                    fetch('/modifier-transporteur-statut/'+data[0].value)
+                        .then(response => response.json())
+                        .then(response => {
+                            if(response == 0){
+                                Swal.fire({
+                                    title: 'Bravo',
+                                    text: 'Le statut a été modifié avec succès',
+                                    icon: 'success',
+                                });
+                            }else{
+                                Swal.fire({
+                                    title: 'Erreur',
+                                    text: 'Le statut n\'a pas été modifié',
+                                    icon: 'error',
+                                });
+                            }
+                        });
+                }
+
+                if( data.length >= 2){
+                    Swal.fire({
+                        title: 'Erreur',
+                        text: 'Sélectionnez une seule ligne',
+                        icon: 'error',
+                    });
+                }
+                data = [];
+                setTimeout(function () {
+                    location.reload();
+                }, 2000); //5s
+
             });
 
         });

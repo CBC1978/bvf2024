@@ -104,11 +104,11 @@
                     <div class="table-responsive">
                         <table
                             id="lang_file"
-                            class="table table-striped table-bordered display"
+                            class="table table-striped table-bordered display nowrap"
                             style="width: 100%">
                             <thead>
                             <tr>
-                                <th>#</th>
+                                <th scope="col">#</th>
                                 <th>Itinéraire</th>
                                 <th>Description</th>
                                 <th>Prix</th>
@@ -163,7 +163,7 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th>#</th>
+                                <th scope="col">#</th>
                                 <th>Itinéraire</th>
                                 <th>Description</th>
                                 <th>Prix</th>
@@ -332,7 +332,7 @@
                                                                     </tfoot>
                                                                 </table>
                                                             </div>
-                                                            <div class="form-floating mb-3">
+                                                            <div class="col-6 form-floating mb-3">
                                                                 <input
                                                                     type="textarea"
                                                                     name="description_up"
@@ -350,9 +350,26 @@
                                                                     >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
                                                                 >
                                                             </div>
+                                                            <div class="col-6 form-floating mb-3">
+                                                                <input
+                                                                    type="number"
+                                                                    name="duration_up"
+                                                                    id="duration_up"
+                                                                    value=""
+                                                                    required
+                                                                    class="form-control"
+                                                                    placeholder="Duration"
+
+                                                                />
+                                                                <label
+                                                                ><i
+                                                                        class="feather-sm text-dark fill-white me-2"
+                                                                    ></i
+                                                                    >Durée du trajet (en jours)<span class="text-danger">*</span></label
+                                                                >
+                                                            </div>
                                                         </div>
                                                     </div>
-
                                                 @endif
 
                                             </div>
@@ -541,6 +558,20 @@
 
                 document.getElementById('table_body_up').innerHTML = tab;
                 $('#table_vehicule_up').DataTable({
+                    responsive: true,
+                    destroy: true,
+                    responsive: {
+                        details: false,
+                    },
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+                        "paginate": {
+                            "previous": "<",
+                            "next": ">",
+                            "first": "",
+                            "last": ""
+                        }
+                    },
                     "data": records,
                     columnDefs: [
                         {
@@ -706,7 +737,7 @@
                                             >
                                         </div>
                                     </div>
-                                    <div class="form-floating mb-3">
+                                    <div class=" col-6 form-floating mb-3">
                                         <input
                                             type="textarea"
                                             name="description"
@@ -721,6 +752,23 @@
                                                 class="feather-sm text-dark fill-white me-2"
                                             ></i
                                             >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class=" col-6 form-floating mb-3">
+                                        <input
+                                            type="number"
+                                            name="duration"
+                                            id="duration"
+                                            value="${response.duration}"
+                                            required
+                                            class="form-control"
+                                            placeholder="duration"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Durée du trajet (en jours) <span class="text-danger">*</span></label
                                         >
                                     </div>
                                 </div>
@@ -864,7 +912,7 @@
                                                         </tfoot>
                                                     </table>
                                                 </div>
-                                            <div class="form-floating mb-3">
+                                            <div class=" col-6 form-floating mb-3">
                                                 <input
                                                     type="textarea"
                                                     name="description"
@@ -880,6 +928,24 @@
                                                         class="feather-sm text-dark fill-white me-2"
                                                     ></i
                                                     >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                                >
+                                            </div>
+                                            <div class=" col-6 form-floating mb-3">
+                                                <input
+                                                    type="number"
+                                                    name="duration"
+                                                    id="duration"
+                                                    value="${response.duration}"
+                                                    required
+                                                    class="form-control"
+                                                    placeholder="Duree"
+                                                    readonly
+                                                />
+                                                <label
+                                                ><i
+                                                        class="feather-sm text-dark fill-white me-2"
+                                                    ></i
+                                                    >Durée du trajet ( en jours)<span class="text-danger">*</span></label
                                                 >
                                             </div>
                                         </div>
@@ -936,7 +1002,7 @@
                                             $('#table-list-vehicules_view').append(`
                                                 <tr>
                                                     <td>
-                                                        <input class="form-control" type="number" value="${obj.qte}"  readonlyplaceholder="Entrez le nombre de camion">
+                                                        <input class="form-control" type="number" value="${obj.qte}" placeholder="Entrez le nombre de camion">
                                                     </td>
                                                     <td>
                                                         <input
@@ -1182,7 +1248,7 @@
                                             >
                                         </div>
                                     </div>
-                                    <div class="form-floating mb-3">
+                                    <div class=" col-6 form-floating mb-3">
                                         <input
                                             type="textarea"
                                             name="description_up"
@@ -1198,6 +1264,23 @@
                                                 class="feather-sm text-dark fill-white me-2"
                                             ></i
                                             >Description (Précisez la nature de la marchandise)<span class="text-danger">*</span></label
+                                        >
+                                    </div>
+                                    <div class=" col-6 form-floating mb-3">
+                                        <input
+                                            type="number"
+                                            name="duration_up"
+                                            id="duration_up"
+                                            value="${response.duration}"
+                                            required
+                                            class="form-control"
+                                            placeholder="Durée"
+                                        />
+                                        <label
+                                        ><i
+                                                class="feather-sm text-dark fill-white me-2"
+                                            ></i
+                                            >Durée du trajet ( en jours) <span class="text-danger">*</span></label
                                         >
                                     </div>
                                 </div>
@@ -1248,6 +1331,7 @@
                             $('#id_offer_up ').val(response.id);
                             $('#price_up ').val(response.price);
                             $('#description_up ').val(response.description);
+                            $('#duration_up ').val(response.duration);
 
                             $('#RemoveTypeCheck').remove();
                             if(response.type_price == 0){
@@ -1371,9 +1455,7 @@
                 data = [];
             });
 
-
         });
-
 
     </script>
 @endsection

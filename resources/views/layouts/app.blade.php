@@ -496,16 +496,6 @@
                                 <tbody id="table_body">
 
                                 </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Immatriculation</th>
-                                    <th>Type</th>
-                                    <th>Modèle</th>
-                                    <th>Marque</th>
-                                    <th>Charge utilte (T)</th>
-                                </tr>
-                                </tfoot>
                             </table>
                         </div>
 

@@ -30,9 +30,6 @@ class AdminController extends Controller
         });
         $villes = Ville::all();
 
-//        echo '<pre>';
-//        print_r ($shippers[0]->city->libelle);
-//        echo '<pre>';
         return view('pages.admin.chargeur', compact('shippers', 'villes'));
     }
 
@@ -54,7 +51,6 @@ class AdminController extends Controller
             $obj->city = $obj->ville;
         });
         $villes = Ville::all();
-
         return view('pages.admin.transporteur', compact('users', 'carriers', 'villes'));
     }
 
@@ -126,10 +122,23 @@ class AdminController extends Controller
     //
     public function displayOfferShipper()
     {
-        $chargeurAnnonces = FreightAnnouncement::with(['shipper','transportOffer'])->get();
-
-        return view('pages.admin.admin_displayOfferShipper', compact('chargeurAnnonces'));
+        $offers = FreightAnnouncement::with(['shipper','transportOffer'])->get();
+        return view('pages.admin.offer.offerShipper', compact('offers'));
     }
+
+    public function displayOfferShipperOne ($id)
+    {
+        $offer = FreightAnnouncement::with(['shipper','transportOffer'])
+                                    ->where('id', $id)
+                                    ->get();
+        $offer->each(function ($obj){
+            $obj->origin = Ville::find($obj->origin);
+            $obj->destination = Ville::find($obj->destination);
+        });
+
+        return response()->json($offer);
+    }
+
 
     public function displayOfferTransporter()
     {
@@ -304,12 +313,32 @@ class AdminController extends Controller
         $carrier->address = $request->address;
         $carrier->phone = $request->phone;
         $carrier->city = $request->city_up;
+        $carrier->statut_juridique = $request->statut_up;
         $carrier->email = $request->email;
-        $carrier->ifu = $request->email;
-        $carrier->rccm = $request->email;
+        $carrier->ifu = $request->ifu;
+        $carrier->rccm = $request->rccm;
 
         $carrier->save();
         return redirect()->route('transporteur')->with('success', 'Trasnporteur modifié avec succès.');
+    }
+
+    public function updateCarrierStatut ($id)
+    {
+        try
+        {
+            $carrier = Carrier::find($id);
+            if($carrier->statut_juridique == env('PERSONNE_MORAL') || $carrier->statut_juridique == env('PERSONNE_PHYSIQUE')){
+                $carrier->statut_juridique = env('DEFAULT_INT');
+            }else{
+                $carrier->statut_juridique = env('PERSONNE_MORAL');
+            }
+
+            $carrier->save();
+            return response()->json('0');
+        }catch (\Exception $e){
+            return response()->json('1');
+        }
+
     }
 
     public function assignCarrierUsers($id)
@@ -334,10 +363,10 @@ class AdminController extends Controller
     public function updateShipper(Request $request)
     {
         $shipper = Shipper::find(intval($request->id_shipper));
-
         $shipper->company_name = $request->company_name;
         $shipper->address = $request->address;
         $shipper->phone = $request->phone;
+        $shipper->statut_juridique = $request->statut_up;
         $shipper->city = $request->city_up;
         $shipper->email = $request->email;
         $shipper->ifu = $request->email;
@@ -354,6 +383,25 @@ class AdminController extends Controller
         $users = User::where('fk_shipper_id','=', intval($id))->get();
 
         return view('pages.admin.chargeur_user', compact('users'));
+    }
+
+
+    public function updateShipperStatut ($id)
+    {
+        try
+        {
+            $shipper = Shipper::find($id);
+            if($shipper->statut_juridique == env('PERSONNE_MORAL') || $shipper->statut_juridique == env('PERSONNE_PHYSIQUE')){
+                $shipper->statut_juridique = env('DEFAULT_INT');
+            }else{
+                $shipper->statut_juridique = env('PERSONNE_MORAL');
+            }
+            $shipper->save();
+            return response()->json('0');
+        }catch (\Exception $e){
+            return response()->json('1');
+        }
+
     }
 
 }

@@ -132,7 +132,7 @@
                                             {{ $offer->description }}
                                         </p>
                                         <div class="row mb-3">
-                                            @if(isset($offer->weight) && !empty($offer->weight))
+                                            @if(isset($offer->weight))
                                                 <div class="col-12 mr-6">
                                                     <button
                                                         type="button"
@@ -143,7 +143,7 @@
                                             @endif
                                         </div>
                                         <div class="row mb-3">
-                                            @if(isset($offer->duration) && !empty($offer->duration))
+                                            @if(isset($offer->duration))
                                                 <div class="col-12 mr-6">
                                                     <p>
                                                         <span> Durée du trajet jour(s) : </span>
@@ -154,10 +154,10 @@
                                                             class="btn d-flex w-25 align-items-center btn-light-secondary d-block text-secondary font-weight-medium">
                                                     </p>
                                                 </div>
-                                            @endif
+                                      @endif
                                         </div>
                                         <div class="row mb-3">
-                                            @if(isset($offer->price) && !empty($offer->price))
+                                            @if(isset($offer->price))
                                                 <div class="col-12 mb-3">
                                                     <button
                                                         type="button"

@@ -22,6 +22,7 @@
 <script src="{{ asset('src/dist/libs/select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('src/dist/libs/select2/dist/js/select2.min.js') }}"></script>
 <script src="{{ asset('src/dist/js/pages/forms/select2/select2.init.js') }}"></script>
+
 <script>
 
 $(document).ready(function (){
@@ -251,6 +252,16 @@ $(document).ready(function (){
                {"data":'payload'}
            ],
            retrieve: true,
+           language: {
+               url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+               "paginate": {
+                   "previous": "<",
+                   "next": ">",
+                   "first": "",
+                   "last": ""
+               }
+           }
+
        });
 
     }

@@ -24,7 +24,9 @@ class publishForm extends FormRequest
     public function rules()
     {
         return [
-            'description'=>['required'],
+            'origin'=>'required',
+            'destination'=>'required',
+            'description'=>'required',
             'limit_date'=>['required','date'],
         ];
     }
@@ -39,9 +41,9 @@ class publishForm extends FormRequest
         return [
             'origin.required' => 'La ville de départ est requise',
             'destination.required' => 'La ville de destination est requise',
-            'weight.required' => 'Le poids est requis',
             'description.required' => 'La description est requise',
             'limit_date.required' => 'La date d\'expiration est requise',
+            'limit_date.date' => 'Le format de la date n\'est pas correcte',
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 @section('head')
     <link rel="stylesheet" href="{{ asset('src/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+{{--    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">--}}
+
     <link rel="stylesheet" href="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
     <style>
         @media screen and  (min-width: 100px) and  (max-width: 768px){
@@ -104,8 +106,8 @@
                     <div class="table-responsive">
                         <table
                             id="lang_file"
-                            class="table table-striped table-bordered display"
-                            style="width: 100%">
+                            class="table table-striped table-bordered display mb-0 display  responsive nowrap" data-page-length='10' width="100%"
+                        >
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -534,8 +536,38 @@
 @section('script')
     <script src="{{ asset('src/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('src/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.dataTables.js"></script>
+    <script  src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.js"></script>
+    <script  src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
     <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('resources/js/bvf/offer/offerReceived.js') }}"></script>
+{{--    <script>--}}
+{{--        $(document).ready(function (){--}}
+{{--            $('#offerReceivedTable').DataTable( {--}}
+{{--                responsive: true,--}}
+{{--                destroy: true,--}}
+{{--                order: [1, 'asc'],--}}
+{{--                language: {--}}
+{{--                    url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',--}}
+{{--                    "paginate": {--}}
+{{--                        "previous": "<",--}}
+{{--                        "next": ">",--}}
+{{--                        "first": "",--}}
+{{--                        "last": ""--}}
+{{--                    }--}}
+{{--                },--}}
+{{--                layout: {--}}
+{{--                    autoResize: true,--}}
+{{--                    autoSize: true,--}}
+{{--                    height: 500,--}}
+{{--                    width: 100,--}}
+{{--                }--}}
+{{--            } );--}}
+
+{{--        });--}}
+
+{{--    </script>--}}
     <script>
         $(document).ready(function () {
             async function getVehicule(){
@@ -558,6 +590,15 @@
 
                 document.getElementById('table_body_up').innerHTML = tab;
                 $('#table_vehicule_up').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
+                        "paginate": {
+                            "previous": "<",
+                            "next": ">",
+                            "first": "",
+                            "last": ""
+                        }
+                    },
                     "data": records,
                     columnDefs: [
                         {

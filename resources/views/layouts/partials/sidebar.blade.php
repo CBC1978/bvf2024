@@ -2,36 +2,36 @@
     <!-- Sidebar scroll-->
     <div class="scroll-sidebar">
         <!-- User profile -->
-        <div
-            class="user-profile position-relative"
-            style="
-              background: url({{ asset('src/assets/images/background/user-info.jpg') }})
-                no-repeat;
-            "
-        >
-            <!-- User profile image -->
-            <div class="profile-img">
-                <img
-                    src="{{ asset('src/assets/images/users/profile.png') }}"
-                    alt="user"
-                    class="w-100"
-                />
-            </div>
-            <!-- User profile text-->
-            <div class="profile-text pt-1 dropdown">
-                <a
-                    href="#"
-                    class="
-                  w-100
-                  text-white
-                  d-block
-                  position-relative
-                "
-                    id="dropdownMenuLink"
-                >{{ Session::get('username') }}</a
-                >
-            </div>
-        </div>
+{{--        <div--}}
+{{--            class="user-profile position-relative"--}}
+{{--            style="--}}
+{{--              background: url({{ asset('src/assets/images/background/user-info.jpg') }})--}}
+{{--                no-repeat;--}}
+{{--            "--}}
+{{--        >--}}
+{{--            <!-- User profile image -->--}}
+{{--            <div class="profile-img">--}}
+{{--                <img--}}
+{{--                    src="{{ asset('src/assets/images/users/profile.png') }}"--}}
+{{--                    alt="user"--}}
+{{--                    class="w-100"--}}
+{{--                />--}}
+{{--            </div>--}}
+{{--            <!-- User profile text-->--}}
+{{--            <div class="profile-text pt-1 dropdown">--}}
+{{--                <a--}}
+{{--                    href="#"--}}
+{{--                    class="--}}
+{{--                  w-100--}}
+{{--                  text-white--}}
+{{--                  d-block--}}
+{{--                  position-relative--}}
+{{--                "--}}
+{{--                    id="dropdownMenuLink"--}}
+{{--                >{{ Session::get('username') }}</a--}}
+{{--                >--}}
+{{--            </div>--}}
+{{--        </div>--}}
         <!-- End User profile text-->
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav">

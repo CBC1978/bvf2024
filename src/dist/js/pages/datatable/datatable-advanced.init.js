@@ -124,9 +124,7 @@ $("#dom_jq_event tbody").on("click", "tr", function () {
 $("#lang_file").DataTable({
     responsive: true,
     destroy: true,
-    responsive: {
-        details: false,
-    },
+    order: [2, 'asc'],
     language: {
         url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
         "paginate": {
@@ -136,32 +134,21 @@ $("#lang_file").DataTable({
             "last": ""
         }
     },
+    layout: {
+        autoResize: true,
+        autoSize: true,
+        height: 500,
+        width: 100,
+    }
 });
-$("#").DataTable({
-    responsive: true,
-    destroy: true,
-    responsive: {
-        details: false,
-    },
-    language: {
-        url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
-        "paginate": {
-            "previous": "<",
-            "next": ">",
-            "first": "",
-            "last": ""
-        }
-    },
-});
+
 
 
 
 $("#lang_files").DataTable({
     responsive: true,
     destroy: true,
-    responsive: {
-        details: false,
-    },
+    order: [2, 'asc'],
     language: {
         url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',
         "paginate": {
@@ -171,6 +158,12 @@ $("#lang_files").DataTable({
             "last": ""
         }
     },
+    layout: {
+        autoResize: true,
+        autoSize: true,
+        height: 500,
+        width: 100,
+    }
 });
 
 //=============================================//
@@ -256,3 +249,4 @@ $("#row_create_call").DataTable({
     }
   },
 });
+

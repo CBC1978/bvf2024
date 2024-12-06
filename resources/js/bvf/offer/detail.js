@@ -45,7 +45,7 @@ $(document).ready(function () {
                 });
                 setTimeout(function () {
                     location.reload();
-                }, 3000); //3s
+                }, 2000); //3s
             });
     });
 
@@ -57,7 +57,8 @@ $(document).ready(function () {
             icon: 'info',
         });
         var offerId = btn.target.attributes.id.value;
-        fetch('/offre/statut/modifier/'+offerId+'/2'+duration)
+        var duration = $('#duration-'+offerId).val();
+        fetch('/offre/statut/modifier/'+offerId+'/2/'+duration)
             .then(response => response.json())
             .then(data=>{
                 Swal.fire({
@@ -67,7 +68,7 @@ $(document).ready(function () {
                 });
                 setTimeout(function () {
                     location.reload();
-                }, 3000); //3s
+                }, 2000); //2s
             });
     });
 });

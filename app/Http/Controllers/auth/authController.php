@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Http\Requests\auth\signature\signatureFormAdd;
 use App\Http\Requests\auth\updateProfil;
 use App\Imports\PaysImport;
 use App\Mail\RegisterEmails;
@@ -28,6 +29,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Nette\Utils\DateTime;
 
 
 class authController extends Controller
@@ -60,16 +62,19 @@ class authController extends Controller
                         $request->session()->put('fk_shipper_id', $user->fk_shipper_id);
                         $request->session()->put('first_name', $user->name);
                         $request->session()->put('last_name', $user->last_name);
+
                         // Récupérer le nom de l'entreprise à partir de la table 'carrier' ou 'shipper'
                         if ($user->fk_carrier_id) {
                             $carrier = Carrier::find($user->fk_carrier_id);
                             if ($carrier) {
                                 $request->session()->put('company_name', $carrier->company_name);
+                                $request->session()->put('company_id', $carrier->id);
                             }
                         } elseif ($user->fk_shipper_id) {
                             $shipper = Shipper::find($user->fk_shipper_id);
                             if ($shipper) {
                                 $request->session()->put('company_name', $shipper->company_name);
+                                $request->session()->put('company_id', $shipper->id);
                             }
                         }
                         $request->session()->put('email', $user->email);
@@ -578,6 +583,48 @@ public function index2()
     public function importFile ()
     {
         Excel::import (new PaysImport(), public_path ('ville.csv'));
+    }
+
+
+    public function getSignatures ()
+    {
+        $user = User::find(Session::get('userId'));
+        if (Session::get('role') == env('ROLE_SHIPPER')){
+
+            $user->company = Shipper::find(Session::get('company_id'));
+        }elseif (Session::get('role') == env('ROLE_CARRIER')){
+            $user->company =Carrier::find(Session::get('company_id'));
+        }
+        return view ('pages.user.signature', compact('user'));
+    }
+
+    public function storeSignature(signatureFormAdd $request){
+
+        try{
+            $id_user = $request->input('id_user');
+            $user = User::find($id_user);
+
+            if($request->hasFile('signature')) {
+                $signatureImage = $request->file('signature');
+                $signatureImageName = time().'.'.$signatureImage->getClientOriginalExtension();
+            }
+            if (Session::get('role') == env('ROLE_SHIPPER')){
+                $shipper = Shipper::find($user->fk_shipper_id);
+                $shipper->signature = $signatureImageName;
+                $shipper->updated_at = new DateTime();
+                $shipper->save();
+            }elseif(Session::get('role') == env('ROLE_CARRIER')){
+                $carrier = Carrier::find($user->fk_carrier_id);
+                $carrier->updated_at = new DateTime();
+                $carrier->save();
+            }
+            $signatureImage->move(public_path('images/signatures'), $signatureImageName);
+            return redirect()->route('getSignatures');
+
+        }catch (\Exception $e){
+
+            echo 'error';
+        }
     }
 
 

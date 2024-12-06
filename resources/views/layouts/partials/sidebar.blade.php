@@ -133,6 +133,12 @@
                         <ul aria-expanded="false" class="collapse first-level">
                             @if(Session::get('status') == env('STATUS_ADMIN'))
                             <li class="sidebar-item">
+                                <a href="{{ route('getSignatures') }}" class="sidebar-link"
+                                ></i
+                                    ><span class="hide-menu"> Signature </span></a
+                                >
+                            </li>
+                                <li class="sidebar-item">
                                 <a href="{{ route('getUsersValide') }}" class="sidebar-link"
                                 ></i
                                     ><span class="hide-menu"> Utilisateur validé </span></a

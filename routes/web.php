@@ -156,6 +156,8 @@ Route::post('/profile/update', [ProfileController::class, 'update'])->name('prof
 
 //Utilisateurs routes
 Route::get('/utilisateurs/valide', [authController::class, 'getUsersValide'])->name('getUsersValide');
+Route::get('/utilisateurs/signature', [authController::class, 'getSignatures'])->name('getSignatures');
+Route::post('/utilisateurs/signature/store', [authController::class, 'storeSignature'])->name('storeSignature');
 Route::get('/utilisateur/session/update', [authController::class, 'updateSession'])->name('updateSession');
 Route::get('/utilisateur/{id}', [authController::class, 'getUserOne'])->name('getUserOne');
 Route::get('/utilisateur/{action}/{id}', [authController::class, 'updateStatutUser'])->name('updateStatutUser');

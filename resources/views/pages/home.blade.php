@@ -216,6 +216,7 @@
                                                     @endforeach
                                                 @else
                                                     <div class="row mb-3">
+                                                        @if( isset($offer->weight) && !empty($offer->weight))
                                                         <div class="col-6 mr-2">
                                                             <button
                                                                 type="button"
@@ -223,6 +224,7 @@
                                                                 {{$offer->weight}}(T)
                                                             </button>
                                                         </div>
+                                                        @endif
                                                         @if( isset($offer->volume) && !empty($offer->volume))
                                                             <div class="col-6">
                                                                 <button
@@ -234,7 +236,7 @@
                                                         @endif
                                                     </div>
                                                 @endif
-
+                                                @if( isset($offer->price) && !empty($offer->price))
                                                     <div class="row mb-3">
                                                         <div class="col-md-6 mb-3">
                                                             <button
@@ -255,21 +257,20 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    {{--                                                    @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))--}}
+                                                @endif
+                                                @if(Session::get('fk_shipper_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
                                                     <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
                                                         Postuler
                                                     </button>
-                                                    {{--                                                    @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))--}}
-{{--                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">--}}
-{{--                                                        Postuler--}}
-{{--                                                    </button>--}}
-                                                    {{--                                                    @endif--}}
+                                                @elseif(Session::get('fk_carrier_id') != env('DEFAULT_INT') && Session::get('status') >= env('DEFAULT_VALID'))
+                                                    <button class="btn btn btn-rounded btn-outline-success"  data-bs-toggle="modal" data-bs-target="#postuler-offre-{{$offer->id}}">
+                                                        Postuler
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
-
+                                    </div>
                                 </div>
-                                </div>
-
                             {{-- Modal--}}
                             <div
                                 class="modal fade"

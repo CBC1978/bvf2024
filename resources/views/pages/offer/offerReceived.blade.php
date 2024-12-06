@@ -542,32 +542,7 @@
     <script  src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.js"></script>
     <script src="{{ asset('src/dist/libs/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('resources/js/bvf/offer/offerReceived.js') }}"></script>
-{{--    <script>--}}
-{{--        $(document).ready(function (){--}}
-{{--            $('#offerReceivedTable').DataTable( {--}}
-{{--                responsive: true,--}}
-{{--                destroy: true,--}}
-{{--                order: [1, 'asc'],--}}
-{{--                language: {--}}
-{{--                    url: 'https://cdn.datatables.net/plug-ins/2.1.7/i18n/fr-FR.json',--}}
-{{--                    "paginate": {--}}
-{{--                        "previous": "<",--}}
-{{--                        "next": ">",--}}
-{{--                        "first": "",--}}
-{{--                        "last": ""--}}
-{{--                    }--}}
-{{--                },--}}
-{{--                layout: {--}}
-{{--                    autoResize: true,--}}
-{{--                    autoSize: true,--}}
-{{--                    height: 500,--}}
-{{--                    width: 100,--}}
-{{--                }--}}
-{{--            } );--}}
 
-{{--        });--}}
-
-{{--    </script>--}}
     <script>
         $(document).ready(function () {
             async function getVehicule(){

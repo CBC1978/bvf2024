@@ -32,7 +32,7 @@
         <h1>  {{ $user->username }} Profil</h1>
 
         <div class="profile-img">
-            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" width="100" height="100"/>
+{{--            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" width="100" height="100"/>--}}
             <div class="file btn btn-lg btn-primary">
                 Changer la Photo
                 <input type="file" name="file"/>

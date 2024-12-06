@@ -66,14 +66,7 @@
 </br>
 </br>
     <p>Article 4 : Date d’effet/ Durée/Résiliation</p>
-    <p>
-        Le présent contrat prend effet à compter de la date de validation par l’administrateur de la Bourse Virtuelle de Fret.
-        Il est valable pour {{ $info[0]->duration }} jours.
-        Ou le temps nécessaire pour le transport de (tonnages nécessitant plusieurs rotations).
-    </p>
-    <p>Article 4 : Le présent contrat conclu commence à courir dès la date de sa signature par les parties
-        Il est renouvelable par tacite reconduction à la charge pour la partie qui entend résilier d’aviser l’autre (03) mois avant le terme normal.
-    </p>
+      <p> Le présent contrat prend effet à compter de la date de validation par les deux parties.</p>
     <p>
         Article 5 : Rémunération
     </p>
@@ -91,15 +84,30 @@
         Fait à ................................................. le ...../...../.....
     </p>
     <p class="text-center">Ont signé</p>
-
-    <p style="margin-bottom: 0px;">
-        <span style="margin-left: 10%;" >{{$info[0]->carrierName}} <br/>{{ strtoupper($info[0]->bossCarrierName) }}</span>
-        <span style="margin-left: 60%;" >Pour {{ $info[0]->shipperName }} <br/>{{ strtoupper($info[0]->bossShipperName) }}</span>
-    </p>
-{{--    <p>--}}
-{{--        <span style="margin-right: 50%;" >(Lu et Approuvé)</span>--}}
-{{--        <span style="margin-right: 20%;" >(Lu et Approuvé)</span>--}}
-{{--    </p>--}}
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>{{ $info[0]->carrierName }}</th>
+                <th>{{ $info[0]->shipperName }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <img src = "{{asset('public/images/signatures/'.$info[0]->carrierSignature)}}" alt="signature" width="300"  class="rounded mx-auto d-block img-fluid img-thumbnail" >
+                </td>
+                <td>
+                    <img src = "{{asset('public/images/signatures/'.$info[0]->shipperSignature)}}" alt="signature" width="300"  class="rounded mx-auto d-block img-fluid img-thumbnail" >
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>{{ strtoupper($info[0]->bossCarrierName) }}</td>
+                <td>{{ strtoupper($info[0]->bossShipperName) }}</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 </body>
 

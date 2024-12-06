@@ -437,7 +437,16 @@ class offerController extends Controller
             $offers->each(function ($offer){
                 $offer->origin = Ville::find(intval($offer->origin));
                 $offer->destination = Ville::find(intval($offer->destination));
+                $weightApply = TransportOffer::where('fk_freight_announcement_id', '=', $offer->id)
+                    ->where('status', '=', env('STATUS_VALID'))
+                    ->sum('weight');
+
+                if ($weightApply != 0)
+                    $offer->weight = ($offer->weight - $weightApply);
+                if ($offer->weight <= 0)
+                    $offer->weight = 0;
             });
+
             $nbContract = $this->countContractMonth ();
             $nbOffer = $this->countTransportAnnouncements();
             $nbOfferReceived = $this->countTransportOffers();
@@ -503,6 +512,7 @@ class offerController extends Controller
             $applyOffer->price = floatval($request->price);
             $applyOffer->description = $request->description;
             $applyOffer->duration = $request->duration;
+            $applyOffer->weight = floatval($request->weight);
             $applyOffer->fk_freight_announcement_id = intval($request->offerId);
             $applyOffer->fk_carrier_id = intval(session('fk_carrier_id'));
             $applyOffer->status = env('DEFAULT_INT');
@@ -742,8 +752,16 @@ class offerController extends Controller
             $offers->each(function ($offer){
                 $offer->origin = Ville::find(intval($offer->origin));
                 $offer->destination = Ville::find(intval($offer->destination));
-            });
 
+                $weightApply = TransportOffer::where('fk_freight_announcement_id', '=', $offer->id)
+                    ->where('status', '=', env('STATUS_VALID'))
+                    ->sum('weight');
+
+                if ($weightApply != 0)
+                    $offer->weight = ($offer->weight - $weightApply);
+                if ($offer->weight <= 0)
+                    $offer->weight = 0;
+            });
             return view('pages.offer.home', compact('offers'));
         }
     }
@@ -1881,6 +1899,7 @@ class offerController extends Controller
                 shipper.ifu as shipperIfu,
                 shipper.rccm as shipperRccm,
                 shipper.phone as shipperPhone,
+                shipper.signature as shipperSignature,
                 shipper.name bossShipperName,
 
                 carrier.company_name as carrierName,
@@ -1888,6 +1907,7 @@ class offerController extends Controller
                 carrier.ifu as carrierIfu,
                 carrier.rccm as carrierRccm,
                 carrier.phone as carrierPhone,
+                carrier.signature as carrierSignature,
                 carrier.name bossCarrierName,
 
                 transport_offer.duration as duration
@@ -1910,6 +1930,7 @@ class offerController extends Controller
                 shipper.ifu as shipperIfu,
                 shipper.rccm as shipperRccm,
                 shipper.phone as shipperPhone,
+                 shipper.signature as shipperSignature,
                 shipper.name bossShipperName,
 
                 carrier.company_name as carrierName,
@@ -1917,6 +1938,7 @@ class offerController extends Controller
                 carrier.ifu as carrierIfu,
                 carrier.rccm as carrierRccm,
                 carrier.phone as carrierPhone,
+                carrier.signature as carrierSignature,
                 carrier.name bossCarrierName,
 
                 freight_offer.duration as duration,

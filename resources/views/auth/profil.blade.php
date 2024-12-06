@@ -109,13 +109,7 @@
 @endif
 <div class="container2">
     <h1>  {{ $user->username}} Profil</h1>
-
-    <div class="profile-img">
-        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt=""/>
-    </div>
-
     <div class="affichage">
-        <ul>
             <div class="col-md-15">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -188,10 +182,10 @@
                     </div>
                 </div>
             </div>
-        </ul>
+        <a id="edit-profile-button" href="#">Modifier</a>
     </div>
 
-    <a id="edit-profile-button" href="#">Modifier</a>
+
 
     <div id="edit-profile-modal" style="display: none;" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -351,6 +345,7 @@
             </div>
         </div>
     </div>
+</div>
 @endsection
 @section('script')
     <script>

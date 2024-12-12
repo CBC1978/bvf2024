@@ -1720,6 +1720,8 @@ class offerController extends Controller
                 $obj->destination = Ville::find(intval($obj->destination));
             });
 
+            
+
 
             $contrats = DB::table('contract_transport')
                 ->selectRaw("
@@ -1861,6 +1863,13 @@ class offerController extends Controller
     public function printContrat($id)
     {
         $contract = ContractTransport::find($id);
+
+        // Générer le code de contrat
+    $contractCode = $this->generateContractCode($id);
+            $carrierLabel = "Transporteur";
+             $shipperLabel = "Chargeur";
+            
+
         $contractDetails = DB::table('contract_details')
             ->selectRaw("
                 contract_details.id as details_id,
@@ -1958,9 +1967,32 @@ class offerController extends Controller
             });
         }
 
+
+        $validationDate = null;
+
+        // Déterminer la date de validation (created_at)
+        if (isset($contract->fk_transport_offer_id) && $contract->fk_transport_offer_id != 0) {
+            $validationDate = DB::table('transport_offer')
+                ->where('id', $contract->fk_transport_offer_id)
+                ->value('created_at');
+        } elseif (isset($contract->fk_freight_offert_id) && $contract->fk_freight_offert_id != 0) {
+            $validationDate = DB::table('freight_offer')
+                ->where('id', $contract->fk_freight_offert_id)
+                ->value('created_at');
+        }
+
+        if ($validationDate) {
+            $validationDate = \Carbon\Carbon::parse($validationDate)->format('d/m/Y');
+        }
+
+
         $data = [
             'details'=>$contractDetails,
-            'info'=>$contractInfos
+            'info'=>$contractInfos,
+            'contractCode' => $contractCode,
+            'validationDate' => $validationDate,
+            'carrierLabel' => $carrierLabel,
+            'shipperLabel' => $shipperLabel
         ];
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pages.contrat.print_contrat',$data);
 
@@ -2310,5 +2342,25 @@ class offerController extends Controller
 
         return response()->json($drivers);
     }
+
+
+
+    public function generateContractCode($offerId)
+{
+    // Obtenir la date actuelle au format YYYYMMDD
+    $datePrefix = date('Ymd');
+    
+    // Formater l'ID de l'offre sur 5 chiffres
+    $offerIdFormatted = str_pad($offerId, 5, '0', STR_PAD_LEFT);
+    
+    // Générer un nombre aléatoire de 4 chiffres
+    $randomNumber = str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+    
+    // Combiner les parties
+    $contractCode = $datePrefix . '-' . $offerIdFormatted . '-' . $randomNumber;
+    
+    return $contractCode;
+
+}
 
 }

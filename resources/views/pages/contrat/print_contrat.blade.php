@@ -12,8 +12,14 @@
 <div class="container-fluid">
     <div class="card-header text-center" style="background-color: lightskyblue;">
         <h2>BOURSE VIRTUELLE DE FRET</h2></br>
-        <h5>CONTRAT DE TRANSPORT N°1</h5>
+        <h5>CONTRAT DE TRANSPORT N°{{ $contractCode }}</h5>
     </div>
+
+        
+        
+    </div>
+    
+
     <br>
     <p class="fw-bold">LES SOUSSIGNES :</p>
     <p>
@@ -61,6 +67,7 @@
         Le chargeur s’engage à remettre la marchandise au transporteur en lui fournissant les informations,
         instructions et documents nécessaires à la réalisation de sa mission et pour les formalités de douane.
         Il s’engage notamment à payer le prix du transport convenu et s’acquitter des frais liés à une éventuelle immobilisation du véhicule.
+
     </p>
 </br>
 </br>
@@ -83,12 +90,37 @@
     <p class="text-right">
         Fait à ................................................. le ...../...../.....
     </p>
+    </p>
+</br>
+</br>
+</br>
+    <p>Article 4 : Date d’effet/ Durée/Résiliation</p>
+      <p> Le présent contrat prend effet à compter de la date de validation par les deux parties.</p>
+    <p>
+        Article 5 : Rémunération
+    </p>
+    <p>
+        Le présent contrat est conclu moyennent une rémunération forfaitaire à raison de tout transport
+        dûment effectué. Il est entendu que les prix de transport sont fixés en commun accord entre
+        le transporteur et le chargeur conformément à la réglementation en vigueur.
+    </p>
+    <p>Article 6 : autres informations</p>
+    <p>
+        Les autres clauses convenues entre les parties font partie intégrante du présent contrat.
+        Le cas échéant elles sont précisées dans le présent article.
+    </p>
+
+    <p class="text-right">
+        Généré par la bourse virtuelle de fret du CBC Le {{ $validationDate ?? '...../...../.....' }}
+    </p>    
     <p class="text-center">Ont signé</p>
     <table class="table table-bordered table-striped table-hover">
         <thead>
             <tr>
-                <th>{{ $info[0]->carrierName }}</th>
-                <th>{{ $info[0]->shipperName }}</th>
+
+               
+                <th>Transporteur : {{ $info[0]->carrierName }}</th>
+                <th>Chargeur : {{ $info[0]->shipperName }}</th>
             </tr>
         </thead>
         <tbody>

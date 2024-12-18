@@ -6,8 +6,6 @@ use App\Http\Requests\auth\signature\signatureFormAdd;
 use App\Http\Requests\auth\updateProfil;
 use App\Imports\PaysImport;
 use App\Mail\RegisterEmails;
-use App\Http\Controllers\auth\Helper;
-use App\Http\Requests\auth\emailUpdatPasswordForm;
 use App\Http\Requests\auth\loginForm;
 use App\Mail\ResetPasswordEmail;
 use App\Models\Carrier;
@@ -18,11 +16,7 @@ use App\Models\Ville;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-
 use Illuminate\Support\Facades\Mail;
-
-
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Mail\ValidatedRegisterEmails;
 use Illuminate\Http\Request;
@@ -95,7 +89,6 @@ class authController extends Controller
         return view('auth.verifyEmail');
     }
 
-
     public function updatePassword(Request $request)
     {
         $newPassword = Str::random(10);
@@ -114,7 +107,6 @@ class authController extends Controller
             return back()->with('fail', "L'email n'existe pas");
         }
 }
-
 
     public function getUsersValide()
     {
@@ -234,14 +226,11 @@ class authController extends Controller
         return redirect()->route('index');
     }
 
-// pool of register and otp functions
-
-public function index2()
-{
-    $villes = Ville::all();
-    return view('auth.register', compact('villes'));
-}
-
+    public function index2()
+    {
+        $villes = Ville::all();
+        return view('auth.register', compact('villes'));
+    }
 
     public function register(Request $request)
     {
@@ -382,7 +371,6 @@ public function index2()
         return redirect()->route('verifyEmail')->with('error_message', 'Adresse e-mail non trouvée.');
     }
 
-
     public function getUserEntreprise()
     {
         if(Session::get('role') == env('ROLE_SHIPPER')){
@@ -502,7 +490,6 @@ public function index2()
         return response()->json('0');
     }
 
-
     public function getNotifications()
     {
         if(Session::get('role') == env('ROLE_SHIPPER')) {
@@ -579,12 +566,10 @@ public function index2()
         return redirect()->route('getProfil')->with('success', "Utilisateur modifié avec succès");
     }
 
-
     public function importFile ()
     {
         Excel::import (new PaysImport(), public_path ('ville.csv'));
     }
-
 
     public function getSignatures ()
     {
@@ -626,6 +611,5 @@ public function index2()
             echo 'error';
         }
     }
-
 
 }

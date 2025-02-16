@@ -12,13 +12,13 @@
 <div class="container-fluid">
     <div class="card-header text-center" style="background-color: lightskyblue;">
         <h2>BOURSE VIRTUELLE DE FRET</h2></br>
-        <h5>CONTRAT DE TRANSPORT N°{{ $contractCode }}</h5>
+{{--        <h5>CONTRAT DE TRANSPORT N°{{ $contractCode }}</h5>--}}
     </div>
 
-        
-        
+
+
     </div>
-    
+
 
     <br>
     <p class="fw-bold">LES SOUSSIGNES :</p>
@@ -112,13 +112,13 @@
 
     <p class="text-right">
         Généré par la bourse virtuelle de fret du CBC Le {{ $validationDate ?? '...../...../.....' }}
-    </p>    
+    </p>
     <p class="text-center">Ont signé</p>
     <table class="table table-bordered table-striped table-hover">
         <thead>
             <tr>
 
-               
+
                 <th>Transporteur : {{ $info[0]->carrierName }}</th>
                 <th>Chargeur : {{ $info[0]->shipperName }}</th>
             </tr>

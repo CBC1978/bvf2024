@@ -41,5 +41,6 @@ require __DIR__.'/bvf/contrat.php';
 require __DIR__.'/bvf/ville.php';
 require __DIR__.'/bvf/voiture.php';
 require __DIR__.'/bvf/conducteur.php';
+require __DIR__.'/bvf/chat.php';
 
 });
